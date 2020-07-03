@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>gdb调试总结 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" gdb ">
-  <meta name="description" content="gdb调试总结 | sixpar&#39;s blog">
+  <title>bjdctf_2020_babyrop2 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" ROP , canary ">
+  <meta name="description" content="bjdctf_2020_babyrop2 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="about">
@@ -302,9 +302,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-gdb调试总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-bjdctf-2020-babyrop2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">gdb调试总结</h1>
+        <h1 class="article-title">bjdctf_2020_babyrop2</h1>
     
     <div class="article-meta">
         
@@ -314,7 +314,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -322,19 +322,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">gdb</a>
+            <a class="color4">ROP</a>
+            
+            <a class="color2">canary</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 08:17:40'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-03 12:54:26'>2020-07-03 12:47</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.1k</span>
+        <span>Count:435</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -364,7 +366,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验"><span class="toc-text">经验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）："><span class="toc-text">保护机制（64位）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于sixpar的博客"><span class="toc-text">关于sixpar的博客</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -380,73 +382,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="gdb下不同插件"><a href="#gdb下不同插件" class="headerlink" title="gdb下不同插件"></a>gdb下不同插件</h2><p>包含 pwndbg 、peda、gef，它们的功能各不相同，所以需要来回切换。<br>安装过程看这篇文章</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/kevin66654/article/details/86773517" target="_blank" rel="noopener">https://blog.csdn.net/kevin66654/article/details/86773517</a></p>
+        <h2 id="保护机制（64位）："><a href="#保护机制（64位）：" class="headerlink" title="保护机制（64位）："></a>保护机制（64位）：</h2><blockquote>
+<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    Canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
 </blockquote>
-<p>如果后续需要对堆进行调试分析，需要另外从下面地址安装pwndbg。</p>
+<p>可见比babyrop1那题多一个canary的保护机制。</p>
+<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>通过格式化漏洞泄露canary，然后溢出通过puts函数的rop链泄露libc地址，再次溢出rop执行getshell</p>
+<p>本题的第一个输入只允许输入6个字节，__isoc99_scanf(“%6s”, &amp;format);    所以输出也是6个字节。<br>所以我们就就一个一个偏移试过去，aa%1$p 、aa%2$p ……</p>
+<p>当输入  aa%6$p 时，得到 aa0x702436256161  ，可见我们输入的内容在偏移6上，所以格式化字符串的偏移是6</p>
+<p>而canary的值是var_8变量，处在 rbp-0x8 的位置，我们要计算偏移。我们输入的format变量位于 ebp-0x10 的位置，所以偏移就是 0x8 </p>
+<p>所以我们尝试直接在第一个输入处输入 %7$p ，输出来的16字节数据一定是canary的值没错了。</p>
+<p>接收canary的值 ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p.recvuntil(<span class="string">'0x'</span>)</span><br><span class="line">canary=int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br></pre></td></tr></table></figure>
+
+<p>一般canary的位置都在 ebp-8 的位置。所以我们后续溢出的时候把canary的值填回去就能绕过检查了，</p>
+<p>具体操作：</p>
 <blockquote>
-<p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
+<p>payload=’a’*0x18+p64(canary)+p64(0xdeadbeef)+ …….</p>
 </blockquote>
-<p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>比如对名为pwn的程序进行调试：</p>
-<blockquote>
-<p>gdb ./pwn #开启gdb，并且file读取pwn程序<br>b main  #对main函数下断点<br>b *0x8048e40  #对某一地址进行下断点<br>b *0x56555000+0x655 #也可以基址+偏移的形式<br>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。<br>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：<br>n #单步执行<br>c #自动运行到下一个断点处<br>got   #查看GOT表<br>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处<br>q  #结束调试,或是输入detach退出</p>
-</blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid<br>开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。<br>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
-<p>个人经常使用的exp快捷键：</p>
-<blockquote>
-<p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
-</blockquote>
-<p>等等，要想 gdb attach pid 得注意：<br>ubuntu16.04 默认不允许普通用户gdb attach PID调试进程………我原先都是用root权限所以没遇到过这情况。<br>解决方法：<br>sudo vim /etc/sysctl.d/10-ptrace.conf<br>最后一行改为   kernel.yama.ptrace_scope = 0<br>去除限制！</p>
-<h2 id="调试指令总结"><a href="#调试指令总结" class="headerlink" title="调试指令总结"></a>调试指令总结</h2><p>详细的gdb调试指令请看：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
-</blockquote>
-<p>我这里列出我个人使用频繁的指令<br>gdb-peda下：   </p>
-<p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
-<blockquote>
-<p>xinfo 0xf7e522b0</p>
-</blockquote>
-<p>2.查看内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
-<blockquote>
-<p>vmmap </p>
-</blockquote>
-<p>3.查看地址对应内存内容</p>
-<blockquote>
-<p>x/10gx 0x80485a6   </p>
-</blockquote>
-<p>4.查看地址对应的汇编代码</p>
-<blockquote>
-<p>x/20i 0x80484b6     </p>
-</blockquote>
-<p>5.看自栈顶esp开始向下20的栈的内容</p>
-<blockquote>
-<p>stack 20   </p>
-</blockquote>
-<p>6.查看寄存器ebp-0x20的内容</p>
-<blockquote>
-<p>x/w $ebp-0x20   </p>
-</blockquote>
-<p>7.查看内容</p>
-<blockquote>
-<p>telescope 0x8049700    </p>
-</blockquote>
-<p>8.计算我们输入的格式化字符串的地址与这个地址之间的偏移</p>
-<blockquote>
-<p>fmtarg 0x7fffffffdda8     </p>
-</blockquote>
-<p>9.查看堆分布</p>
-<blockquote>
-<p>parseheap    </p>
-</blockquote>
-<p>10.查看bins情况</p>
-<blockquote>
-<p>heapinfoall       </p>
-</blockquote>
-<h2 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 find AAABBBCCC   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 ps -ef |grep pwn    得到pwn程序的PID ，然后 cat /proc/pid/maps  查看内存信息，得到基址，一般是第一行start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
+<p>然后后续操作就跟 babyrop1 一样了。</p>
+<p>对了，本题踩的坑：  在泄露puts地址时，要加上 p.recv()  表示全部接收完。要不然puts地址数据会丢失  （调试得puts的地址为 0xa ，显然不对啊），导致后续操作都出错了。要不是我把puts地址给打印出来看看，我还不知道错在哪里呢  QAQ</p>
+<hr>
+<h3 id="关于sixpar的博客"><a href="#关于sixpar的博客" class="headerlink" title="关于sixpar的博客"></a>关于sixpar的博客</h3><p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
+<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
