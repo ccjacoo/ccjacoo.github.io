@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>ELF保护机制 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 基础 ">
-  <meta name="description" content="ELF保护机制 | sixpar&#39;s blog">
+  <title>Bypass-Canary系列-系列介绍 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" Bypass-Canary ">
+  <meta name="description" content="Bypass-Canary系列-系列介绍 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -358,9 +358,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-ELF保护机制" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Bypass-Canary系列-系列介绍" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">ELF保护机制</h1>
+        <h1 class="article-title">Bypass-Canary系列-系列介绍</h1>
     
     <div class="article-meta">
         
@@ -370,7 +370,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -378,19 +378,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">基础</a>
+            <a class="color4">Bypass-Canary</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 15:31:03'>2020-07-04 14:33</time>
+            Created At : <time class="date" title='Updated At: 2020-07-04 17:03:02'>2020-07-04 16:41</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:866</span>
+        <span>Count:420</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -420,7 +420,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#用checksec命令检查保护机制："><span class="toc-text">用checksec命令检查保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF保护机制介绍："><span class="toc-text">ELF保护机制介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-RELRO-："><span class="toc-text">1.RELRO ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Stack-："><span class="toc-text">2.Stack ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-NX："><span class="toc-text">3.NX：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-PIE："><span class="toc-text">4.PIE：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-FORTIFY："><span class="toc-text">5.FORTIFY：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Canary？"><span class="toc-text">什么是Canary？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（32位）："><span class="toc-text">（32位）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（64位）："><span class="toc-text">（64位）：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -436,27 +436,62 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="用checksec命令检查保护机制："><a href="#用checksec命令检查保护机制：" class="headerlink" title="用checksec命令检查保护机制："></a>用checksec命令检查保护机制：</h2><p>检查保护机制用 checksec 命令：</p>
+        <h2 id="什么是Canary？"><a href="#什么是Canary？" class="headerlink" title="什么是Canary？"></a>什么是Canary？</h2><p>要想Bypass(绕过)stack保护机制，得先明白什么是Canary。</p>
+<p>Canary是用于防止栈溢出被利用的一种方法，原理是在栈的ebp下面放置一个随机数,这个值总是<code>以字节 \x00 结尾</code>,本意是为了保证 Canary 可以截断字符串。保护机制会在函数返回之前会检查这个数有没有被修改，若被改动过则判断发生栈溢出了。</p>
+<p>具体实现如下：</p>
+<h3 id="（32位）："><a href="#（32位）：" class="headerlink" title="（32位）："></a>（32位）：</h3><p>我们可以通过IDA工具查看流程图：<br>在函数序言部分插入了canary值：</p>
 <blockquote>
-<p>checksec filename</p>
+<p>mov    eax,gs:0x14<br>mov    DWORD PTR [ebp-0xc],eax</p>
 </blockquote>
-<p>得到如下：</p>
+<p>在函数返回之前，会将该值取出，检查是否修改。这个操作即为检测是否发生栈溢出。</p>
 <blockquote>
-<ul>
-<li>Arch:     amd64-64-little</li>
-<li>RELRO:    Partial RELRO</li>
-<li>Stack:    Canary found</li>
-<li>NX:       NX enabled</li>
-<li>PIE:      No PIE (0x400000)</li>
-</ul>
+<p>mov    eax,DWORD PTR [ebp-0xc]<br>xor    eax,DWORD PTR gs:0x14<br>je     0x80492b2 &lt;vuln+103&gt; # 正常函数返回<br>call   0x8049380 &lt;__stack_chk_fail_local&gt; # 调用出错处理函数</p>
 </blockquote>
-<p>会得到elf运行平台和相关安全措施和保护机制。可见是一个64位ELF文件。字体是绿色表示该保护机制是开启状态。<br>如果单纯用gcc编译一个C源码不加任何参数的话，默认会开启所有的保护机制。详情请看笔记《gcc编译过程和保护机制》</p>
-<h2 id="ELF保护机制介绍："><a href="#ELF保护机制介绍：" class="headerlink" title="ELF保护机制介绍："></a>ELF保护机制介绍：</h2><h3 id="1-RELRO-："><a href="#1-RELRO-：" class="headerlink" title="1.RELRO ："></a>1.RELRO ：</h3><p>重定位只读。它能保护库函数的调用不受攻击者重定向的影响。<br>它有两种状态： Partial RELRO（黄色） 和 FULL RELRO（绿色）。FULL RELRO表示开启状态，则攻击者无法修改 got 表。</p>
-<h3 id="2-Stack-："><a href="#2-Stack-：" class="headerlink" title="2.Stack ："></a>2.Stack ：</h3><p>canary意为金丝雀， 如果栈中开启 Canary保护机制 （Canary found） ，就不能直接用溢出的方式来覆盖栈中的返回地址。而要通过改写指针与局部变量、leak canary 、overwrite cannary 的方法来绕过，详情请看笔记《绕过canary机制的几种方法总结》。<br>该保护机制的缺陷：仅保护了sip，未保护应用变量，覆写GOT绕过。</p>
-<h3 id="3-NX："><a href="#3-NX：" class="headerlink" title="3.NX："></a>3.NX：</h3><p>如果开启 NX enabled 保护，则栈中数据没有执行权限，栈和bss段就只有读写权限了。以前用的 call esp 或者 jmp esp的方法就不能用了。以及相关的shellcode也都不能使用了。 但可以用ROP的方式绕过拿到系统权限。如果程序很复杂或者使用静态编译的话，可以使用ROPgadget这个工具找到相关gadgets然后构造ROP利用链。</p>
-<h3 id="4-PIE："><a href="#4-PIE：" class="headerlink" title="4.PIE："></a>4.PIE：</h3><p>如果开启 PIE enabled 保护，则地址随机化（ASLR），每次运行时地址都会变化，然后IDA分析ELF文件显示给你的都是偏移地址。且只有把运行中的程序截断下来查看时才会得到具体的地址。所以我们就需要在不打扰程序运行的前提下令程序泄露出某个地址，然后根据函数之间的固定偏移，求出现在另一个函数的实际内存地址是多少。<br>若没有开启PIE机制的话，64位程序就显示的是 No PIE （0x400000），括号内的地址就是程序的基地址image_base。而32位程序则是 NO PIE(0x8048000)。</p>
-<p>当然也有应对PIE 地址随机化的方法：<br>摘自笔记《gdb调试》：gdb ./pwn 打开gdb调试 ， 然后 r 加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn” 得到pwn程序的PID ，然后 “cat /proc/pid/maps” 查看内存信息，得到基址，一般是第一行的start地址，那么就得到了实际地址 = 基址+IDA的相对偏移。然后就可以在第一个终端正在运行的程序里对该地址下断点，进行后续操作。</p>
-<h3 id="5-FORTIFY："><a href="#5-FORTIFY：" class="headerlink" title="5.FORTIFY："></a>5.FORTIFY：</h3><p>有时候还会蹦出这么个保护机制。FORTIFY_SOURCE 机制对格式化字符串有两个限制：<br>(1)包含%n的格式化字符串不能位于程序内存中的可写地址；(2)当使用位置参数时，必须使用范围内的所有参数。<br>所以如果要使用 %7$x ，就必须要同时使用1,2,3,4,5,6 。FORTIFTY确定函数执行栈的大小，以避免缓冲区溢出攻击。</p>
+<p>32位下，canary的值存储的位置为 ebp-0x8 ：</p>
+<blockquote>
+<pre><code>    High  
+    Address |                 |  
+            +-----------------+
+            | args            |
+            +-----------------+
+            | return address  |
+            +-----------------+
+            | old ebp         |
+  ebp =&gt;    +-----------------+
+            | ebx             |
+ebp-4 =&gt;    +-----------------+
+            | unknown         |
+ebp-8 =&gt;    +-----------------+
+            | canary value    |
+ebp-12 =&gt;    +-----------------+
+            | 局部变量        |
+    Low     |                 |
+    Address</code></pre></blockquote>
+<h3 id="（64位）："><a href="#（64位）：" class="headerlink" title="（64位）："></a>（64位）：</h3><p>流程和上面一样，只是汇编代码不同了</p>
+<blockquote>
+<p>mov    rax,QWORD PTR fs:0x28<br>mov    QWORD PTR [rbp-0x8],rax</p>
+</blockquote>
+<p>函数返回前进行判断：</p>
+<blockquote>
+<p>mov    rax,QWORD PTR [rbp-0x8]<br>xor    rax,QWORD PTR fs:0x28<br>je     0x401232 &lt;vuln+102&gt; # 正常函数返回<br>call   0x401040 &lt;__stack_chk_fail@plt&gt; # 调用出错处理函数</p>
+</blockquote>
+<p>栈的分布如下：</p>
+<blockquote>
+<pre><code>   High
+    Address |                 |
+            +-----------------+
+            | args            |
+            +-----------------+
+            | return address  |
+            +-----------------+
+            | old ebp         |
+  rbp =&gt;    +-----------------+
+            | canary value    |
+rbp-8 =&gt;    +-----------------+
+            | 局部变量         |
+    Low     |                 |
+   Address</code></pre></blockquote>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本篇介绍了什么是Canary以及存储位置，本系列后续会给出绕过Canary的一些方法，这些方法都是要掌握的。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
