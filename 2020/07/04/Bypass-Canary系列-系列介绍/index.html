@@ -114,7 +114,7 @@
 
 
 <ul>
-    <li><div class="all active" data-rel="All">All<small>(12)</small></div></li>
+    <li><div class="all active" data-rel="All">All<small>(13)</small></div></li>
     
         
             
@@ -134,7 +134,7 @@
     
         
             
-            <li><div data-rel="系列">系列<small>(1)</small></div>
+            <li><div data-rel="系列">系列<small>(2)</small></div>
                 
             </li>
             
@@ -150,8 +150,8 @@
     </div>
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="12">
-<input type="hidden" id="yelog_site_word_count" value="10.1k">
+<input type="hidden" id="yelog_site_posts_number" value="13">
+<input type="hidden" id="yelog_site_word_count" value="11.9k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -244,6 +244,14 @@
 
     
     <nav id="title-list-nav">
+        
+        <a  class="All 系列 "
+           href="/2020/07/04/Bypass-Canary%E7%B3%BB%E5%88%97-%E6%B3%84%E9%9C%B2Canary%E5%80%BC/"
+           data-tag="Bypass-Canary"
+           data-author="" >
+            <span class="post-title" title="Bypass-Canary系列-泄露Canary值">Bypass-Canary系列-泄露Canary值</span>
+            <span class="post-date" title="2020-07-04 18:32:52">2020/07/04</span>
+        </a>
         
         <a  class="All 系列 "
            href="/2020/07/04/Bypass-Canary%E7%B3%BB%E5%88%97-%E7%B3%BB%E5%88%97%E4%BB%8B%E7%BB%8D/"
@@ -385,12 +393,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 17:03:02'>2020-07-04 16:41</time>
+            Created At : <time class="date" title='Updated At: 2020-07-04 21:09:45'>2020-07-04 16:41</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:420</span>
+        <span>Count:574</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -420,7 +428,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Canary？"><span class="toc-text">什么是Canary？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（32位）："><span class="toc-text">（32位）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（64位）："><span class="toc-text">（64位）：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Canary？"><span class="toc-text">什么是Canary？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（32位）："><span class="toc-text">（32位）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（64位）："><span class="toc-text">（64位）：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -491,7 +499,23 @@ rbp-8 =&gt;    +-----------------+
             | 局部变量         |
     Low     |                 |
    Address</code></pre></blockquote>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本篇介绍了什么是Canary以及存储位置，本系列后续会给出绕过Canary的一些方法，这些方法都是要掌握的。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>无论是32位还是64位，关于设置Canary的汇编代码都是类似的。<br>我就用64位的程序对本篇进行总结吧。<br>主要是截了两张图加深印象。</p>
+<p>看图：<br><img src="https://i.loli.net/2020/07/04/Zhdj1ueQq72JMop.jpg" alt=""></p>
+<p>我们点击 var_8 跟入，查看栈布局：<br>看图：<br><img src="https://i.loli.net/2020/07/04/FRWDSe9Zi6y81uz.jpg" alt=""></p>
+<p>这样就一目了然了。这是某题的栈布局，但并无大碍。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本篇介绍了什么是Canary以及存储位置，返回函数时检查canary的值有无改变，若值遭修改了，则触发报警，call ___stack_chk_fail 结束程序。</p>
+<p>本系列后续会给出绕过Canary的一些方法，这些方法都是要掌握的。</p>
+<p>方法有：</p>
+<blockquote>
+<ul>
+<li>泄露canary的值</li>
+<li>one by one 爆破canary的值</li>
+<li>SSP 攻击</li>
+<li>TSL攻击</li>
+<li>劫持stack_chk_fail 函数</li>
+<li>数组下标溢出</li>
+</ul>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
