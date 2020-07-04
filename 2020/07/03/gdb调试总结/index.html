@@ -143,7 +143,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="9">
-<input type="hidden" id="yelog_site_word_count" value="7.8k">
+<input type="hidden" id="yelog_site_word_count" value="8k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -345,12 +345,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 08:17:40'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-04 13:10:54'>2020-07-03 07:10</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.1k</span>
+        <span>Count:1.3k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -380,7 +380,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验"><span class="toc-text">经验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gdb-peda下："><span class="toc-text">gdb-peda下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pwndbg下："><span class="toc-text">pwndbg下：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验："><span class="toc-text">经验：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -405,11 +405,27 @@
 <p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
 </blockquote>
 <p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>比如对名为pwn的程序进行调试：</p>
+<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>首先得分清：<br>gdb ./filename 指的是静态调试<br>gdb attach filename 指的是动态调试</p>
+<p>比如对名为pwn的程序进行调试：</p>
 <blockquote>
-<p>gdb ./pwn #开启gdb，并且file读取pwn程序<br>b main  #对main函数下断点<br>b *0x8048e40  #对某一地址进行下断点<br>b *0x56555000+0x655 #也可以基址+偏移的形式<br>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。<br>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：<br>n #单步执行<br>c #自动运行到下一个断点处<br>got   #查看GOT表<br>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处<br>q  #结束调试,或是输入detach退出</p>
+<ul>
+<li>gdb ./pwn #开启gdb，并且file读取pwn程序</li>
+<li>b main  #对main函数下断点 </li>
+<li>b *0x8048e40  #对某一地址进行下断点</li>
+<li>b *0x56555000+0x655 #也可以基址+偏移的形式</li>
+<li>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。</li>
+<li>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：</li>
+<li>n #单步执行不步入直接得结果</li>
+<li>s #单步并步入函数</li>
+<li>c #自动运行到下一个断点处</li>
+<li>got   #查看GOT表</li>
+<li>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处</li>
+<li>q  #结束调试,或是输入detach退出</li>
+</ul>
 </blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid<br>开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。<br>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
+<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid</p>
+<p>具体做法是：开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。</p>
+<p>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
 <p>个人经常使用的exp快捷键：</p>
 <blockquote>
 <p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
@@ -419,12 +435,12 @@
 <blockquote>
 <p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
 </blockquote>
-<p>我这里列出我个人使用频繁的指令<br>gdb-peda下：   </p>
-<p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
+<p>以下列出我个人使用频繁的指令</p>
+<h3 id="gdb-peda下："><a href="#gdb-peda下：" class="headerlink" title="gdb-peda下："></a>gdb-peda下：</h3><p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
 <blockquote>
 <p>xinfo 0xf7e522b0</p>
 </blockquote>
-<p>2.查看内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
+<p>2.查看虚拟映射内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
 <blockquote>
 <p>vmmap </p>
 </blockquote>
@@ -460,8 +476,45 @@
 <blockquote>
 <p>heapinfoall       </p>
 </blockquote>
-<h2 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 find AAABBBCCC   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 ps -ef |grep pwn    得到pwn程序的PID ，然后 cat /proc/pid/maps  查看内存信息，得到基址，一般是第一行start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
+<h3 id="pwndbg下："><a href="#pwndbg下：" class="headerlink" title="pwndbg下："></a>pwndbg下：</h3><p>1.system函数在文件中的地址，且当程序没有开启ASLR时，地址不变</p>
+<blockquote>
+<p>print system</p>
+</blockquote>
+<p>2.显示所有bin链表</p>
+<blockquote>
+<p>bins</p>
+</blockquote>
+<p>3.显示每个堆的数据结构</p>
+<blockquote>
+<p>heap</p>
+</blockquote>
+<p>4.查看plt内部函数表</p>
+<blockquote>
+<p>plt</p>
+</blockquote>
+<p>5.查看got全局函数表</p>
+<blockquote>
+<p>got</p>
+</blockquote>
+<p>6.查看寄存器信息</p>
+<blockquote>
+<p>regs</p>
+</blockquote>
+<p>7.查看stack栈</p>
+<blockquote>
+<p>stack</p>
+</blockquote>
+<p>8.打印包含返回地址的栈地址</p>
+<blockquote>
+<p>retaddr</p>
+</blockquote>
+<p>9.查看某地址的内存，左边是Hex，右边框是字符串</p>
+<blockquote>
+<p>hexdump 0x7fffd6117fee </p>
+</blockquote>
+<p>个人感觉pwndbg用起来还是挺舒服的，但我平时常用的还是gdb-peda</p>
+<h2 id="经验："><a href="#经验：" class="headerlink" title="经验："></a>经验：</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 “find AAABBBCCC”   就可以找得到字符串在内存中所储存的位置啦！</p>
+<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn”    得到pwn程序的PID ，然后 “cat /proc/pid/maps”  查看内存信息，得到基址，一般是第一行的start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
 
       
