@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>查看一个ELF文件的信息 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 基础 ">
-  <meta name="description" content="查看一个ELF文件的信息 | sixpar&#39;s blog">
+  <title>IO缓冲区 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" IO缓冲区 ">
+  <meta name="description" content="IO缓冲区 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -480,9 +480,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-查看一个ELF文件的信息" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-IO缓冲区" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">查看一个ELF文件的信息</h1>
+        <h1 class="article-title">IO缓冲区</h1>
     
     <div class="article-meta">
         
@@ -492,7 +492,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="学习">学习</a>
             
         </span>
         
@@ -500,19 +500,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">基础</a>
+            <a class="color1">IO缓冲区</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 16:14:32'>2020-07-04 14:58</time>
+            Created At : <time class="date" title='Updated At: 2020-07-07 15:27:26'>2020-07-07 15:06</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:783</span>
+        <span>Count:1.2k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -542,7 +542,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#file命令："><span class="toc-text">file命令：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#checksec命令："><span class="toc-text">checksec命令：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ldd命令："><span class="toc-text">ldd命令：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROPgadget命令："><span class="toc-text">ROPgadget命令：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#one-gadgets命令："><span class="toc-text">one_gadgets命令：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#readelf命令："><span class="toc-text">readelf命令：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍："><span class="toc-text">介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码示例："><span class="toc-text">代码示例：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓冲区的设置："><span class="toc-text">缓冲区的设置：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）打开或关闭缓冲区："><span class="toc-text">(1）打开或关闭缓冲区：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（2）更改缓冲模式："><span class="toc-text">（2）更改缓冲模式：</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -558,100 +558,103 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>注意，下方程序的文件名为都用filename来代替啦。</p>
-<h2 id="file命令："><a href="#file命令：" class="headerlink" title="file命令："></a>file命令：</h2><p>拿到一个文件时，首先执行 file 命令：</p>
+        <blockquote>
+<p>C标准下的 I/O 缓冲区分为 全缓冲，行缓冲，无缓冲。</p>
+</blockquote>
+<h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><p>C/C++中，基于I/O流的操作最终会调用系统接口read()和write()完成I/O操作。为了使程序的运行效率最高，流对象通常会提供缓冲区，以减少调用系统I/O接口的调用次数。</p>
+<p>缓冲区形式有三种，分别是：</p>
 <blockquote>
-<p>file filename</p>
+<p>（1）全缓冲。输入或输出缓冲区被填满时才会进行实际I/O操作。其他情况，如强制刷新fflush、进程结束时也会进行实际I/O操作。</p>
 </blockquote>
-<p>判断它是ELF文件还是EXE文件。判断它是32位程序还是64位程序。判断它是静态编译还是动态编译。</p>
-<p>结果如下：</p>
+<p>对于读操作来说，当读入内容的字节数等于缓冲区大小或者文件已经到达结尾，或者强制fflush刷新，会进行实际的I/O操作，将外存文件内容读入缓冲区；对于写操作来说，当缓冲区被填满或者强制刷新，会进行实际的I/O操作，缓冲区内容写到外存文件中。<br>磁盘文件操作通常是全缓冲的。</p>
 <blockquote>
-<p>filename: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-, for GNU/Linux 2.6.32, BuildID[sha1]=0ffa519ef269240388d07b316b1ef863216e24cb, not stripped</p>
+<p>（2）行缓冲。输入或输出缓冲区遇到换行符  “\n” 才会进行实际I/O操作。其他与全缓冲相同。</p>
 </blockquote>
-<p>其中我们只关注这几个关键字：<br>32-bit表明它是32位程序。<br>dynamically linked 表示它是动态编译的，链接了一些函数库。<br>GNU/Linux 2.6.32 表示libc版本</p>
-<h2 id="checksec命令："><a href="#checksec命令：" class="headerlink" title="checksec命令："></a>checksec命令：</h2><blockquote>
-<p>checksec filename</p>
-</blockquote>
-<p>显示该程序保护机制的开启情况，只有事先知道了本题的保护机制，我们才能制定应对措施，理清利用思路，不盲目。</p>
-<p>结果如下：</p>
+<p>当读到换行符”\n”时才会IO操作。</p>
 <blockquote>
-<ul>
-<li>Arch:     i386-32-little</li>
-<li>RELRO:    Partial RELRO</li>
-<li>Stack:    No canary found</li>
-<li>NX:       NX enabled</li>
-<li>PIE:      No PIE (0x8048000)</li>
-</ul>
+<p>（3）无缓冲。没有缓冲区，数据会立即读入内存或者输出到外存文件和设备上。</p>
 </blockquote>
-<p>关于保护机制的详细信息请看笔记《ELF保护机制》.</p>
-<h2 id="ldd命令："><a href="#ldd命令：" class="headerlink" title="ldd命令："></a>ldd命令：</h2><p>这个命令查看程序使用的共享库文件，找到libc库的名字。</p>
+<p>标准错误输出stderr就是无缓冲的，这样能够保证错误信息及时反馈给用户。</p>
+<p>三种缓冲类型各自的 宏 定义在头文件 stdio.h 中。</p>
+<p>另外，shell为每个进程都定义了三个文件描述符：0，1，2。<br>这三个文件描述符分别与进程的标准输入，标准输出和标准出错输出相关联。</p>
+<h3 id="代码示例："><a href="#代码示例：" class="headerlink" title="代码示例："></a>代码示例：</h3><p>Linux环境下，下面一段代码可以很好地体现全缓冲和行缓冲的区别。</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int glob=6; 
+int main(int argc, char** argv)
+{
+    int var;  
+    pid_t pid;  
+    printf(&quot;a write to stdout\n&quot;);  
+    if(pid=fork()&lt;0)
+    {  
+        printf(&quot;fork error&quot;);  
+    }
+    else
+    {  
+        if(pid==0)
+        {  
+            glob++;  
+            var++;  
+        }  
+        else
+        {  
+            sleep(2);  
+        }  
+    }  
+    printf(&quot;pid=%d,glob=%d,var=%d\n&quot;,getpid(),glob,var);  
+    exit(0);  
+}</code></pre>
+<p>编译成功后默认生成a.out，运行结果如下：</p>
+<pre><code class="c">./a.out 
+a write to stdout
+pid=4823,glob=7,var=4195873
+pid=4824,glob=7,var=4195873
+
+./a.out &gt; temp.txt
+cat temp.txt
+a write to stdout
+pid=4864,glob=7,var=4195873
+a write to stdout
+pid=4865,glob=7,var=4195873</code></pre>
+<p>默认的标准输出为终端设备即显示器，可见printf在输出到 标准输出（显示器）上时，是行缓冲，遇到换行符时则会将缓冲区内容输出到显示器，并清空缓冲区。<br>当使用重定向命令时，标准输出被重定向到磁盘txt文件，此时标准输出变成全缓冲，遇到换行符也不输出，而是被拷贝至子进程中，在父子进程结束后，各有一份输出。</p>
+<p>在fork生成子进程后，子进程会复制父进程的数据空间，当然包括父进程打开的文件描述符所对应的缓冲区。</p>
+<h2 id="缓冲区的设置："><a href="#缓冲区的设置：" class="headerlink" title="缓冲区的设置："></a>缓冲区的设置：</h2><h3 id="1）打开或关闭缓冲区："><a href="#1）打开或关闭缓冲区：" class="headerlink" title="(1）打开或关闭缓冲区："></a>(1）打开或关闭缓冲区：</h3><p>缓冲打开或关闭，可使用函数<code>setbuf()</code>或者<code>setbuffer()</code>。<br>参数buf指向缓冲区，表示开启缓冲，通常是全缓冲。<br>将buf参数设置为NULL，表示关闭缓冲。<br>注意，setbuffer()是非C标准库函数，常见于Linux。</p>
+<p>setbuf()的缓冲区长度至少为BUFSIZ (定义在stdio.h中)，否则可能会出现缓冲区溢出。<br>setbuffer可以指定缓冲区大小。</p>
+<pre><code class="c">//@header:stdio.h
+//@brief:设置指定的缓冲区或关闭缓冲
+//@param:stream:文件指针；buffer：缓冲区地址
+//@notice:使用默认缓冲大小BUFSIZ（在stdio.h中定义）
+void setbuf ( FILE * stream, char * buffer );
+
+//@notice:同setbuf，但可指定缓冲区大小
+void setbuffer(FILE *stream, char *buf, size_t size);</code></pre>
+<p>将buffer指定为NULL，关闭标准输出缓冲。</p>
 <blockquote>
-<p>ldd filename</p>
+<p>setbuf(stdout,NULL)</p>
 </blockquote>
-<p>结果如下(我的是ubuntu 16.04)：</p>
-<blockquote>
-<pre><code>linux-gate.so.1 =&gt;  (0xf7fa1000)</code></pre><p>  libc.so.6 =&gt; /lib/i386-linux-gnu/libc.so.6 (0xf7dc9000)<br>  /lib/ld-linux.so.2 (0xf7fa3000)</p>
-</blockquote>
-<h2 id="ROPgadget命令："><a href="#ROPgadget命令：" class="headerlink" title="ROPgadget命令："></a>ROPgadget命令：</h2><p>当需要构造ROP链攻击时，需要找到类似 pop rdi；ret 这样的gadgets代码片段。所以需要使用到ROPgadget工具。</p>
-<p>基本格式如下：</p>
-<blockquote>
-<p>ROPgadget –binary filename</p>
-</blockquote>
-<p>上面的命令可以寻找到所有的gadgets。<br>结果如下（我只列举一部分，因为太多啦）：</p>
-<blockquote>
-<p> ………..<br>0x00000000004006ab : leave ; ret<br>…………<br>0x0000000000400590 : pop rbp ; ret<br>0x0000000000400733 : pop rdi ; ret<br>0x0000000000400731 : pop rsi ; pop r15 ; ret<br>…………</p>
-</blockquote>
-<p>当然我们还可以寻找的更详细一点，定向搜寻：</p>
-<p>搜寻寄存器 （比如搜寻所有关于rdi寄存器的gadgets）： </p>
-<blockquote>
-<p>ROPgadget –binary filename –only ‘pop|ret’ | grep “rdi”</p>
-</blockquote>
-<p>寻找字符串：  </p>
-<blockquote>
-<p>ROPgadget –binary pwn –string “/bin/sh”</p>
-</blockquote>
-<p>寻找系统调用：</p>
-<blockquote>
-<p>ROPGadget –binary pwn | grep “int 0x80”</p>
-</blockquote>
-<p>寻找bss段：</p>
-<blockquote>
-<p>readelf -S pwn | grep “.bss”</p>
-</blockquote>
-<p>注意这里有一个小知识点：每一个gadget都有一个ret用于返回，ret指令取栈顶的数据作为下次跳转的位置，即 pop eip ： eip=[esp]; esp=esp+4;</p>
-<h2 id="one-gadgets命令："><a href="#one-gadgets命令：" class="headerlink" title="one_gadgets命令："></a>one_gadgets命令：</h2><blockquote>
-<p>one_gadget libc库版本</p>
-</blockquote>
-<p>结果如下：</p>
-<blockquote>
-<p>$ one_gadget /lib/x86_64-linux-gnu/libc.so.6</p>
-</blockquote>
-<blockquote>
-<p>0x45216 execve(“/bin/sh”, rsp+0x30, environ)<br>constraints:<br>rax == NULL</p>
-</blockquote>
-<blockquote>
-<p>0x4526a execve(“/bin/sh”, rsp+0x30, environ)<br>constraints:<br>[rsp+0x30] == NULL</p>
-</blockquote>
-<blockquote>
-<p>0xf02a4 execve(“/bin/sh”, rsp+0x50, environ)<br>constraints:<br>[rsp+0x50] == NULL</p>
-</blockquote>
-<blockquote>
-<p>0xf1147 execve(“/bin/sh”, rsp+0x70, environ)<br>constraints:<br> [rsp+0x70] == NULL</p>
-</blockquote>
-<p>有时候程序里不好构造ROP链时可以考虑使用one_gadget。<br>假如我们选择偏移为 0xf02a40，前提是知道了libc基址，所以one_gadget的内存地址为 libc基址+0xf02a4<br>但要注意的是：当程序没有 libc 时，是无法使用one_gadget 进行RCE的！</p>
-<p>one_gadget本质是：</p>
-<blockquote>
-<p>execve(“/bin/sh”)</p>
-</blockquote>
-<h2 id="readelf命令："><a href="#readelf命令：" class="headerlink" title="readelf命令："></a>readelf命令：</h2><p>该命令可以获取elf头信息<br>dynstr(动态链接的字符串)中储存了函数名，而节的地址可以用 readelf -S filename  来查看，其中节区是REL类型的则包含重定位表项。<br>查看各段和节区的信息包括地址：</p>
-<blockquote>
-<p>readelf -S filename</p>
-</blockquote>
-<p>其中可寻找bss段：</p>
-<blockquote>
-<p>readelf -S pwn | grep “.bss”</p>
-</blockquote>
-<p>关于readelf的参数还有许许多多，自行百度叭。</p>
+<p>指定新的缓冲区：</p>
+<pre><code class="c">static char newBuffer[BUFSIZ];//至少是BUFSIZ（定义在stdio.h），否则存在缓冲溢出可能
+setbuf(stdout,(char*)&amp;newBuffer);
+
+//或者指定缓冲区大小
+static char newBuffer[512];
+setbuffer(stdout,(char*)&amp;newBuffer,512);</code></pre>
+<h3 id="（2）更改缓冲模式："><a href="#（2）更改缓冲模式：" class="headerlink" title="（2）更改缓冲模式："></a>（2）更改缓冲模式：</h3><p>更改缓冲模式，可使用函数setvbuf()。</p>
+<pre><code class="c">//@header:stdio.h
+//@brief:更改缓冲模式并设置缓冲区
+//@param:stream:文件指针；buf缓冲区地址；type：缓冲区模式；size：缓冲区大小
+//@ret:0成功，非0失败
+int setvbuf(FILE *stream, char *buf, int type, unsigned size);</code></pre>
+<p>例如，将流缓冲区设置为行缓冲，调用setvbuf()时，缓冲区地址设为NULL，缓冲区大小设为0。注意，前提是存在缓冲区。</p>
+<pre><code class="c">setvbuf(stream,NULL,_IOLBF,0);  //将缓冲改为行缓冲
+
+//上面的代码等价于
+setlinebuf(stream);             //for Linux</code></pre>
+<p>如果调用setvbuf指定了缓冲区size大于0，缓冲区buf为NULL，则交由setvbuf进行malloc申请缓冲区。</p>
+<pre><code class="c">//间接申请1024字节全缓冲区
+setvbuf(stream,NULL,_IOFBF,1024);</code></pre>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
