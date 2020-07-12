@@ -6,18 +6,16 @@
   <meta name="keywords" content=" 格式化字串 ">
   <meta name="description" content="格式化字符串漏洞总结 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="介绍：对于不同版本的libc，函数首地址相对于文件开头的偏移和函数间的偏移各不相同；如果题目不提供libc，我们通过泄露任意一个库函数地址就无法推算出system函数地址，（因为没有libc版本，不知道与system函数之间的偏移） 所以我们就要想办法获取目标系统的libc的版本，这里介绍一种获取远程libc版本的方法：dynELF。 DynELF就是通过程序漏洞泄露出任意地址内容，结合ELF文件">
-<meta property="og:type" content="article">
-<meta property="og:title" content="plaidctf-2013-ropasaurusrex(DynELF)">
-<meta property="og:url" content="http://yoursite.com/2020/07/12/plaidctf-2013-ropasaurusrex-DynELF/index.html">
+<meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
+<meta property="og:type" content="website">
+<meta property="og:title" content="about">
+<meta property="og:url" content="http://yoursite.com/about/index.html">
 <meta property="og:site_name" content="sixpar&#39;s blog">
-<meta property="og:description" content="介绍：对于不同版本的libc，函数首地址相对于文件开头的偏移和函数间的偏移各不相同；如果题目不提供libc，我们通过泄露任意一个库函数地址就无法推算出system函数地址，（因为没有libc版本，不知道与system函数之间的偏移） 所以我们就要想办法获取目标系统的libc的版本，这里介绍一种获取远程libc版本的方法：dynELF。 DynELF就是通过程序漏洞泄露出任意地址内容，结合ELF文件">
+<meta property="og:description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-07-12T14:13:50.000Z">
-<meta property="article:modified_time" content="2020-07-12T14:39:22.951Z">
+<meta property="article:published_time" content="2020-07-02T13:45:54.000Z">
+<meta property="article:modified_time" content="2020-07-04T03:37:23.628Z">
 <meta property="article:author" content="sixpar">
-<meta property="article:tag" content="ROP">
-<meta property="article:tag" content="DynELF">
 <meta name="twitter:card" content="summary">
 
 
@@ -118,7 +116,7 @@
 
 
 <ul>
-    <li><div class="all active" data-rel="All">All<small>(27)</small></div></li>
+    <li><div class="all active" data-rel="All">All<small>(28)</small></div></li>
     
         
             
@@ -160,6 +158,14 @@
             
         
     
+        
+            
+            <li><div data-rel="逆向题">逆向题<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
 </ul>
 <div class="left-bottom">
     <div class="menus">
@@ -170,8 +176,8 @@
     </div>
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="27">
-<input type="hidden" id="yelog_site_word_count" value="31.6k">
+<input type="hidden" id="yelog_site_posts_number" value="28">
+<input type="hidden" id="yelog_site_word_count" value="34k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -255,6 +261,14 @@
             </li>
         
             <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>pyc反编译</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>reverse</a>
+            </li>
+        
+            <li class="article-tag-list-item">
                 <i class="iconfont icon-tag"></i><a>ROP</a>
             </li>
         
@@ -312,6 +326,14 @@
 
     
     <nav id="title-list-nav">
+        
+        <a  class="All 逆向题 "
+           href="/2020/07/12/%E5%AE%89%E6%81%92%E6%9C%88%E8%B5%9B2019-1-%E6%9D%A5%E7%8E%A9%E8%9B%87%E5%90%A7/"
+           data-tag="reverse,pyc反编译"
+           data-author="" >
+            <span class="post-title" title="安恒月赛2019.1-来玩蛇吧">安恒月赛2019.1-来玩蛇吧</span>
+            <span class="post-date" title="2020-07-12 23:12:05">2020/07/12</span>
+        </a>
         
         <a  class="All PWN题 "
            href="/2020/07/12/plaidctf-2013-ropasaurusrex-DynELF/"
@@ -411,7 +433,7 @@
         
         <a  class="All 系列 "
            href="/2020/07/05/Bypass-Canary%E7%B3%BB%E5%88%97-%E5%8A%AB%E6%8C%81stack-chk-fail%E5%87%BD%E6%95%B0/"
-           data-tag="Bypass-Canary,劫持函数,格式化字串"
+           data-tag="Bypass-Canary,格式化字串,劫持函数"
            data-author="" >
             <span class="post-title" title="Bypass-Canary系列-劫持stack_chk_fail函数">Bypass-Canary系列-劫持stack_chk_fail函数</span>
             <span class="post-date" title="2020-07-05 10:00:41">2020/07/05</span>
