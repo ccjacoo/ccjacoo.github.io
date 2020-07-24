@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>IO缓冲区 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" IO缓冲区 ">
-  <meta name="description" content="IO缓冲区 | sixpar&#39;s blog">
+  <title>天问计划week9-day5 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week9-day5 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -684,9 +684,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-IO缓冲区" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week9-day5" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">IO缓冲区</h1>
+        <h1 class="article-title">天问计划week9-day5</h1>
     
     <div class="article-meta">
         
@@ -696,7 +696,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="学习">学习</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -704,19 +704,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color1">IO缓冲区</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-07 15:27:26'>2020-07-07 15:06</time>
+            Created At : <time class="date" title='Updated At: 2020-07-24 22:45:54'>2020-07-24 22:20</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.2k</span>
+        <span>Count:3.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -746,7 +746,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍："><span class="toc-text">介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码示例："><span class="toc-text">代码示例：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓冲区的设置："><span class="toc-text">缓冲区的设置：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）打开或关闭缓冲区："><span class="toc-text">(1）打开或关闭缓冲区：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（2）更改缓冲模式："><span class="toc-text">（2）更改缓冲模式：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习内容："><span class="toc-text">学习内容：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#csapp-lab-–-Data-lab："><span class="toc-text">csapp lab – Data lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-bitxor："><span class="toc-text">1. bitxor：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-tmin"><span class="toc-text">2.tmin:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-isTmax"><span class="toc-text">3.isTmax:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-allOddBits"><span class="toc-text">4.allOddBits:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-negate"><span class="toc-text">5.negate:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-isAsciiDigit"><span class="toc-text">6.isAsciiDigit:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-conditional"><span class="toc-text">7.conditional:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-isLessOrEqual"><span class="toc-text">8.isLessOrEqual:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-logicalNeg"><span class="toc-text">9.logicalNeg:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-howManyBits"><span class="toc-text">10.howManyBits:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浮点数实验："><span class="toc-text">浮点数实验：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#群直播："><span class="toc-text">群直播：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#csapp-lab-–-Bomb-lab："><span class="toc-text">csapp lab – Bomb lab：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -763,102 +763,261 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>C标准下的 I/O 缓冲区分为 全缓冲，行缓冲，无缓冲。</p>
+<p>今天早上由于一些原因导致没有时间学习，我错了。</p>
 </blockquote>
-<h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><p>C/C++中，基于I/O流的操作最终会调用系统接口read()和write()完成I/O操作。为了使程序的运行效率最高，流对象通常会提供缓冲区，以减少调用系统I/O接口的调用次数。</p>
-<p>缓冲区形式有三种，分别是：</p>
-<blockquote>
-<p>（1）全缓冲。输入或输出缓冲区被填满时才会进行实际I/O操作。其他情况，如强制刷新fflush、进程结束时也会进行实际I/O操作。</p>
-</blockquote>
-<p>对于读操作来说，当读入内容的字节数等于缓冲区大小或者文件已经到达结尾，或者强制fflush刷新，会进行实际的I/O操作，将外存文件内容读入缓冲区；对于写操作来说，当缓冲区被填满或者强制刷新，会进行实际的I/O操作，缓冲区内容写到外存文件中。<br>磁盘文件操作通常是全缓冲的。</p>
-<blockquote>
-<p>（2）行缓冲。输入或输出缓冲区遇到换行符  “\n” 才会进行实际I/O操作。其他与全缓冲相同。</p>
-</blockquote>
-<p>当读到换行符”\n”时才会IO操作。</p>
-<blockquote>
-<p>（3）无缓冲。没有缓冲区，数据会立即读入内存或者输出到外存文件和设备上。</p>
-</blockquote>
-<p>标准错误输出stderr就是无缓冲的，这样能够保证错误信息及时反馈给用户。</p>
-<p>三种缓冲类型各自的 宏 定义在头文件 stdio.h 中。</p>
-<p>另外，shell为每个进程都定义了三个文件描述符：0，1，2。<br>这三个文件描述符分别与进程的标准输入，标准输出和标准出错输出相关联。</p>
-<h3 id="代码示例："><a href="#代码示例：" class="headerlink" title="代码示例："></a>代码示例：</h3><p>Linux环境下，下面一段代码可以很好地体现全缓冲和行缓冲的区别。</p>
-<pre><code class="c">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+<h2 id="学习内容："><a href="#学习内容：" class="headerlink" title="学习内容："></a>学习内容：</h2><p>用VS写完C++程序后，在“开始”中打开VS自带的开发者命令行，</p>
+<p>输入:cl 1.cpp /Fa1.asm   把源程序汇编得到汇编文件。<br>函数序言是：</p>
+<pre><code class="py">push ebp
 
-int glob=6; 
-int main(int argc, char** argv)
-{
-    int var;  
-    pid_t pid;  
-    printf(&quot;a write to stdout\n&quot;);  
-    if(pid=fork()&lt;0)
-    {  
-        printf(&quot;fork error&quot;);  
-    }
-    else
-    {  
-        if(pid==0)
-        {  
-            glob++;  
-            var++;  
-        }  
-        else
-        {  
-            sleep(2);  
-        }  
-    }  
-    printf(&quot;pid=%d,glob=%d,var=%d\n&quot;,getpid(),glob,var);  
-    exit(0);  
+mov ebp,esp
+
+sub esp,xxh</code></pre>
+<p>函数的末尾是：</p>
+<pre><code class="python">pop ebp
+
+mov esp,ebp
+
+ret</code></pre>
+<p>调试工具：x32dbg</p>
+<p>调试 -&gt;运行到用户代码</p>
+<h2 id="csapp-lab-–-Data-lab："><a href="#csapp-lab-–-Data-lab：" class="headerlink" title="csapp lab – Data lab："></a>csapp lab – Data lab：</h2><h3 id="1-bitxor："><a href="#1-bitxor：" class="headerlink" title="1. bitxor："></a>1. bitxor：</h3><p>用位运算实现异或操作：</p>
+<p>算了接下来直接贴源码吧。</p>
+<pre><code class="c">* bitXor - x^y using only ~ and &amp; 
+ *   Example: bitXor(4, 5) = 1
+ *   Legal ops: ~ &amp;
+ *   Max ops: 14
+ *   Rating: 1
+ */
+int bitXor(int x, int y) {
+//  return 2;
+    return ~(x&amp;y)&amp;~(~x&amp;~y);   //不是同为0的情况和不是同为1的情况下进行位与操作
 }</code></pre>
-<p>编译成功后默认生成a.out，运行结果如下：</p>
-<pre><code class="c">./a.out 
-a write to stdout
-pid=4823,glob=7,var=4195873
-pid=4824,glob=7,var=4195873
+<h3 id="2-tmin"><a href="#2-tmin" class="headerlink" title="2.tmin:"></a>2.tmin:</h3><pre><code class="c">* tmin - return minimum two&#39;s complement integer 
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 4
+ *   Rating: 1
+ */
+int tmin(void) {
+  //return 2;
+  return 1&lt;&lt;31;   //int是32位，补码最小值是符号位为1，然后剩余31都是0，故这里通过把1左移31位得到这个值
+}</code></pre>
+<h3 id="3-isTmax"><a href="#3-isTmax" class="headerlink" title="3.isTmax:"></a>3.isTmax:</h3><pre><code class="c">* isTmax - returns 1 if x is the maximum, two&#39;s complement number,
+ *     and 0 otherwise 
+ //通过位运算计算是否是补码最大值
+ *   Legal ops: ! ~ &amp; ^ | +
+ *   Max ops: 10
+ *   Rating: 1
+ */
+int isTmax(int x) {
+  //return 2;
+  //对于int来说，补码最大值是符号位为0，然后剩余31位为1
+  //！符号表示取反，对于整型，不为0的取反后是0,0取反后是1
+  //~符号则是对每一位(bit)取反
+  int e1=!(~x); //如果x=-1,-1的补码是全1（符号位为1），即1111..11，所以~(-1)将得到全0，然后！0得到 1
+  //以上是排除x=-1的情形
+  //若x不等于-1的话，即其他情况最后都将得到 e1=0
+  return !((~(x+1)^x)|e1);
+  //若x是Tmax最大值01111..11，+1后将变为最小值1000..00，~进行各位取反，1000..00又重新变为0111..11
+  //然后和自己本身异或，得0（这种~(x+1)^x得0的情况只出现于Tmax和-1两种情形，而之前我们已经排除了x=-1的情况，
+  //所以现在还成立的话就说明x是Tmax）
+  //接下去，e1已经是0了，然后 0|0=0 ，最后!0=1
+  //所以最后逻辑就是，若x是Tmax即补码最大值，则return 1（这也是题目要求的），否则return 0
+}</code></pre>
+<h3 id="4-allOddBits"><a href="#4-allOddBits" class="headerlink" title="4.allOddBits:"></a>4.allOddBits:</h3><pre><code class="c">* allOddBits - return 1 if all odd-numbered bits in word set to 1
+ *   where bits are numbered from 0 (least significant) to 31 (most significant)
+ *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 12
+ *   Rating: 2
+ */
+int allOddBits(int x) {
+  //return 2;
+  //判断所有奇数位是否都为1，这里的奇数指的是位的阶级是2的奇数次幂
+  //第一步先是构造掩码
+  int mask=0xAA+(0xAA&lt;&lt;8);
+  //int是4字节，0xAA&lt;&lt;8得到 1010 1010 0000 0000，加上0xAA，最终得到 1010 1010 1010 1010
+  //我在想直接赋值 int mask=0xAAAA 不行吗？
+  mask=mask+(mask&lt;&lt;16); //哎呦我去，这个有什么意义吗，左移16位是全0，mask加上之后还是等于mask本身啊
+  return !((mask&amp;x)^mask); //如果一个数和掩码mask与之后还能等于mask，就说明这个数的奇数位上是1
+  //与mask相等，异或结果为0，取反为1，根据题目要求return 1
+}</code></pre>
+<h3 id="5-negate"><a href="#5-negate" class="headerlink" title="5.negate:"></a>5.negate:</h3><pre><code class="c">* negate - return -x 
+ *   Example: negate(1) = -1.
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 5
+ *   Rating: 2
+ */
+int negate(int x) {
+  //得到某个数的负数，不能直接使用 &quot;-&quot;操作符
+  return ~x+1; //套用结论：各位取反，末尾+1
+}</code></pre>
+<h3 id="6-isAsciiDigit"><a href="#6-isAsciiDigit" class="headerlink" title="6.isAsciiDigit:"></a>6.isAsciiDigit:</h3><pre><code class="c">* isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#39;0&#39; to &#39;9&#39;)
+ *   Example: isAsciiDigit(0x35) = 1.
+ *            isAsciiDigit(0x3a) = 0.
+ *            isAsciiDigit(0x05) = 0.
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 15
+ *   Rating: 3
+ */
+int isAsciiDigit(int x) {
+  //x处于0x30~0x39之间就返回1
+  int sign=1&lt;&lt;31; //将得到 100000..00 ，符号位为1
+  //加上比0x39大的数后符号由正变负:
+  int big=~(sign|0x39); //构造上界，如果超过，符号位为1 
+  //加上比0x30小的值时是负数:
+  int small=(~(0x30)+1);  //构造下界，如果低于，则符号位为1
+  //我还是不明白它这里为什么要这样构造上下界？
+  big=sign&amp;(big+x)&gt;&gt;31;
+  small=sign&amp;(small+x)&gt;&gt;31;
+  //最终结果都是要&gt;&gt;31的，所以就是看符号位了
+  //如果符号位为1（超过或低于），则&amp;sign之后依然为1，反之为0
+  return !(big|small);//超过了big的话big的结果为1，同理低于small的话small的结果为1，只要两者有一个为1，&quot;|&quot;的结果就为1，！1=0
+  //只有处在中间才都为0，然后！0=1，return 1
 
-./a.out &gt; temp.txt
-cat temp.txt
-a write to stdout
-pid=4864,glob=7,var=4195873
-a write to stdout
-pid=4865,glob=7,var=4195873</code></pre>
-<p>默认的标准输出为终端设备即显示器，可见printf在输出到 标准输出（显示器）上时，是行缓冲，遇到换行符时则会将缓冲区内容输出到显示器，并清空缓冲区。<br>当使用重定向命令时，标准输出被重定向到磁盘txt文件，此时标准输出变成全缓冲，遇到换行符也不输出，而是被拷贝至子进程中，在父子进程结束后，各有一份输出。</p>
-<p>在fork生成子进程后，子进程会复制父进程的数据空间，当然包括父进程打开的文件描述符所对应的缓冲区。</p>
-<h2 id="缓冲区的设置："><a href="#缓冲区的设置：" class="headerlink" title="缓冲区的设置："></a>缓冲区的设置：</h2><h3 id="1）打开或关闭缓冲区："><a href="#1）打开或关闭缓冲区：" class="headerlink" title="(1）打开或关闭缓冲区："></a>(1）打开或关闭缓冲区：</h3><p>缓冲打开或关闭，可使用函数<code>setbuf()</code>或者<code>setbuffer()</code>。<br>参数buf指向缓冲区，表示开启缓冲，通常是全缓冲。<br>将buf参数设置为NULL，表示关闭缓冲。<br>注意，setbuffer()是非C标准库函数，常见于Linux。</p>
-<p>setbuf()的缓冲区长度至少为BUFSIZ (定义在stdio.h中)，否则可能会出现缓冲区溢出。<br>setbuffer可以指定缓冲区大小。</p>
-<pre><code class="c">//@header:stdio.h
-//@brief:设置指定的缓冲区或关闭缓冲
-//@param:stream:文件指针；buffer：缓冲区地址
-//@notice:使用默认缓冲大小BUFSIZ（在stdio.h中定义）
-void setbuf ( FILE * stream, char * buffer );
+}</code></pre>
+<h3 id="7-conditional"><a href="#7-conditional" class="headerlink" title="7.conditional:"></a>7.conditional:</h3><pre><code class="c">* conditional - same as x ? y : z 
+ *   Example: conditional(2,4,5) = 4
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 16
+ *   Rating: 3
+ */
+int conditional(int x, int y, int z) {
+  //使用位级运算实现C语言中的 x?y:z三目运算符
+  //若x不等于0，则取y的值，反之取z的值
+  //前提知识：任何不等于0的数值经过“！”取反之后都为0，而再次取反则归为1
+  x=!!x; //通过两次取反操作即可把不同的数值变换为只有两种结果：
+  //若原先数值不等于0，则!!x之后变为1（即0000 0001） //为了搞清楚我写了C程序进行验证，得到确实为0000 0001
+  //若原先数值等于0,则!!x之后变为0（全0，即0000 0000）
+  x=~x+1; //求0或1的补码，0的补码是其本身，位表示全0（0000 0000）；1的补码是-1，位表示全1（1111 1111）
+  return (x&amp;y)|(~x&amp;z);
+  //若x不等于0，则!!x之后变为1，然后变为它的补码-1即1111 1111 ，~x则为 0000 0000,所以无论z取什么&amp;之后终将为0，结果就是取y的值
+  //若x等于0，则!!x之后变为0，然后变为它的补码0000 0000 ，~x则为1111 1111,所以无论y取什么&amp;之后终将为0，结果就是取z的值
+  //终于搞清楚了。
+}</code></pre>
+<h3 id="8-isLessOrEqual"><a href="#8-isLessOrEqual" class="headerlink" title="8.isLessOrEqual:"></a>8.isLessOrEqual:</h3><pre><code class="c">* isLessOrEqual - if x &lt;= y  then return 1, else return 0 
+ *   Example: isLessOrEqual(4,5) = 1.
+ *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 24
+ *   Rating: 3
+ */
+int isLessOrEqual(int x, int y) {
+  int fux=~x+1;  //得到-x
+  int cha=y+fux; // y-x
+  int sign=(cha&gt;&gt;31)&amp;1;  
+  //若x&gt;y则y-x必定会产借位操作，sign就是负数，符号位就一定为1
+  //右移31位然后&amp;1之后就落实了sign的符号位为1
+  //若y&gt;=x则sign为0
+  int xsign=(x&gt;&gt;31)&amp;1; //取出x的符号位
+  int ysign=(y&gt;&gt;31)&amp;1;//取出y的符号位
+  int bitxor=xsign^ysign;  //判断x和y的符号位是否一致，相同为0
+  return (bitxor&amp;xsign)|((!bitxor)&amp;(!sign));
+  //要么x和y符号相同且x&lt;=y， !0 &amp; !0 =1
+  //要么x和y符号不同且x&lt;0
+  //噢终于搞明白了。
+}</code></pre>
+<h3 id="9-logicalNeg"><a href="#9-logicalNeg" class="headerlink" title="9.logicalNeg:"></a>9.logicalNeg:</h3><pre><code class="c">* logicalNeg - implement the ! operator, using all of 
+ *              the legal operators except !
+ *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
+ *   Legal ops: ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *   Max ops: 12
+ *   Rating: 4 
+ */
+int logicalNeg(int x) {
+  return ((x|(~x+1))&gt;&gt;31)+1;
+  //x按位取反，末尾+1得到-x，然后进行x|-x
+  //如果x是0的话，x|-x之后不影响，符号位仍为0
+  //如果x不为0的话，x|-x之后因为负数的影响，符号位必定为1
+  //右移31位取其符号位
+  //0的补码还是0，所以+1=1
+  //1的补码是-1.所以+1=0
+}</code></pre>
+<h3 id="10-howManyBits"><a href="#10-howManyBits" class="headerlink" title="10.howManyBits:"></a>10.howManyBits:</h3><pre><code class="c">* howManyBits - return the minimum number of bits required to represent x in
+ *             two&#39;s complement
+ *  Examples: howManyBits(12) = 5
+ *            howManyBits(298) = 10
+ *            howManyBits(-5) = 4
+ *            howManyBits(0)  = 1
+ *            howManyBits(-1) = 1
+ *            howManyBits(0x80000000) = 32
+ *  Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+ *  Max ops: 90
+ *  Rating: 4
+ */
+int howManyBits(int x) {
+  //题目：求值“一个数用补码表示最少需要几位？”
+  //原理：对于正数，从高位到低位，找第一个位是1的（比如是n），再加上符号位，所以最少需要n+1位
+  //对于负数，从高位到低位，找第一个位是0的（比如是n），再加上符号位，所以最少是n位
+  //通俗来讲：
+  //如果是一个正数，则需要找到它最高的一位（假设是n）是1的，再加上符号位，结果为n+1；
+  //如果是一个负数，则需要知道其最高的一位是0的（例如4位的1101和三位的101补码表示的是一个值：-3，最少需要3位来表示）。
+  int b16,b8,b4,b2,b1,b0; //表示0~15,16~23,24~27,28~29，30,31的位置处是否含有1，如有，则对其赋值需要的位数
+  int sign=x&gt;&gt;31; //取符号位
+  x=(sign&amp;~x)|(~sign&amp;x); //如x为正数则不变，x为负数则取反，这里是为了统一正负数，我们之后只用找到含有1的位置即可
 
-//@notice:同setbuf，但可指定缓冲区大小
-void setbuffer(FILE *stream, char *buf, size_t size);</code></pre>
-<p>将buffer指定为NULL，关闭标准输出缓冲。</p>
+  b16=!!(x&gt;&gt;16)&lt;&lt;4;//先看低16位是否含有1，若有则表示至少需要16位，所以给b16赋值为16 (1&lt;&lt;4=16，秒啊)
+  x=x &gt;&gt; b16;//若低16位有1，则原数右移16位，因为上一句已经确定是否至少需要16位(针对0~15)，若没有1，则b16=0，原数就不需要位移，本句也就无视掉就好了，继续往下执行
+
+  b8=!!(x&gt;&gt;8)&lt;&lt;3; //看剩余位的高8位是否含有1，若有则表示至少还需要8位，给b8赋为8 (1&lt;&lt;3=8)
+  x=x&gt;&gt;b8; //同理
+
+  b4=!!(x&gt;&gt;4)&lt;&lt;2;
+  x=x&gt;&gt;b4;
+
+  b2=!!(x&gt;&gt;2)&lt;&lt;1;
+  x=x&gt;&gt;b2;
+
+  b1=!!(x&gt;&gt;1);
+  x=x&gt;&gt;b1;
+
+  b0=x;
+
+  return b16+b8+b4+b2+b1+b0+1;   //最后加上符号位
+  //不明觉厉呜呜
+}</code></pre>
+<h3 id="浮点数实验："><a href="#浮点数实验：" class="headerlink" title="浮点数实验："></a>浮点数实验：</h3><p>data lab 之后还有三个实验是关于浮点数的。我好像当时看南大csapp课程的时候对这一块知识好像没怎么看，规格数什么的也都忘了是啥了。只记得s，m，e这几个哈哈哈。</p>
+<h2 id="群直播："><a href="#群直播：" class="headerlink" title="群直播："></a>群直播：</h2><p>晚上8点半师傅们在群里直播讲lab题目，题目都是秒做的，啊，有手就行。羡慕。</p>
+<h2 id="csapp-lab-–-Bomb-lab："><a href="#csapp-lab-–-Bomb-lab：" class="headerlink" title="csapp lab – Bomb lab："></a>csapp lab – Bomb lab：</h2><p>然后今晚开始做下一个lab，即拆炸弹hiahiahia</p>
+<p>我直接粘贴我印象笔记里做的笔记好了。</p>
+<p>点击 self-study Handout下载</p>
+<p>发现主函数里有6个phase(炸弹函数)，每一个都需要输入一行字符串，然后调用phase_n()函数进行判断是否引爆炸弹，任何一个字符串不正确都会引爆炸弹。而我们需要通过程序反汇编以及逆向工程来确定正确的6个字符串</p>
+<p>该实验主要教会理解汇编语言以及如何使用调试器：gdb和objdump。</p>
+<p>objdump指令：<a href="https://man.linuxde.net/objdump" target="_blank" rel="noopener">https://man.linuxde.net/objdump</a></p>
+<p>gdb简易手册：<a href="http://csapp.cs.cmu.edu/3e/docs/gdbnotes-x86-64.pdf" target="_blank" rel="noopener">http://csapp.cs.cmu.edu/3e/docs/gdbnotes-x86-64.pdf</a></p>
+<p>首先 进行反汇编objdump -d bomb &gt; bomb,asm </p>
+<p>然后用tmux开分屏，</p>
 <blockquote>
-<p>setbuf(stdout,NULL)</p>
+<p>小插曲，关于新知识：tmux分屏：</p>
+<p>安装tmux。然后先输入tmux运行，再：</p>
+<p>左右分屏： ctrl+b 再按 %</p>
+<p>上下分屏： ctrl+b 再按 “</p>
+<p>切换屏幕：ctrl+b 再按 方向键</p>
+<p>切换光标：ctrl+b 再按 o</p>
+<p>关闭一个终端：ctrl+b 再按 x</p>
+<p>上下、左右分屏切换 ：ctrl+b 再按 空格</p>
 </blockquote>
-<p>指定新的缓冲区：</p>
-<pre><code class="c">static char newBuffer[BUFSIZ];//至少是BUFSIZ（定义在stdio.h），否则存在缓冲溢出可能
-setbuf(stdout,(char*)&amp;newBuffer);
-
-//或者指定缓冲区大小
-static char newBuffer[512];
-setbuffer(stdout,(char*)&amp;newBuffer,512);</code></pre>
-<h3 id="（2）更改缓冲模式："><a href="#（2）更改缓冲模式：" class="headerlink" title="（2）更改缓冲模式："></a>（2）更改缓冲模式：</h3><p>更改缓冲模式，可使用函数setvbuf()。</p>
-<pre><code class="c">//@header:stdio.h
-//@brief:更改缓冲模式并设置缓冲区
-//@param:stream:文件指针；buf缓冲区地址；type：缓冲区模式；size：缓冲区大小
-//@ret:0成功，非0失败
-int setvbuf(FILE *stream, char *buf, int type, unsigned size);</code></pre>
-<p>例如，将流缓冲区设置为行缓冲，调用setvbuf()时，缓冲区地址设为NULL，缓冲区大小设为0。注意，前提是存在缓冲区。</p>
-<pre><code class="c">setvbuf(stream,NULL,_IOLBF,0);  //将缓冲改为行缓冲
-
-//上面的代码等价于
-setlinebuf(stream);             //for Linux</code></pre>
-<p>如果调用setvbuf指定了缓冲区size大于0，缓冲区buf为NULL，则交由setvbuf进行malloc申请缓冲区。</p>
-<pre><code class="c">//间接申请1024字节全缓冲区
-setvbuf(stream,NULL,_IOFBF,1024);</code></pre>
+<p>ok，回到题目上来：</p>
+<p>先是 objdump -d bomb &gt; bomb.asm  反汇编并保存为asm文件（这个不重要）</p>
+<p>objdump -t bomb 查看符号表</p>
+<p>并且：objdump -t bomb |grep “bomb” 查看包含关键字bomb的行：</p>
+<p>注意到：000000000040143a g   F .text  0000000000000022       explode_bomb  说明就是由它引爆的炸弹</p>
+<p>然后objdump -d bomb 查看反汇编：</p>
+<p>发现是 AT&amp;T格式的，然而我不习惯，其实也还好啦。</p>
+<p>main主函数没什么好看的。</p>
+<p>直接看到 <phase_1>处：看到 mov $0x402400,%esi</p>
+<p>把 <code>0x402400</code> 赋给 esi后，然后就call strings_not_equal 函数 进行比较。</p>
+<p>所以猜测0x402400 地址存放着正确的字符串。</p>
+<p>所以gdb调试bomb，把断点打在call 比较函数处。 b *0x400ee9</p>
+<p>然后r，再截断，查看0x402400的内容： x/20xg 0x402400</p>
+<p>果然发现有一大堆类似ascall字符串的东西。但我们不可能手动去把这些Hex转换为字符串。</p>
+<p>我们直接： p (char*)(0x402400)</p>
+<p>得到：</p>
+<blockquote>
+<p>gdb-peda$ p (char*)(0x402400)</p>
+<p>$5 = 0x402400 “Border relations with Canada have never been better.”</p>
+</blockquote>
+<p>程序就能直接把字符串打印出来了。这串字符串就是phase1部分的答案。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>距离本周结束还有两天时间，硬性指标是做完全部的lab实验。只能跟着网上的实验代码来做了。</p>
+<p>然而关于南大的csapp教程，我看本周内根本来不及刷。只好以后慢慢补咯。。。。。。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
