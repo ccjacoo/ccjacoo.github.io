@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>gdb调试总结 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" gdb ">
-  <meta name="description" content="gdb调试总结 | sixpar&#39;s blog">
+  <title>天问计划week11-day5 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week11-day5 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="学习：组相连映射：把主存块映射到cache固定组的任一行。 比如说cache有16行，然后2行为一组，所以就有8组。所以取模的时候模 8 即可。 主存地址有20位，第一部分8位是标记，第二部分3位是组号，第三部分的9位是块内地址。 举例，如何对0120CH单元进行访问？得到 00000001 001 000001100 ，所以就是第1组中的第001块（即第9块， 9 mod 8&#x3D;1）中的第12个单">
 <meta property="og:type" content="article">
@@ -749,9 +749,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-gdb调试总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week11-day5" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">gdb调试总结</h1>
+        <h1 class="article-title">天问计划week11-day5</h1>
     
     <div class="article-meta">
         
@@ -761,7 +761,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -769,19 +769,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">gdb</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-04 13:10:54'>2020-07-03 07:10</time>
+            Created At : <time class="date" title='Updated At: 2020-07-31 22:23:34'>2020-07-31 08:41</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.3k</span>
+        <span>Count:4.2k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -811,7 +811,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb下不同插件"><span class="toc-text">gdb下不同插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试程序"><span class="toc-text">如何调试程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何调试exp"><span class="toc-text">如何调试exp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试指令总结"><span class="toc-text">调试指令总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gdb-peda下："><span class="toc-text">gdb-peda下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pwndbg下："><span class="toc-text">pwndbg下：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验："><span class="toc-text">经验：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最后"><span class="toc-text">写在最后</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cache-lab："><span class="toc-text">cache lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PartA："><span class="toc-text">1.PartA：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PartB："><span class="toc-text">2.PartB：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell-lab："><span class="toc-text">shell lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-eval函数"><span class="toc-text">1.eval函数</span></a></li></ol></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -827,126 +827,446 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="gdb下不同插件"><a href="#gdb下不同插件" class="headerlink" title="gdb下不同插件"></a>gdb下不同插件</h2><p>包含 pwndbg 、peda、gef，它们的功能各不相同，所以需要来回切换。<br>安装过程看这篇文章</p>
+        <h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><p>组相连映射：把主存块映射到cache固定组的任一行。</p>
+<p>比如说cache有16行，然后2行为一组，所以就有8组。所以取模的时候模 8 即可。</p>
+<p>主存地址有20位，第一部分8位是标记，第二部分3位是组号，第三部分的9位是块内地址。</p>
+<p>举例，如何对0120CH单元进行访问？得到 00000001 001 000001100 ，所以就是第1组中的第001块（即第9块， 9 mod 8=1）中的第12个单元，所以映射到第一组。</p>
+<p>几个概念：</p>
+<p>Hit Rate(命中率)：在cache中的概率</p>
+<p>Hit Time（命中时间）：在cache中的访问时间 （判断时间+访问时间）</p>
+<p>Miss Rate（缺失率）： 1-（Hit Rate）</p>
+<p>Miss Penalty（缺失损失）：访问一个主存块所花时间</p>
+<p>取数据过程：根据主存地址的index索引找到cache中的对应行，然后将tag和对应行的tag进行比对，然后再和V进行与操作。</p>
+<p>淘汰策略问题：（替换算法）</p>
+<p>1.先进先出 FIFO  ，命中率不随着组的增大(几行一组)而提高。</p>
+<p>2.最近最少用 LRU  （这个更好），算是一种栈算法，最常用的在栈顶，最少用的在栈底，它的命中率随着组的增大而提高。具体实现时，给每个cache行设定一个计数器，根据计数值来记录这些主存块的使用情况，这个计数值称为LRU位。每组4行时，计数器有2位，计数值越小则说明越常用。命中时，被访问行的计数器置0，比其低的计数值都+1，其余不变。未命中且该组未满时，新行计数值置0，其余全+1 。未命中且该组已满时，把计数值为(行数-1)的那一行的主存块淘汰掉，新行计数值置0，其余+1 。</p>
+<p>3.最不经常用 LFU</p>
+<p>4.随机替换 Random</p>
+<p>写策略（cache与主存内容的一致性问题）：</p>
+<p>写操作有两种情况：写命中（Hit），要写的单元已经在cache中；另外就是 写不命中（Miss） 了。</p>
+<p>写命中有两种处理方式：</p>
+<ol>
+<li><p>Write Through：写穿透，直写。同时写cache和主存单元。缺点就是极其的慢！ 解决方法就是使用写缓冲（Write Buffer），当CPU改写cache中数据后会再另外写write buffer写缓冲（也是很快的事），写完后CPU就可以干其他事情了，随后由 Memory Controller 来根据写缓冲，并行地把cache中的值更新到主存单元里，这部分工作是不需要CPU操心的。如果是连续写指令的话，write buffer也是会饱和的（毕竟一般只有4个字大小），容易阻塞。如何解决写缓冲饱和？加一个二级cache</p>
+</li>
+<li><p>Write Back （一次性回写）：写的时候只修改cache中的内容，而不更新主存单元，只有缺失时才一次性写回。而写操作过程中一般都是锁死主存单元，不让其他设备访问主存单元的数据（因为可能是旧数据了）。而cache中每行有一个标志位（修改位）叫做“dirty-bit”，又称为“脏位”，当这一行被修改过了，则做个标记，等被替换出去后才根据标志位然后修改主存单元内容。</p>
+</li>
+</ol>
+<p>写不命中有两种处理方式：</p>
+<ol>
+<li>写分配，把主存块装入cache，然后更新相应单元。这个办法试图利用空间局部性，但每次都要从主存中读一个块。</li>
+<li>非写分配，反正在cache没有该数据，所以直接修改主存单元啊，不把主存块装入到cache。</li>
+</ol>
+<p>关于降低缺失率（Miss Rate），cache的大小当然是越大越好（成本也越高），但是Block的size却要适中，一般64字节最好。</p>
+<p>现在的cache也是有多级的，分为一级cache（Level1），二级cache…….</p>
+<p>cache分立：即把数据和指令分开存放在各自的数据和指令cache中。所以就可以做到同时取数据和取指令。一般L1 cache都是分立cache。且L1 cache的命中时间比命中率更重要。</p>
+<p>联合：数据和指令都放在一个cache中。一般L2 cache都是联合cache，且L2 cache的命中率比命中时间更重要。</p>
+<h2 id="cache-lab："><a href="#cache-lab：" class="headerlink" title="cache lab："></a>cache lab：</h2><p>首先来认识一下文件：</p>
+<p>traces文件夹中的5个文件都是用于测试csim.c的输入文件。各个文件包含不同指令，用于测试 hits,misses,evictions。</p>
+<p>这些文件中指令的格式如下（举例）：</p>
+<pre><code class="c"> I 0400d7d4,8
+ M 0421c7f0,4
+ L 04f6b868,8
+ S 7ff0005c8,8</code></pre>
+<p>可以看出指令的格式为：[空格] 操作 地址，大小</p>
+<p>每行代表一个或两个内存访问。</p>
+<p>操作字段表示存储器的访问类型：</p>
 <blockquote>
-<p><a href="https://blog.csdn.net/kevin66654/article/details/86773517" target="_blank" rel="noopener">https://blog.csdn.net/kevin66654/article/details/86773517</a></p>
+<p>I   表示指令加载</p>
+<p>L   表示数据加载，只访问cache一次</p>
+<p>S   表示数据存储，只访问cache一次</p>
+<p>M   表示数据修改，意味着先读再写，要访问cache两次</p>
 </blockquote>
-<p>如果后续需要对堆进行调试分析，需要另外从下面地址安装pwndbg。</p>
+<p>地址字段指定一个32位的十六进制存储器地址。</p>
+<p>大小字段则表示操作访问的字节数。</p>
+<p>实验开始前还需要了解什么是 <code>getopt()</code>函数，参考文章：<a href="https://www.cnblogs.com/qingergege/p/5914218.html" target="_blank" rel="noopener">https://www.cnblogs.com/qingergege/p/5914218.html</a></p>
+<p>需要了解C的fscanf函数：<a href="https://www.runoob.com/cprogramming/c-function-fscanf.html" target="_blank" rel="noopener">https://www.runoob.com/cprogramming/c-function-fscanf.html</a></p>
+<h3 id="1-PartA："><a href="#1-PartA：" class="headerlink" title="1.PartA："></a>1.PartA：</h3><p>文件夹已经创建好了csim.c文件，我们需要在其里面编程，使用LRU策略，然后模拟cache的运行，然后统计出命中、不命中和逐出的次数。</p>
+<p>csim.c内容如下：</p>
+<pre><code class="c">/*
+ * Harbin Institute of Technology - Qiuhao Li
+ *
+ * Anyone can modify this code and then redistribute it to help others.
+ *
+ * -std=c99
+ */
+
+//头文件
+#include &quot;cachelab.h&quot;
+#include &lt;stdio.h&gt;    /* fopen freopen perror */
+#include &lt;stdint.h&gt;    /* uintN_t */
+#include &lt;unistd.h&gt; /* getopt */
+#include &lt;getopt.h&gt; /* getopt -std=c99 POSIX macros defined in &lt;features.h&gt; prevents &lt;unistd.h&gt; from including &lt;getopt.h&gt;*/
+#include &lt;stdlib.h&gt; /* atol exit*/
+#include &lt;errno.h&gt;  /* errno */
+
+//宏定义
+#define false 0
+#define true 1
+
+typedef struct
+{
+    _Bool valid;    /* flag whether this line/block is valid, zero at first*/
+    uint64_t tag;   /* identifier to choose line/block */
+    uint64_t time_counter;  /* LRU strategy counter, we should evict the block who has the min time_counter, zero at first */
+    /* We don&#39;t need to simulate the block, since we just requested to count hit/miss/eviction */
+    /*time_counter初始化的时候都是0，其值越大代表这个line最近刚刚被写入——我们不应该替换它——所以valid为0的line的time_counter一定也是0（最小值）,
+    因为他们连使用都没有被使用过，即我们一定会先替换valid为0的line*/
+}line;
+typedef line *entry_of_lines;
+typedef entry_of_lines *entry_of_sets;
+
+/*
+Data structure:
+//首先根据S（set的数目）申请一个数组，该数组元素是lines的入口的指针。接着循环S次每次申请E个line数据结构，并让刚刚的指针数组的元素指向它们
+
+                                                             +-----+
+                                                +-----+   +--&gt;Valid|
+                                           +----&gt;line0+---+  +-----+
+                                           |    +-----+   |
+                         +---------------+ |              |  +---+
+                         | set0          | |    +-----+   +--&gt;Tag|
+                      +--&gt; entry_of_lines+------&gt;line1|   |  +---+
+                      |  +---------------+ |    +-----+   |
+                      |                    |              |  +-------+
+                      |  +---------------+ |    +-----+   +--&gt;Counter|
+                      |  | set1          | +----&gt;line2|      +-------+
+                      +--&gt; entry_of_lines| |    +-----+
++--------------+      |  +---------------+ |
+| cache0       +------+                    |    +-----+
+| entry_of_sets|      |  +---------------+ +----&gt;lineX|
++--------------+      |  | set2          |      +-----+
+                      +--&gt; entry_of_lines|
+                      |  +---------------+
+                      |
+                      |  +---------------+
+                      |  | setX          |
+                      +--&gt; entry_of_lines|
+                         +---------------+
+
+
+*/
+
+//将结果设计成结构体，方便函数返回
+typedef struct
+{
+    int hit;
+    int miss;
+    int eviction;
+}result;
+
+//声明函数
+entry_of_sets InitializeCache(uint64_t S, uint64_t E);
+
+result HitMissEviction(entry_of_lines search_line, result Result, uint64_t E, uint64_t tag, _Bool verbose);
+
+result ReadAndTest(FILE *tracefile, entry_of_sets cache, uint64_t S, uint64_t E, uint64_t s, uint64_t b, _Bool verbose);
+
+void RealseMemory(entry_of_sets cache, uint64_t S, uint64_t E);
+
+
+
+int main(int argc, char * const argv[])
+{
+    result Result = {0, 0, 0};  //定义返回值
+    const char *help_message = &quot;Usage: \&quot;Your complied program\&quot; [-hv] -s &lt;s&gt; -E &lt;E&gt; -b &lt;b&gt; -t &lt;tracefile&gt;\n&quot; \
+                         &quot;&lt;s&gt; &lt;E&gt; &lt;b&gt; should all above zero and below 64.\n&quot; \
+                         &quot;Complied with std=c99\n&quot;;
+                         // 加上&quot;\&quot;后可以换行写
+    const char *command_options = &quot;hvs:E:b:t:&quot;;
+
+    FILE* tracefile = NULL;
+
+    entry_of_sets cache = NULL;
+
+    _Bool verbose = false;    /* flag whether switch to verbose mode, zero for default 可选参数，加上-v后就可以额外打印出一些语句*/
+    uint64_t s = 0;    /* number of sets index&#39;s bits */
+    uint64_t b = 0;    /* number of blocks index&#39;s bits */
+    uint64_t S = 0; /* number of sets 组的个数*/
+    uint64_t E = 0;    /* number of lines 行的个数 */ 
+
+    char ch;    /* command options */
+
+    while((ch = getopt(argc, argv, command_options)) != -1)
+    {
+        switch(ch)
+        {
+            case &#39;h&#39;:
+            {
+                printf(&quot;%s&quot;, help_message);
+                exit(EXIT_SUCCESS);
+            }
+
+            case &#39;v&#39;:
+            {
+                verbose = true;
+                break;
+            }
+
+            case &#39;s&#39;:
+            {
+
+                if (atol(optarg) &lt;= 0)    /* We assume that there are at least two sets */
+                {
+                    printf(&quot;%s&quot;, help_message);
+                    exit(EXIT_FAILURE);
+                }
+                s = atol(optarg);
+                S = 1 &lt;&lt; s;
+                break;
+            }
+
+            case &#39;E&#39;:
+            {
+                if (atol(optarg) &lt;= 0)  //库函数atol()，即把一个字符串转化为一个整数
+                {
+                    printf(&quot;%s&quot;, help_message);
+                    exit(EXIT_FAILURE);
+                }
+                E = atol(optarg);
+                break;
+            }
+
+            case &#39;b&#39;:
+            {
+                if (atol(optarg) &lt;= 0)    /* We assume that there are at least two sets */
+                {
+                    printf(&quot;%s&quot;, help_message);
+                    exit(EXIT_FAILURE);
+                }
+                b = atol(optarg);
+                break;
+            }
+
+            case &#39;t&#39;:
+            {
+                if ((tracefile = fopen(optarg, &quot;r&quot;)) == NULL)
+                {
+                    perror(&quot;Failed to open tracefile&quot;);
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            }
+
+            default:
+            {
+                printf(&quot;%s&quot;, help_message);
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+
+    if (s == 0 || b ==0 || E == 0 || tracefile == NULL)
+    {
+        printf(&quot;%s&quot;, help_message);
+        exit(EXIT_FAILURE);
+    }
+
+    cache = InitializeCache(S, E);  //初始化cache ,此时 S = 1 &lt;&lt; s
+    Result = ReadAndTest(tracefile, cache, S, E, s, b, verbose);  //测试文件
+    RealseMemory(cache, S, E);   /* Don&#39;t forget this in C/C++, and do not double release which causes security problem */
+    //printf(&quot;hits:%d misses:%d evictions:%d\n&quot;, Result.hit, Result.miss, Result.eviction); //释放内存
+    printSummary(Result.hit, Result.miss, Result.eviction); //返回统计数据
+    return 0;
+}
+
+//初始化cache
+entry_of_sets InitializeCache(uint64_t S, uint64_t E)
+{
+    entry_of_sets cache;
+
+    /* use calloc instead of malloc to match the default situation we designed */
+
+    if ((cache = calloc(S, sizeof(entry_of_lines))) == NULL) /* initialize the sets */  //初始化 组
+    {
+        perror(&quot;Failed to calloc entry_of_sets&quot;);
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i &lt; S; ++i)  /* initialize the lines in set */  //初始化 组里的每行
+    {
+        if ((cache[i] = calloc(E, sizeof(line))) == NULL)
+        {
+            perror(&quot;Failed to calloc line in sets&quot;);
+        }
+    }
+
+    return cache;
+}
+
+result HitMissEviction(entry_of_lines search_line, result Result, uint64_t E, uint64_t tag, _Bool verbose)
+{
+    uint64_t oldest_time = UINT64_MAX;
+    uint64_t youngest_time = 0;
+    uint64_t oldest_block = UINT64_MAX;
+    _Bool hit_flag = false;
+
+    for (uint64_t i = 0; i &lt; E; ++ i)
+    {
+        if (search_line[i].tag == tag &amp;&amp; search_line[i].valid) /* tag一致且valid=1 则表示 hit ! */
+        {
+            if (verbose)    printf(&quot;hit\n&quot;);  // 加上-v参数就可以打印出这句话
+            hit_flag = true;  //用来表示是否hit的标志
+            ++Result.hit;
+            ++search_line[i].time_counter; /* update the time counter 被使用了，离淘汰又远了一步 */
+            break;
+        }
+    }
+
+    if (!hit_flag)  /* miss */
+    {
+        if (verbose)    printf(&quot;miss&quot;);
+        ++Result.miss;  //未命中次数+1
+        uint64_t i;
+        for (i = 0; i &lt; E; ++i)    /* search for the oldest modified block (invalid blocks are oldest as we designed) */
+        {
+            if (search_line[i].time_counter &lt; oldest_time)
+            {
+                oldest_time = search_line[i].time_counter;  //更新最少的次数，然后用作下一次比较，还有谁比他更少？！
+                oldest_block = i;  //记录更新使用次数最少的块号
+            }
+            if (search_line[i].time_counter &gt; youngest_time)    /* search for the youngest modified block to update the new block&#39;s time counter */
+            {
+                youngest_time = search_line[i].time_counter; //更新使用最频繁的次数
+            }
+        }
+
+        search_line[oldest_block].time_counter = youngest_time + 1;
+        search_line[oldest_block].tag = tag;
+
+        if (search_line[oldest_block].valid) /* It&#39;s a valid block, ++eviction */
+        {
+            if (verbose)    printf(&quot; and eviction\n&quot;);  //valid=0时终于被驱逐，所以语句打印效果是 “miss and eviction”
+            ++Result.eviction;  //驱逐次数+1
+        }
+        else
+        {
+            if (verbose)    printf(&quot;\n&quot;);  //语句打印效果是 “miss”  ，即只是miss，还没有到驱逐的地步
+            search_line[oldest_block].valid = true;
+        }
+    }
+    return Result;  //返回统计结果
+}
+
+
+result ReadAndTest(FILE *tracefile, entry_of_sets cache, uint64_t S, uint64_t E, uint64_t s, uint64_t b, _Bool verbose)
+{
+    result Result = {0, 0, 0};
+    char ch;
+    uint64_t address;
+    while((fscanf(tracefile, &quot; %c %lx%*[^\n]&quot;, &amp;ch, &amp;address)) == 2)    /* read instruction and address from tracefile and ignore the size */
+                                                                        /* address is represented by hexadecimal, use %lx instead of %lu */
+    {
+        if (ch == &#39;I&#39;)
+        {
+            continue; /* we don&#39;t care about &#39;I&#39; */
+        }
+        else
+        {
+            uint64_t set_index_mask = (1 &lt;&lt; s) - 1;
+            uint64_t set_index = (address &gt;&gt; b) &amp; set_index_mask;
+            uint64_t tag = (address &gt;&gt; b) &gt;&gt; s;
+            entry_of_lines search_line = cache[set_index];
+
+
+            if (ch == &#39;L&#39; || ch == &#39;S&#39;) /* load/store can cause at most one cache miss */
+            {
+                if (verbose)    printf(&quot;%c %lx &quot;, ch, address);
+                Result = HitMissEviction(search_line, Result, E, tag, verbose);
+            }
+
+            else if (ch == &#39;M&#39;) /* data modify (M) is treated as a load followed by a store to the same address.
+                                   Hence, an M operation can result in two cache hits, or a miss and a hit plus an possible eviction. */
+            //M操作指令将两次访问cache
+            {
+                if (verbose)    printf(&quot;%c %lx &quot;, ch, address);
+                Result = HitMissEviction(search_line, Result, E, tag, verbose);  /* load, hit/miss(+eviction) */
+                Result = HitMissEviction(search_line, Result, E, tag, verbose);  /* store, must hit */
+            }
+
+            else    /* ignore other cases */
+            {
+                continue;
+            }
+        }
+    }
+    return Result;
+}
+
+//释放内存
+void RealseMemory(entry_of_sets cache, uint64_t S, uint64_t E)
+{
+    for (uint64_t i = 0; i &lt; S; ++i)
+    {
+        free(cache[i]);
+    }
+    free(cache);
+}
+</code></pre>
+<p>写完C程序后，对其进行编译，然后执行。</p>
 <blockquote>
-<p><a href="https://github.com/scwuaptx/Pwngdb" target="_blank" rel="noopener">https://github.com/scwuaptx/Pwngdb</a></p>
+<p>make clean</p>
+<p>make</p>
+<p>./test-csim</p>
 </blockquote>
-<p>其主要包含有parseheap、heapinfo、chunkinfo 等一些重要的关于heap的指令。</p>
-<h2 id="如何调试程序"><a href="#如何调试程序" class="headerlink" title="如何调试程序"></a>如何调试程序</h2><p>首先得分清：<br>gdb ./filename 指的是静态调试<br>gdb attach filename 指的是动态调试</p>
-<p>比如对名为pwn的程序进行调试：</p>
+<p>测试结果为：</p>
+<pre><code class="c">highk@highk:~/csapp lab/6.cache lab/cachelab-handout$ ./test-csim 
+                        Your simulator     Reference simulator
+Points (s,E,b)    Hits  Misses  Evicts    Hits  Misses  Evicts
+     3 (1,1,1)       9       8       6       9       8       6  traces/yi2.trace
+     3 (4,2,4)       4       5       2       4       5       2  traces/yi.trace
+     3 (2,1,4)       2       3       1       2       3       1  traces/dave.trace
+     3 (2,1,3)     167      71      67     167      71      67  traces/trans.trace
+     3 (2,2,3)     201      37      29     201      37      29  traces/trans.trace
+     3 (2,4,3)     212      26      10     212      26      10  traces/trans.trace
+     3 (5,1,5)     231       7       0     231       7       0  traces/trans.trace
+     6 (5,1,5)  265189   21775   21743  265189   21775   21743  traces/long.trace
+    27
+
+TEST_CSIM_RESULTS=27</code></pre>
+<h3 id="2-PartB："><a href="#2-PartB：" class="headerlink" title="2.PartB："></a>2.PartB：</h3><p>参考文章：<a href="https://www.cnblogs.com/liqiuhao/p/8026100.html?utm_source=debugrun&amp;utm_medium=referral" target="_blank" rel="noopener">https://www.cnblogs.com/liqiuhao/p/8026100.html?utm_source=debugrun&amp;utm_medium=referral</a></p>
+<p>本题目的是优化矩阵转置。</p>
+<p>最简单的转置实现：</p>
+<pre><code class="c">for (int i = 0; i &lt; N; ++i)
+{
+    for (int j = 0; j &lt; M; ++j)
+    {
+        dst[j][i] = src[i][j]
+    }
+}</code></pre>
+<p>冲突不命中：实际上就是在访问同一个块中的两个元素的时候，由于中间访问了其它的块，导致已经加载的块被驱逐，进而第二次访问时不命中。</p>
+<p>基于冲突不命中这个问题，要减少miss数，我们可以一次性访问同一个块中的多个元素，访问完以后便不再需要访问这个块了，从而可以大大地减少冲突不命中的数目。假如是8个元素为一个块，那么前8个元素在同一个块中，我们可以直接将这8个元素取出来，然后这8个元素所在的块便不再需要访问了。</p>
+<p>这种方法貌似称为 <code>blocking</code> ，是一种良好的优化技术。以数据块的形式读取数据，就是<code>尽量将一个block读入完全或者写入完全</code>。完全利用完这个block后丢弃，然后读取下一个block，这样防止block利用得不全面，导致冲突不命中的情况发生。</p>
+<p>我看了后续的讲解，表示，我的智商不够用……</p>
+<h2 id="shell-lab："><a href="#shell-lab：" class="headerlink" title="shell lab："></a>shell lab：</h2><p>实验文档手册：<a href="http://csapp.cs.cmu.edu/3e/shlab.pdf" target="_blank" rel="noopener">http://csapp.cs.cmu.edu/3e/shlab.pdf</a></p>
+<p>把压缩包文件放到linux下，然后 tar xvf shlab-handout.tar 解压缩。</p>
+<p>我们的任务是继续完善 tsh.c 文件，使其模拟一个shell的功能。</p>
+<p>要帮忙实现以下函数：</p>
 <blockquote>
-<ul>
-<li>gdb ./pwn #开启gdb，并且file读取pwn程序</li>
-<li>b main  #对main函数下断点 </li>
-<li>b *0x8048e40  #对某一地址进行下断点</li>
-<li>b *0x56555000+0x655 #也可以基址+偏移的形式</li>
-<li>r #运行程序，在输入某次数据后可以Ctrl+c 截断下来，看此时的堆栈情况。</li>
-<li>start #以汇编的角度运行该程序，汇编代码将呈现在你眼前，另外还有寄存器和栈情况。<br>在指令“start”的基础上：</li>
-<li>n #单步执行不步入直接得结果</li>
-<li>s #单步并步入函数</li>
-<li>c #自动运行到下一个断点处</li>
-<li>got   #查看GOT表</li>
-<li>finish  #结束掉（跳过）当前函数，直接就跳到了该函数的leave ret 处</li>
-<li>q  #结束调试,或是输入detach退出</li>
-</ul>
+<p>• eval: Main routine that parses and interprets the command line. [70 lines]   //解析和解释命令行的主例程</p>
+<p>• builtin cmd: Recognizes and interprets the built-in commands: quit, fg, bg, and jobs. [25 lines] </p>
+<p>• do bgfg: Implements the bg and fg built-in commands. [50 lines] </p>
+<p>• waitfg: Waits for a foreground job to complete. [20 lines] </p>
+<p>• sigchld handler: Catches SIGCHILD signals. 80 lines] </p>
+<p>• sigint handler: Catches SIGINT (ctrl-c) signals. [15 lines] </p>
+<p>• sigtstp handler: Catches SIGTSTP (ctrl-z) signals. [15 lines]</p>
 </blockquote>
-<h2 id="如何调试exp"><a href="#如何调试exp" class="headerlink" title="如何调试exp"></a>如何调试exp</h2><p>别人也许是用的gdb.attach()自动依附，或者是 raw_input()<br>但我个人习惯做法是在exp中想要断点的语句前 加一个 <strong>pause()</strong> ，然后gdb attach pid</p>
-<p>具体做法是：开两个终端（按shift+ctrl+t 在一个终端的基础上同界面内创建新的终端 ，而shift+ctrl+n 则是在新界面新建终端），假如exp全称为 exp.py，第一个终端输入 gdb exp.py ，然后会自动停在pause()语句处，得到调试程序的PID假如是6845，然后在第二个终端里输入 gdb attach 6845 便可。</p>
-<p>如果有多条pause语句，那么如何执行下一个pause语句？<br>第二个终端里先输入c（即continue）等待，然后Alt+1切换至第一个终端，敲一下回车，会显示停在第二个pause处，然后切换回第二个终端，按ctrl+c截断即可继续调试。</p>
-<p>个人经常使用的exp快捷键：</p>
+<p>​        关于shell：打印出提示符，然后等待来自stdlin的输入，根据输入执行特定地操作，这样就产生了一种错觉，似乎输入的字符（命令行）控制了程序的执行。</p>
+<p>​        命令行是一串ASCII字符，由空格分隔。字符串的第一个参数（argv[0]）是一个可执行程序，或者是shell的内置命令。其余部分是命令的参数。</p>
+<p>​        如果第一个参数是内置命令，shell会立即在当前进程中执行。否则shell就会fork新建一个子进程，然后在子进程中执行程序。新建的子进程又叫做作业。通常，作业可以由Unix管道连接的多个子进程组成。</p>
+<p>​        如果命令行以＆符号结尾，那么作业将在后台运行，这意味着在打印提示符并等待下一个命令之前，shell不会等待作业终止。 否则，作业在前台运行，这意味着shell在作业终止前不会执行下一条命令行。 因此，在任何时候，最多可以在一个作业中运行在前台。 但是，任意数量的作业可以在后台运行。</p>
+<p>​    Unix shell支持作业控制的概念，允许用户在前台和后台之间来回移动作业，并更改进程的状态（运行，停止或终止）。在作业运行时，键入ctrl-c会将SIGINT信号传递到前台作业中的每个进程。SIGINT的默认动作是终止进程。类似地，键入ctrl-z会导致SIGTSTP信号传递给所有前台进程。 SIGTSTP的默认操作是停止进程，直到它被SIGCONT信号唤醒为止。</p>
+<p>Unix shell还提供支持作业控制的各种内置命令，例如：</p>
 <blockquote>
-<p>把选中区域全部注释掉： ctrl + /<br>令选中区域缩进： tab<br>令选中区域顶格：shift+tab</p>
+<p>jobs：列出运行和停止的后台作业<br>bg <job>：将停止的后台作业更改为正在运行的后台作业<br>fg <job>：将停止或运行的后台作业更改为在前台运行<br>kill <job>：终止作业</p>
 </blockquote>
-<p>等等，要想 gdb attach pid 得注意：<br>ubuntu16.04 默认不允许普通用户gdb attach PID调试进程………我原先都是用root权限所以没遇到过这情况。<br>解决方法：<br>sudo vim /etc/sysctl.d/10-ptrace.conf<br>最后一行改为   kernel.yama.ptrace_scope = 0<br>去除限制！</p>
-<h2 id="调试指令总结"><a href="#调试指令总结" class="headerlink" title="调试指令总结"></a>调试指令总结</h2><p>详细的gdb调试指令请看：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/weixin_30697239/article/details/101103647" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30697239/article/details/101103647</a></p>
-</blockquote>
-<p>以下列出我个人使用频繁的指令</p>
-<h3 id="gdb-peda下："><a href="#gdb-peda下：" class="headerlink" title="gdb-peda下："></a>gdb-peda下：</h3><p>1.查看某一个地址(比如说0xf7e522b0)的详细信息，start，end，offset，位于哪个区域里</p>
-<blockquote>
-<p>xinfo 0xf7e522b0</p>
-</blockquote>
-<p>2.查看虚拟映射内存，可以找到libc程序加载的基址，还有heap等其他地址信息</p>
-<blockquote>
-<p>vmmap </p>
-</blockquote>
-<p>3.查看地址对应内存内容</p>
-<blockquote>
-<p>x/10gx 0x80485a6   </p>
-</blockquote>
-<p>4.查看地址对应的汇编代码</p>
-<blockquote>
-<p>x/20i 0x80484b6     </p>
-</blockquote>
-<p>5.看自栈顶esp开始向下20的栈的内容</p>
-<blockquote>
-<p>stack 20   </p>
-</blockquote>
-<p>6.查看寄存器ebp-0x20的内容</p>
-<blockquote>
-<p>x/w $ebp-0x20   </p>
-</blockquote>
-<p>7.查看内容</p>
-<blockquote>
-<p>telescope 0x8049700    </p>
-</blockquote>
-<p>8.计算我们输入的格式化字符串的地址与这个地址之间的偏移</p>
-<blockquote>
-<p>fmtarg 0x7fffffffdda8     </p>
-</blockquote>
-<p>9.查看堆分布</p>
-<blockquote>
-<p>parseheap    </p>
-</blockquote>
-<p>10.查看bins情况</p>
-<blockquote>
-<p>heapinfoall       </p>
-</blockquote>
-<h3 id="pwndbg下："><a href="#pwndbg下：" class="headerlink" title="pwndbg下："></a>pwndbg下：</h3><p>1.system函数在文件中的地址，且当程序没有开启ASLR时，地址不变</p>
-<blockquote>
-<p>print system</p>
-</blockquote>
-<p>2.显示所有bin链表</p>
-<blockquote>
-<p>bins</p>
-</blockquote>
-<p>3.显示每个堆的数据结构</p>
-<blockquote>
-<p>heap</p>
-</blockquote>
-<p>4.查看plt内部函数表</p>
-<blockquote>
-<p>plt</p>
-</blockquote>
-<p>5.查看got全局函数表</p>
-<blockquote>
-<p>got</p>
-</blockquote>
-<p>6.查看寄存器信息</p>
-<blockquote>
-<p>regs</p>
-</blockquote>
-<p>7.查看stack栈</p>
-<blockquote>
-<p>stack</p>
-</blockquote>
-<p>8.打印包含返回地址的栈地址</p>
-<blockquote>
-<p>retaddr</p>
-</blockquote>
-<p>9.查看某地址的内存，左边是Hex，右边框是字符串</p>
-<blockquote>
-<p>hexdump 0x7fffd6117fee </p>
-</blockquote>
-<p>个人感觉pwndbg用起来还是挺舒服的，但我平时常用的还是gdb-peda</p>
-<h2 id="经验："><a href="#经验：" class="headerlink" title="经验："></a>经验：</h2><p>1.查找输入数据的去向<br>做一道题目时得到的启发：题目要求输入一串字符串，比如我们输入’AAABBBCCC’后ctrl+c断下来之后，<br>使用 “find AAABBBCCC”   就可以找得到字符串在内存中所储存的位置啦！</p>
-<p>2.如何应对PIE 地址随机化?<br>gdb ./pwn 打开gdb调试 ， 然后 r  加载运行程序 ， 然后在另开一个终端输入 “ps -ef |grep pwn”    得到pwn程序的PID ，然后 “cat /proc/pid/maps”  查看内存信息，得到基址，一般是第一行的start地址，那么实际地址 = 基址+IDA的相对偏移。然后再在第一个终端正在运行的程序里下断点，进行后续操作，比如输入数据后ctrl+c断下来查看内存。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>目前只总结出这么多，后续若有新知识，一定会更新的。<br>恰早饭去咯~</p>
+<h4 id="1-eval函数"><a href="#1-eval函数" class="headerlink" title="1.eval函数"></a>1.eval函数</h4><p>第一个实验是要让我们实现eval函数</p>
+<p>思路和步骤：</p>
+<p>step 1.初始化各变量以及设置信号阻塞合集；</p>
+<p>step 2.解析命令行，得到是否是后台命令，置位state（前后台标志）</p>
+<p>step 3.判断是否是内置命令，如果是内置则like执行，否则就fork子进程，然后子进程调用执行具体的命令文件然后exit，父进程则执行step4。</p>
+<p>step4. 将子进程job加入到 job list 中</p>
+<p>step5 判断是否是bg，fg调用waifg函数等待前台运行完成，bg打印消息。</p>
+<p>明天搞吧。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
