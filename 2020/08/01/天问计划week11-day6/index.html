@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>file_descriptor文件描述符 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" fd ">
-  <meta name="description" content="file_descriptor文件描述符 | sixpar&#39;s blog">
+  <title>天问计划week11-day6 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week11-day6 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -764,9 +764,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-file-descriptor文件描述符" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week11-day6" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">file_descriptor文件描述符</h1>
+        <h1 class="article-title">天问计划week11-day6</h1>
     
     <div class="article-meta">
         
@@ -776,7 +776,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="学习">学习</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -784,19 +784,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">fd</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-07 13:34:24'>2020-07-07 13:29</time>
+            Created At : <time class="date" title='Updated At: 2020-08-01 22:54:32'>2020-08-01 07:55</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:88</span>
+        <span>Count:3.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -826,7 +826,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#shell-lab："><span class="toc-text">shell lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-eval函数："><span class="toc-text">1.eval函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-builtin-cmd函数："><span class="toc-text">2.builtin_cmd函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-do-bgfg函数："><span class="toc-text">3. do_bgfg函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-waitfg函数："><span class="toc-text">4. waitfg函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-parseline函数："><span class="toc-text">5.parseline函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-信号处理程序函数："><span class="toc-text">6.信号处理程序函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-测试阶段："><span class="toc-text">7.测试阶段：</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -842,20 +842,409 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>推荐阅读！师傅整理得清楚，赞一个。</p>
-</blockquote>
-<p>1.第一篇介绍了 终端tty 以及 shell 的概念。</p>
+        <p>中间还有个 performance lab，我就省略了，看样子是说对图像处理中的 Rotate 和 Smooth 操作函数进行优化。呜呜优化啥的我真的是优化不来。</p>
+<p>接着就来讲昨天没做完的shell lab吧。</p>
+<h2 id="shell-lab："><a href="#shell-lab：" class="headerlink" title="shell lab："></a>shell lab：</h2><h3 id="1-eval函数："><a href="#1-eval函数：" class="headerlink" title="1.eval函数："></a>1.eval函数：</h3><p>我参考的是Kiprey师傅的。</p>
+<p>可以看到 tsh.c文件里有这个函数的留白，等着我们去填空。</p>
+<pre><code class="c">void eval(char *cmdline) 
+{
+    return;
+}</code></pre>
+<p>eval函数的过程：初始化各变量以及设置<code>信号阻塞</code>合集。解析命令行，得到是否是后台命令，置位state（前后台标志）。判断是否是内置命令，若是则立即执行，否则就是<code>fork子进程</code>，子进程调用执行具体的命令文件，然后exit，而父进程则同步地将子进程的 job 加入到 job list 中。最后判断是否是bg,fg调用waifg函数等待前台运行完成，bg打印消息即可。</p>
+<p>该过程中需要仔细考虑显式阻塞的安排和设计，什么地方需要阻塞哪些信号。</p>
+<p>原则：</p>
+<ol>
+<li>在访问全局变量（jobs）时必须阻塞所有信号，包括调用文件本身已经存在的一些函数，由于这些函数基本都是for循环遍历完成功能的，所以务必要保证函数执行中不能被中断。</li>
+<li>在一些函数或者指令有必须的前后执行顺序时，请阻塞，保证在前一个函数调用完成后才进行下一个（比如必须先addjob，再deletejob）</li>
+</ol>
+<p>eval函数的实现：</p>
+<pre><code class="c">/*
+* eval - Evaluate the command line that the user has just typed in
+*
+* If the user has requested a built-in command (quit, jobs, bg or fg)
+* then execute it immediately. Otherwise, fork a child process and
+* run the job in the context of the child. If the job is running in
+* the foreground, wait for it to terminate and then return.  Note:
+* each child process must have a unique process group ID so that our
+* background children don&#39;t receive SIGINT (SIGTSTP) from the kernel
+* when we type ctrl-c (ctrl-z) at the keyboard.  
+*/
+
+void eval(char *cmdline)
+{
+    char* argv[MAXARGS];
+    int state = UNDEF;
+    sigset_t set;
+    pid_t pid;
+    // 处理输入的数据
+    if(parseline(cmdline, argv) == 1)
+        state = BG;
+    else
+        state = FG;
+    if(argv[0] == NULL)
+        return;
+    // 如果不是内置命令
+    if(!builtin_cmd(argv))
+    {
+        if(sigemptyset(&amp;set) &lt; 0)
+            unix_error(&quot;sigemptyset error&quot;);
+        if(sigaddset(&amp;set, SIGINT) &lt; 0 || sigaddset(&amp;set, SIGTSTP) &lt; 0 || sigaddset(&amp;set, SIGCHLD) &lt; 0)
+            unix_error(&quot;sigaddset error&quot;);
+        // 在fork前，将SIGCHLD信号阻塞，防止并发错误——_竞争_ 的发生
+        if(sigprocmask(SIG_BLOCK, &amp;set, NULL) &lt; 0)
+            unix_error(&quot;sigprocmask error&quot;);
+
+        if((pid = fork()) &lt; 0)
+            unix_error(&quot;fork error&quot;);
+        else if(pid == 0)
+        {
+            /*  把新建立的进程添加到新的进程组:
+                当从bash运行tsh时，tsh在bash前台进程组中运行。
+                如果tsh随后创建了一个子进程，默认情况下，该子进程也将是bash前台进程组的成员。
+                由于输入ctrl-c将向bash前台组中的每个进程发送一个SIGINT，
+                因此输入ctrl-c将向tsh以及tsh创建的每个进程发送一个SIGINT，这显然是不正确的。
+                这里有一个解决方案:在fork之后，但在execve之前，子进程应该调用setpgid(0,0)，
+                这将把子进程放入一个新的进程组中，该进程组的ID与子进程的PID相同。
+                这确保bash前台进程组中只有一个进程，即tsh进程。
+                当您键入ctrl-c时，tsh应该捕获结果SIGINT，然后将其转发到适当的前台作业
+            */
+        // 子进程的控制流开始
+            if(sigprocmask(SIG_UNBLOCK, &amp;set, NULL) &lt; 0)
+                unix_error(&quot;sigprocmask error&quot;);
+            if(setpgid(0, 0) &lt; 0)
+                unix_error(&quot;setpgid error&quot;);
+            if(execve(argv[0], argv, environ) &lt; 0){
+                printf(&quot;%s: command not found\n&quot;, argv[0]);
+                exit(0);
+            }
+        }
+        // 将当前进程添加进job中，无论是前台进程还是后台进程
+        addjob(jobs, pid, state, cmdline);
+        // 恢复受阻塞的信号 SIGINT SIGTSTP SIGCHLD
+        if(sigprocmask(SIG_UNBLOCK, &amp;set, NULL) &lt; 0)
+            unix_error(&quot;sigprocmask error&quot;);
+
+        // 判断子进程类型并做处理
+        if(state == FG)
+            waitfg(pid);
+        else
+            printf(&quot;[%d] (%d) %s&quot;, pid2jid(pid), pid, cmdline);
+    }
+    return;
+}</code></pre>
+<p>补充知识：</p>
+<p>sigprocmask函数：<a href="https://blog.csdn.net/shaoliang_ge/article/details/57984123" target="_blank" rel="noopener">https://blog.csdn.net/shaoliang_ge/article/details/57984123</a></p>
+<p>有时候不希望在接收到新信号后立即停止当前正在执行的任务反而去处理新信号（这样的话那可能一样任务都完成不了），但同时也不想忽略该新信号，所以就会需要延迟一段时间，等处理好手头的任务后再去调用新信号然后执行，这就是<code>阻断信号</code>的原理。</p>
+<p>进程可以选择阻塞（Block）某个信号。被阻塞的信号产生时将保持在未决（Pending）状态，直到进程解除对此信号的阻塞，才执行递达（Delivery）的动作。注意，阻塞和忽略是不同，只要信号被阻塞就不会递达，而忽略是在递达之后可选的一种处理动作。</p>
+<p>要用这个函数需要 #include &lt;signal.h&gt;，tsh.c文件自己已经加上了。</p>
+<p>sigprocmask函数的用法： 可以检测或更改其信号屏蔽字</p>
 <blockquote>
-<p><a href="https://m4x.fun/post/play-with-file-descriptor-1/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-1/</a></p>
+<p>int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);</p>
 </blockquote>
-<p>2.第二篇介绍了 file descriptor （简称fd）文件描述符。</p>
+<p>参数how用于指定信号修改的方式，可以有如下三种取值：</p>
 <blockquote>
-<p><a href="https://m4x.fun/post/play-with-file-descriptor-2/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-2/</a></p>
+<p>SIG_BLOCK//将set所指向的信号集中包含的信号加到当前的信号掩码中。即信号掩码和set信号集进行或操作。</p>
+<p>SIG_UNBLOCK//将set所指向的信号集中包含的信号从当前的信号掩码中删除。即信号掩码和set进行与操作。</p>
+<p>SIG_SETMASK //将set的值设定为新的进程信号掩码。即set对信号掩码进行了赋值操作。</p>
 </blockquote>
-<p>3.第三篇讲的是 与 fd 有关的题目。</p>
+<p>set：为指向信号集的指针，在此专指新设的信号集，如果仅想读取现在的屏蔽值，可将其置为NULL。若set是一个非空指针，则参数how指示如何修改当前信号屏蔽字。</p>
+<p>oldset：也是指向信号集的指针，在此存放原来的信号集。可用来检测信号掩码中存在什么信号。若oldset是非空指针，那么进程的当前信号屏蔽字通过oldset返回</p>
+<p>返回说明：成功执行时，返回0。失败返回-1，errno被设为EINVAL。</p>
+<p>还有，eval函数里还涉及了很多函数，这些函数暂时还未实现，等着我们去实现呢。</p>
+<p>这就接着看下一个函数吧。</p>
+<h3 id="2-builtin-cmd函数："><a href="#2-builtin-cmd函数：" class="headerlink" title="2.builtin_cmd函数："></a>2.builtin_cmd函数：</h3><p>相对来说逻辑很简单，就是判断是哪个内置命令然后转到相应的函数，然后return 1；否则不是内置命令的话，啥也不做，直接返回0。</p>
+<pre><code class="c">/*
+* builtin_cmd - If the user has typed a built-in command then execute
+*    it immediately.  
+*/
+int builtin_cmd(char **argv)
+{
+    if(!strcmp(argv[0], &quot;quit&quot;))
+        exit(0);
+    else if(!strcmp(argv[0], &quot;bg&quot;) || !strcmp(argv[0], &quot;fg&quot;))
+        do_bgfg(argv);
+    else if(!strcmp(argv[0], &quot;jobs&quot;))
+        listjobs(jobs);
+    else
+        return 0;     /* not a builtin command */
+    return 1;
+}</code></pre>
+<p>接着就是实现do_bgfg函数了。</p>
+<h3 id="3-do-bgfg函数："><a href="#3-do-bgfg函数：" class="headerlink" title="3. do_bgfg函数："></a>3. do_bgfg函数：</h3><p>这个函数用来判断是否前台或后台命令</p>
+<p>核心就两点：</p>
+<ol>
+<li><p>区分bg和fg命令，以及传入pid或者jid参数对应的进程的状态。前者if，后者switch就可以包括所用的情况</p>
+</li>
+<li><p>注意用户输入错误处理，比如参数数量不够或者参数传入错误的情况</p>
+</li>
+</ol>
+<pre><code class="c">/*
+* do_bgfg - Execute the builtin bg and fg commands
+*/
+
+void do_bgfg(char **argv)
+{
+    int parsed;
+    struct job_t *job;
+    // 没有参数的fg/bg应该被丢弃
+    if(!argv[1]){
+        printf(&quot;%s command requires PID or %%jobid argument\n&quot;, argv[0]);
+        return ;
+    }
+
+    // 检测fg/bg参数，其中%开头的数字是JobID，纯数字的是PID
+    if(argv[1][0] == &#39;%&#39;){
+        if((parsed = strtol(&amp;argv[1][1], NULL, 10)) &lt;= 0){
+            printf(&quot;%s: argument must be a PID or %%jobid\n&quot;,argv[0]);
+            return;
+        }
+        if((job = getjobjid(jobs, parsed)) == NULL){
+            printf(&quot;%%%d: No such job\n&quot;, parsed);
+            return;
+        }
+    } else {
+        if((parsed = strtol(argv[1], NULL, 10)) &lt;= 0){
+            printf(&quot;%s: argument must be a PID or %%jobid\n&quot;,argv[0]);
+            return;
+        }
+        if((job = getjobpid(jobs, parsed)) == NULL){
+            printf(&quot;(%d): No such process\n&quot;, parsed);
+            return;
+        }
+    }
+
+    if(!strcmp(argv[0], &quot;bg&quot;)){
+        // bg会启动子进程，并将其放置于后台执行
+        job-&gt;state = BG;
+
+        if(kill(-job-&gt;pid, SIGCONT) &lt; 0)
+            unix_error(&quot;kill error&quot;);
+        printf(&quot;[%d] (%d) %s&quot;, job-&gt;jid, job-&gt;pid, job-&gt;cmdline);
+    } else if(!strcmp(argv[0], &quot;fg&quot;)) {
+        job-&gt;state = FG;
+        if(kill(-job-&gt;pid, SIGCONT) &lt; 0)
+            unix_error(&quot;kill error&quot;);
+        // 当一个进程被设置为前台执行时，当前tsh应该等待该子进程结束
+        waitfg(job-&gt;pid);
+    } else {
+        puts(&quot;do_bgfg: Internal error&quot;);
+        exit(0);
+    }
+    return;
+}</code></pre>
+<h3 id="4-waitfg函数："><a href="#4-waitfg函数：" class="headerlink" title="4. waitfg函数："></a>4. waitfg函数：</h3><p>等前台进程执行结束。</p>
+<pre><code class="c">/*
+* waitfg - Block until process pid is no longer the foreground process
+*/
+void waitfg(pid_t pid)
+{
+    struct job_t *job = getjobpid(jobs, pid);
+    if(!job) return;
+
+    // 如果当前子进程的状态没有发生改变，则tsh继续休眠
+    while(job-&gt;state == FG)
+        // 使用sleep的这段代码会比较慢，最好使用sigsuspend
+        sleep(1);
+
+    if(verbose)
+        printf(&quot;waitfg: Process (%d) no longer the fg process\n&quot;, pid);
+
+    return;
+}</code></pre>
+<h3 id="5-parseline函数："><a href="#5-parseline函数：" class="headerlink" title="5.parseline函数："></a>5.parseline函数：</h3><pre><code class="c">/*
+* parseline - Parse the command line and build the argv array.
+*
+* Characters enclosed in single quotes are treated as a single
+* argument.  Return true if the user has requested a BG job, false if
+* the user has requested a FG job.  
+*/
+int parseline(const char *cmdline, char **argv)
+{
+    static char array[MAXLINE]; /* holds local copy of command line */
+    char *buf = array;          /* ptr that traverses command line */
+    char *delim;                /* points to first space delimiter */
+    int argc;                   /* number of args */
+    int bg;                     /* background job? */
+
+    strcpy(buf, cmdline);
+    buf[strlen(buf)-1] = &#39; &#39;;  /* replace trailing &#39;\n&#39; with space */
+    while (*buf &amp;&amp; (*buf == &#39; &#39;)) /* ignore leading spaces */
+    buf++;
+
+    /* Build the argv list */
+    argc = 0;
+    if (*buf == &#39;\&#39;&#39;) {
+        buf++;
+        delim = strchr(buf, &#39;\&#39;&#39;);
+    }
+    else {
+        delim = strchr(buf, &#39; &#39;);
+    }
+
+    while (delim) {
+        argv[argc++] = buf;
+        *delim = &#39;\0&#39;;
+        buf = delim + 1;
+        while (*buf &amp;&amp; (*buf == &#39; &#39;)) /* ignore spaces */
+            buf++;
+
+        if (*buf == &#39;\&#39;&#39;) {
+            buf++;
+            delim = strchr(buf, &#39;\&#39;&#39;);
+        }
+        else{
+            delim = strchr(buf, &#39; &#39;);
+        }
+    }
+    argv[argc] = NULL;
+
+    if (argc == 0)  /* ignore blank line */
+        return 1;
+
+    /* should the job run in the background? */
+    if ((bg = (*argv[argc-1] == &#39;&amp;&#39;)) != 0) {
+        argv[--argc] = NULL;
+    }
+    return bg;
+}</code></pre>
+<h3 id="6-信号处理程序函数："><a href="#6-信号处理程序函数：" class="headerlink" title="6.信号处理程序函数："></a>6.信号处理程序函数：</h3><p>三个信号处理程序函数：</p>
+<pre><code class="c">/*****************
+ * Signal handlers
+ *****************/
+
+/*
+* sigchld_handler - The kernel sends a SIGCHLD to the shell whenever
+*     a child job terminates (becomes a zombie), or stops because it
+*     received a SIGSTOP or SIGTSTP signal. The handler reaps all
+*     available zombie children, but doesn&#39;t wait for any other
+*     currently running children to terminate.  
+*/
+void sigchld_handler(int sig)
+{
+    int status, jid;
+    pid_t pid;
+    struct job_t *job;
+
+    if(verbose)
+        puts(&quot;sigchld_handler: entering&quot;);
+
+    /*
+    以非阻塞方式等待所有子进程
+    waitpid 参数3：
+        1.     0     ： 执行waitpid时， 只有在子进程 **终止** 时才会返回。
+        2. WNOHANG   : 若子进程仍然在运行，则返回0 。
+                注意只有设置了这个标志，waitpid才有可能返回0
+        3. WUNTRACED : 如果子进程由于传递信号而停止，则马上返回。
+                只有设置了这个标志，waitpid返回时，其WIFSTOPPED(status)才有可能返回true
+    */
+    while((pid = waitpid(-1, &amp;status, WNOHANG | WUNTRACED)) &gt; 0){
+
+        // 如果当前这个子进程的job已经删除了，则表示有错误发生
+        if((job = getjobpid(jobs, pid)) == NULL){
+            printf(&quot;Lost track of (%d)\n&quot;, pid);
+            return;
+        }
+
+        jid = job-&gt;jid;
+        // 如果这个子进程收到了一个暂停信号（还没退出
+        if(WIFSTOPPED(status)){
+            printf(&quot;Job [%d] (%d) stopped by signal %d\n&quot;, jid, job-&gt;pid, WSTOPSIG(status));
+            job-&gt;state = ST;
+        }
+        // 如果这个子进程正常退出
+        else if(WIFEXITED(status)){
+            if(deletejob(jobs, pid))
+                if(verbose){
+                    printf(&quot;sigchld_handler: Job [%d] (%d) deleted\n&quot;, jid, pid);
+                    printf(&quot;sigchld_handler: Job [%d] (%d) terminates OK (status %d)\n&quot;, jid, pid, WEXITSTATUS(status));
+                }
+        }
+        // 如果这个子进程因为其他的信号而异常退出，例如SIGKILL
+        else {
+            if(deletejob(jobs, pid)){
+                if(verbose)
+                    printf(&quot;sigchld_handler: Job [%d] (%d) deleted\n&quot;, jid, pid);
+            }
+            printf(&quot;Job [%d] (%d) terminated by signal %d\n&quot;, jid, pid, WTERMSIG(status));
+        }
+    }
+
+    if(verbose)
+        puts(&quot;sigchld_handler: exiting&quot;);
+
+    return;
+}
+
+/*
+* sigint_handler - The kernel sends a SIGINT to the shell whenver the
+*    user types ctrl-c at the keyboard.  Catch it and send it along
+*    to the foreground job.  
+*/
+void sigint_handler(int sig)
+{
+    if(verbose)
+        puts(&quot;sigint_handler: entering&quot;);
+    pid_t pid = fgpid(jobs);
+
+    if(pid){
+        // 发送SIGINT给前台进程组里的所有进程
+        // 需要注意的是，前台进程组内的进程除了当前前台进程以外，还包括前台进程的子进程。
+        // 最多只能存在一个前台进程，但前台进程组内可以存在多个进程
+        if(kill(-pid, SIGINT) &lt; 0)
+            unix_error(&quot;kill (sigint) error&quot;);
+        if(verbose){
+            printf(&quot;sigint_handler: Job (%d) killed\n&quot;, pid);
+        }
+    }
+
+    if(verbose)
+        puts(&quot;sigint_handler: exiting&quot;);
+
+    return;
+}
+
+/*
+* sigtstp_handler - The kernel sends a SIGTSTP to the shell whenever
+*     the user types ctrl-z at the keyboard. Catch it and suspend the
+*     foreground job by sending it a SIGTSTP.  
+*/
+void sigtstp_handler(int sig)
+{
+    if(verbose)
+        puts(&quot;sigstp_handler: entering&quot;);
+
+    pid_t pid = fgpid(jobs);
+    struct job_t *job = getjobpid(jobs, pid);
+
+    if(pid){
+        if(kill(-pid, SIGTSTP) &lt; 0)
+            unix_error(&quot;kill (tstp) error&quot;);
+        if(verbose){
+            printf(&quot;sigstp_handler: Job [%d] (%d) stopped\n&quot;, job-&gt;jid, pid);
+        }
+    }
+
+    if(verbose)
+        puts(&quot;sigstp_handler: exiting&quot;);
+    return;
+}
+
+/*********************
+ * End signal handlers
+ *********************/
+</code></pre>
+<h3 id="7-测试阶段："><a href="#7-测试阶段：" class="headerlink" title="7.测试阶段："></a>7.测试阶段：</h3><p>gcc编译我们的tsh.c文件：</p>
 <blockquote>
-<p><a href="https://m4x.fun/post/play-with-file-descriptor-3/" target="_blank" rel="noopener">https://m4x.fun/post/play-with-file-descriptor-3/</a></p>
+<p>gcc tsh.c -o tsh</p>
+</blockquote>
+<p>生成tsh可执行文件</p>
+<p>然后有trace01~16这么多测试文件等着我们测试。</p>
+<blockquote>
+<p>make test12         //表明用第12个文件测试我们的shell程序</p>
+</blockquote>
+<p>然后可以看一下官方给出的正确答案：</p>
+<blockquote>
+<p>make rtest12    //文件夹自带的已经写好的程序（tshef），可以通过对比它的和我们写的输出是否有差别来检测。 </p>
 </blockquote>
 
       
