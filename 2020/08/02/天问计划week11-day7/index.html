@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>天问计划week11-day4 | sixpar&#39;s blog</title>
+  <title>天问计划week11-day7 | sixpar&#39;s blog</title>
   <meta name="keywords" content=" 天问计划 ">
-  <meta name="description" content="天问计划week11-day4 | sixpar&#39;s blog">
+  <meta name="description" content="天问计划week11-day7 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -772,9 +772,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-天问计划week11-day4" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week11-day7" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">天问计划week11-day4</h1>
+        <h1 class="article-title">天问计划week11-day7</h1>
     
     <div class="article-meta">
         
@@ -799,12 +799,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-30 22:54:24'>2020-07-30 10:48</time>
+            Created At : <time class="date" title='Updated At: 2020-08-02 22:24:39'>2020-08-02 09:20</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:2.8k</span>
+        <span>Count:5.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -834,7 +834,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Architecture-Lab："><span class="toc-text">Architecture Lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-copy-block"><span class="toc-text">1.3 copy_block:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-PartB："><span class="toc-text">2.PartB：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-PartC："><span class="toc-text">3.PartC：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cache-lab："><span class="toc-text">cache lab：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引入cache（高速缓存）："><span class="toc-text">引入cache（高速缓存）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cache的实现："><span class="toc-text">cache的实现：</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#csapp书本第9章-虚拟内存："><span class="toc-text">csapp书本第9章-虚拟内存：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#malloc-lab："><span class="toc-text">malloc lab：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -850,201 +850,533 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Architecture-Lab："><a href="#Architecture-Lab：" class="headerlink" title="Architecture Lab："></a>Architecture Lab：</h1><h3 id="1-3-copy-block"><a href="#1-3-copy-block" class="headerlink" title="1.3 copy_block:"></a>1.3 copy_block:</h3><p>接着昨天的copy_block，昨天写的那个不行。</p>
-<p>重写了一下，如下：</p>
-<pre><code class="python">    .pos 0
-    irmovq stack,%rsp    #根据栈的地址设置好rsp
-    call Main
-    halt
+        <h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><h4 id="csapp书本第9章-虚拟内存："><a href="#csapp书本第9章-虚拟内存：" class="headerlink" title="csapp书本第9章-虚拟内存："></a>csapp书本第9章-虚拟内存：</h4><p>物理寻址：直接给出一个有效的物理地址，然后CPU去主存寻址即可。</p>
+<p>虚拟寻址：给出虚拟地址（VA），先转换（address translation）为物理地址，然后寻址。</p>
+<p>VM系统将虚拟内存分割成大小固定的块，叫做虚拟页（VP）。物理内存也将被分割为物理页（PP），也称为页帧，物理页缓存在DRAM中。</p>
+<p>虚拟页（VP）有三种状态：</p>
+<ol>
+<li>未分配的。VM系统还未分配创建的页，因此没有数据交互，所以不占用磁盘空间</li>
+<li>未缓存的。还未缓存到物理页中去的已分配页</li>
+<li>已缓存的。已经缓存到物理页中去的已分配页</li>
+</ol>
+<p>物理内存中有一个页表（page table）结构，存储着虚拟地址和物理地址之间的映射关系。常驻内存（DRAM）的页表。</p>
+<p>操作系统负责维护页表，以及在磁盘和DRAM中来回传送页。</p>
+<p>​        虚拟地址空间中的每个页在页表中一个固定偏移量处都有一个<code>PTE</code>。PTE由有效位和地址两部分组成。若设置了有效位，那么地址字段存储的就是DRAM中相应的物理页的起始地址。若未设置有效位，空地址则说明这个虚拟页还未被分配。</p>
+<p>​        页命中：CPU想要读取某个虚拟内存（假如是VP2）中的一个字时，VP2刚好被缓存在了DRAM中，且页表中相对应的PTE也设置了有效位，所以也详细记载了VP2在物理内存中的起始地址，那么经过地址转换后就可以通过虚拟地址访问到物理地址，从而读取数据。一切都很顺利，便为页命中。</p>
+<p>​        缺页：DRAM缓存不命中。假如CPU想要引用VP3，但是VP3并未缓存在DRAM中，地址翻译硬件从PTE3中发现有效位为0，因此并未缓存，于是从而触发了缺页异常。</p>
+<p>​        缺页异常：由缺页导致的异常处理程序，程序会选择一个牺牲页（假如是VP4），假如VP4所处的位置是PP3，若VP4已经被修改过，那么就将它新数据复制回磁盘，更新嘛（若VP4未修改过那么就可以放心大胆覆盖了）。再接着，内核从从磁盘复制VP3到PP3（VP4原先待过的位置），然后更新PTE3，有效位置为1，并且地址填为PP3。因此VP4就不再在缓存中了，下一次访问VP4的时候就会触发缺页。缺页处理程序在返回时会把导致缺页的虚拟地址重新发送到地址翻译硬件。这回缓存中已经有VP3了，所以页命中，正常转换为物理地址。</p>
+<p>​        页面调度：牺牲页，然后从磁盘或DRAM中换进换出页面。也称为交换。</p>
+<p>​        分配页面：当调用malloc时，在磁盘上创建空间（假如是VP5），并更新PTE5，使其指向磁盘上的VP5 。</p>
+<p>​        局部性（locality）：保证在任意时刻，程序将趋于在一个较小的活动页面集合上工作，这个集合叫做工作集（Working set）。在初始时就把工作集放入缓存，然后就尽量在这个工作集上引用，提高命中率，不产生额外的磁盘流量。</p>
+<p>​        抖动：页面不断地换进换出。因为工作集大小超出了物理内存大小。</p>
+<p>每次CPU生成一个地址时，地址翻译硬件都会读一个PTE。因此地址翻译硬件可以在PTE上额外添加一些许可位以达到访问控制目的，保护页面级的内存。具体做法是每个PTE的有效位变为了 SUP、READ、WRITE，地址字段保留。SUP位表示进程是否必须运行在内核（超级用户）模式下才能访问该页。因此普通用户只能访问SUP为0的页面。READ和WRITE自然就表示页的可读可写了。如果检测到有指令违反以上的许可条件的话，CPU就会触发一个保护故障，将控制传递给内核中的异常处理程序，Linux shell一般将这种异常报告为“段错误”（segment-fault）。</p>
+<p>利用TLB加速地址翻译：在MMU（内存管理单元）中包含了一个关于PTE的一个小缓存，叫做翻译后备缓冲器（TLB）。TLB的每一行都保存着一个由单个PTE组成的块。用于组选择和行匹配的索引和标记字段都是从虚拟页号（VPN）中提取的。因此所有的地址翻译步骤都是在芯片的MMU中执行的，所以非常快。TLB命中的情况：CPU产生一个虚拟地址，MMU从TLB中取出对应的PTE，然后MMU将虚拟地址转换为物理地址然后发送给高速缓存/主存，缓存返回数据给CPU。  而当TLB不命中时，MMU必须从L1缓存中取出相应的PTE。（最好将PTE缓存在L1中）</p>
+<p>fork是如何创建一个带有自己独立虚拟地址空间的新进程的？当fork函数被当前进程调用时，内核同等对待，为新进程创建各种数据结构，并分配一个PID，创建虚拟内存，创建当前进程的mm_struct、区域结构和页表的副本。内核将两个进程的每个页面都标记为只读，每个区域结构都标记为私有的写时复制。fork在新进程中返回时，新进程的虚拟内存和调用fork时存在的虚拟内存时相同的，当这两个进程任何一个后来进行写操作时，写时复制就会创建新页面。</p>
+<p>execve函数是如何加装和执行程序的？调用了execve函数的形式为execve(“a.out”,NULL,NULL)。本质是用a.out程序文件替代了当前程序。具体步骤：1.删除已存在的用户区域结构；2.映射私有区域，为a.out文件映射test、data、bss、stack等新的区域结构；3.映射共享区域，若a.out与C库等有链接，则映射到用户虚拟地址空间中的共享区域内（处于栈和堆之间）；4.设置上进程下文的程序计数器，使之指向代码区域的入口点，执行第一句代码。等下一次调度这个进程时，它从这个入口点开始执行，然后换入代码和数据页面。</p>
+<p>使用mmap创建新的虚拟内存区域，完成用户级内存映射：</p>
+<pre><code class="c">#include &lt;unistd.h&gt;
+#include &lt;sys/mman.h&gt;
 
-    .align 8
-# Source block
-src:
-    .quad 0x00a
-    .quad 0x0b0
-    .quad 0xc00
-#Destination block
-dest:
-    .quad 0x111
-    .quad 0x222
-    .quad 0x333
-
-Main:
-    irmovq src,%rdi
-    irmovq dest,%rsi
-    irmovq $3,%rdx
-    call copy_block      #参数齐全，调用copy程序
-    ret                  
-
-copy_block:
-    xorq %rax,%rax        #rax清0
-    irmovq $1,%r14        #步长=1
-    irmovq $8,%r13        #len=8
-    pushq %rbx            #由于下方需要用到rdx，所以先把原先的rdx的值入栈保存起来
-    andq %rdx,%rdx        #按位与操作
-    jmp test
-loop:
-    mrmovq (%rdi),%rbx    #每一个数终将暂存于rbx中
-    addq %r13,%rdi        # rdi=rdi+r13
-    rmmovq %rbx,(%rsi)    #copy src data to dest
-    addq %r13,%rsi        # rsi=rsi+r13
-    xorq %rbx,%rax        #求每一个数的xor值，结果保存在rax中
-    subq %r14,%rdx        # rdx=rdx-r14 。即 len--
-
-test:
-    jne loop
-    popq %rbx             #恢复init的ebp栈帧
-    ret                   #返回到main
-
-    .pos 0x200      #设置栈的位置
-stack:</code></pre>
-<p>注意：</p>
-<p>Y86-64指令集中不包含立即数与寄存器之间的运算指令，所以需要先通过<code>irmovq</code>将立即数保存到寄存器中，再用该寄存器进行计算。就像上方代码中的 len– 那部分</p>
-<p>出入栈的寄存器顺序要相反</p>
-<p>实验结果，这回貌似对了：</p>
-<pre><code class="c">highk@highk:~/csapp lab/5.arch lab/sim/misc$ ./yis copy.yo
-Stopped in 38 steps at PC = 0x13.  Status &#39;HLT&#39;, CC Z=1 S=0 O=0
-Changes to registers:
-%rax:    0x0000000000000000    0x0000000000000cba
-%rsp:    0x0000000000000000    0x0000000000000200
-%rsi:    0x0000000000000000    0x0000000000000048
-%rdi:    0x0000000000000000    0x0000000000000030
-%r13:    0x0000000000000000    0x0000000000000008
-%r14:    0x0000000000000000    0x0000000000000001
-
-Changes to memory:
-0x0030:    0x0000000000000111    0x000000000000000a
-0x0038:    0x0000000000000222    0x00000000000000b0
-0x0040:    0x0000000000000333    0x0000000000000c00
-0x01f0:    0x0000000000000000    0x000000000000006f
-0x01f8:    0x0000000000000000    0x0000000000000013</code></pre>
-<h2 id="2-PartB："><a href="#2-PartB：" class="headerlink" title="2.PartB："></a>2.PartB：</h2><p>实验文件在 sim/seq 目录下，目标是想要让我们对SEQ处理器进行扩展，使其支持<code>iaddq</code>指令</p>
-<p>首先，结合irmovl、opl的计算过程，通过分析，我们得到iaddl指令的计算过程如下：</p>
-<pre><code class="python">iddal:
-    fetch: #取指
-        icode:ifun  &lt;-- M1[PC]
-        rA:rB  &lt;-- M1[PC+1]
-        valC &lt;-- M4[PC+2]
-        valP &lt;-- PC+6
-    decode: #译码
-        valB &lt;-- R[rB]
-    execute: #执行
-        valE &lt;-- valB+valC
-    memory: #访问内存
-    write_back: #写回
-        R[rB] &lt;-- valE
-    PC update: #更新PC
-        PC &lt;-- valP</code></pre>
-<p>然后我们修改 *<em>seq-full.hcl *</em>文件，添加iaddq指令，。</p>
-<p>修改完后需要通过该HCL文件构建SEQ仿真器（ssim）的新实例，然后对其进行测试：</p>
-<p>1.首先根据seq-full.hcl文件构建新的仿真器：</p>
+void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset);</code></pre>
+<p>首先fd指针指向磁盘中某文件（一个连续的片，也称为chunk）。然后mmap函数要求内核创建一个新的虚拟内存区域，最好是从地址*start处开始的一个区域，并将fd指向的chunk映射到这个新的区域。连续的片的大小是length字节。而这部分内容是从文件本身开始处偏移为offset字节的内容。start地址通常被设置为NULL。</p>
+<p>参数prot描述新映射的虚拟内存区域的访问权限位。关于 prot参数，有以下选择：PROT_EXEC表示这个区域的页面可以被CPU执行的指令组成; PROT_READ表示页面可读 ;PROT_WRITE表示页面可写; PROT_NONE表示页面不能访问（自闭了）;</p>
+<p>参数flags描述被映射对象类型的位组成。MAP_ANON表示匿名对象。 MAP_PRIVATE表示私有的、写时复制的对象。 MAP_SHARED表示共享对象。</p>
+<p>举例：</p>
 <blockquote>
-<p>make VERSION=full</p>
+<p>bufp = mmap(NULL,size,PROT_READ,MAP_PRIVATE,0,0)</p>
 </blockquote>
-<p>可能会报 Tcl/Tk 的错误，解决办法：只需要将Makefile里注释“Comment this out if you don’t have Tcl/Tk.”下的那一行注释掉即可，因此需要注释三处。</p>
-<p>make编译执行结果：</p>
-<pre><code class="c">highk@highk:~/csapp lab/5.arch lab/sim/seq$ make VERSION=full
-# Building the seq-full.hcl version of SEQ
-../misc/hcl2c -n seq-full.hcl &lt;seq-full.hcl &gt;seq-full.c
-gcc -Wall -O2  -I../misc  -o ssim \
-    seq-full.c ssim.c ../misc/isa.c  -lm</code></pre>
-<p>此时文件夹多出了seq-full.c文件和ssim程序</p>
-<p>执行测试文档，位于y86-code文件夹下的asumi.yo，由于只看到asumi.ys，所以是不是这其中还有一步，把ys变为yo，于是来到sim/misc下：</p>
+<p>表示让内核创建一个包含size字节的只读、私有、请求二进制零的虚拟内存区域，如果成功，则bufp中存储新区域的地址。</p>
+<p>动态内存分配器。C标准库中的 malloc 是显式分配器。通过调用malloc来在堆中分配块（chunk）：</p>
+<pre><code class="c">#include &lt;stdlib.h&gt;
+
+void *malloc(size_t size);       //若成功则返回指向新chunk的指针。出错则返回NULL</code></pre>
+<p>对齐问题：对齐依赖于编译代码是32位（gcc -m32）还是64位的。在32位模式中，malloc返回的块的地址总是8的倍数，64位中是16的倍数。</p>
+<p>malloc不初始化它返回的内存。要想初始化得用calloc函数，它将分配的内存初始化为0。而然realloc函数则是重新改变一个目前已分配块的大小。</p>
+<p>free函数： void free(void *ptr) ，ptr参数必须指向由malloc，calloc，realloc函数分配的内存堆块的起始位置。</p>
+<p>malloc与free的例子：</p>
+<p><img src="https://i.loli.net/2020/08/02/nYeWxpUi8NdJz9r.jpg" alt=""></p>
+<p>可以发现p2的指针在free之后仍然存在。申请p4的时候申请到了原先p2所在的空间。</p>
+<p>为什么要动态分配内存？因为如果硬编码数组的界限的话，是固定死的，不能适用于所有情况。所以就需要动态地分配。</p>
+<p>可以进行一下比较：</p>
+<pre><code class="c">//其他代码我都省略了，就只比较关键的代码
+//1.固定数组大小：
+#define MAX 15213
+int array[MAX];
+for(i=0;i&lt;n;i++){
+    scanf(&quot;%d&quot;,&amp;array[i]);
+}    
+//可以看到数组大小是固定死的。
+
+//2.动态分配数组大小：
+int *array,i,n;
+scanf(&quot;%d&quot;,&amp;n);   //自定义数组大小
+array=(int *)Malloc(n * sizeof(int));  //数组内存时动态分配的
+for(i=0;i&lt;n;i++){
+    scanf(&quot;%d&quot;,&amp;array[i]);
+}
+</code></pre>
+<p>内部碎片：已分配块的大小大于它们有效载荷的大小。什么意思呢，就像上图中的9-34b那样，由于需要进行双字对齐，原本只申请了5字（有效载荷），现在多出了1字（内部碎片）用于对齐。</p>
+<p>外部碎片：空闲内存为了满足某申请需求而进行切割，剩下的一部分由于太小无法满足其他需求而形成碎片。若整合起来的话还是可以分配出去的，可惜是分散着的。</p>
+<h2 id="malloc-lab："><a href="#malloc-lab：" class="headerlink" title="malloc lab："></a>malloc lab：</h2><p>we need modifying and handing mm.c file</p>
+<p>需要实现四个函数：</p>
 <blockquote>
-<p>./yas ../y86-code/asumi.ys</p>
+<p>int mm_init(void)</p>
+<p>void *mm_malloc(size_t size);</p>
+<p>void mm_free(void *ptr);</p>
+<p>void *mm_realloc(void *ptr,size_t size);</p>
 </blockquote>
-<p>然后回到 sim/seq文件夹下：</p>
-<blockquote>
-<p>./ssim -t ../y86-code/asumi.yo</p>
-</blockquote>
-<p>执行结果：</p>
-<pre><code class="c">highk@highk:~/csapp lab/5.arch lab/sim/seq$ ./ssim -t ../y86-code/asumi.yo
-Y86-64 Processor: seq-full.hcl
-137 bytes of code read
-IF: Fetched irmovq at 0x0.  ra=----, rb=%rsp, valC = 0x100
-IF: Fetched call at 0xa.  ra=----, rb=----, valC = 0x38
-Wrote 0x13 to address 0xf8
-IF: Fetched irmovq at 0x38.  ra=----, rb=%rdi, valC = 0x18
-IF: Fetched irmovq at 0x42.  ra=----, rb=%rsi, valC = 0x4
-IF: Fetched call at 0x4c.  ra=----, rb=----, valC = 0x56
-Wrote 0x55 to address 0xf0
-IF: Fetched xorq at 0x56.  ra=%rax, rb=%rax, valC = 0x0
-IF: Fetched andq at 0x58.  ra=%rsi, rb=%rsi, valC = 0x0
-IF: Fetched jmp at 0x5a.  ra=----, rb=----, valC = 0x83
-IF: Fetched jne at 0x83.  ra=----, rb=----, valC = 0x63
-IF: Fetched mrmovq at 0x63.  ra=%r10, rb=%rdi, valC = 0x0
-IF: Fetched addq at 0x6d.  ra=%r10, rb=%rax, valC = 0x0
-IF: Fetched iaddq at 0x6f.  ra=----, rb=%rdi, valC = 0x8
-IF: Fetched iaddq at 0x79.  ra=----, rb=%rsi, valC = 0xffffffffffffffff
-IF: Fetched jne at 0x83.  ra=----, rb=----, valC = 0x63
-IF: Fetched mrmovq at 0x63.  ra=%r10, rb=%rdi, valC = 0x0
-IF: Fetched addq at 0x6d.  ra=%r10, rb=%rax, valC = 0x0
-IF: Fetched iaddq at 0x6f.  ra=----, rb=%rdi, valC = 0x8
-IF: Fetched iaddq at 0x79.  ra=----, rb=%rsi, valC = 0xffffffffffffffff
-IF: Fetched jne at 0x83.  ra=----, rb=----, valC = 0x63
-IF: Fetched mrmovq at 0x63.  ra=%r10, rb=%rdi, valC = 0x0
-IF: Fetched addq at 0x6d.  ra=%r10, rb=%rax, valC = 0x0
-IF: Fetched iaddq at 0x6f.  ra=----, rb=%rdi, valC = 0x8
-IF: Fetched iaddq at 0x79.  ra=----, rb=%rsi, valC = 0xffffffffffffffff
-IF: Fetched jne at 0x83.  ra=----, rb=----, valC = 0x63
-IF: Fetched mrmovq at 0x63.  ra=%r10, rb=%rdi, valC = 0x0
-IF: Fetched addq at 0x6d.  ra=%r10, rb=%rax, valC = 0x0
-IF: Fetched iaddq at 0x6f.  ra=----, rb=%rdi, valC = 0x8
-IF: Fetched iaddq at 0x79.  ra=----, rb=%rsi, valC = 0xffffffffffffffff
-IF: Fetched jne at 0x83.  ra=----, rb=----, valC = 0x63
-IF: Fetched ret at 0x8c.  ra=----, rb=----, valC = 0x0
-IF: Fetched ret at 0x55.  ra=----, rb=----, valC = 0x0
-IF: Fetched halt at 0x13.  ra=----, rb=----, valC = 0x0
-32 instructions executed
-Status = HLT
-Condition Codes: Z=1 S=0 O=0
-Changed Register State:
-%rax:    0x0000000000000000    0x0000abcdabcdabcd
-%rsp:    0x0000000000000000    0x0000000000000100
-%rdi:    0x0000000000000000    0x0000000000000038
-%r10:    0x0000000000000000    0x0000a000a000a000
-Changed Memory State:
-0x00f0:    0x0000000000000000    0x0000000000000055
-0x00f8:    0x0000000000000000    0x0000000000000013
-ISA Check Succeeds</code></pre>
-<p>测试成功。</p>
-<h2 id="3-PartC："><a href="#3-PartC：" class="headerlink" title="3.PartC："></a>3.PartC：</h2><p>文件在 sim/pipe 中，目的是做优化。需要我们修改ncopy.ys，使得你ncopy函数尽可能快。</p>
-<p>具体评测标准是令CPE越小越好。</p>
-<p>看了别人做法，大致都是把循环展开来。</p>
-<p>我反正是一脸懵。</p>
-<p>先咕了，等以后再看。</p>
-<h1 id="cache-lab："><a href="#cache-lab：" class="headerlink" title="cache lab："></a>cache lab：</h1><p>准备工作：</p>
-<p>编译</p>
-<h1 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h1><p>csapp（2）：P25开始</p>
-<p>存储器有（容量capacity从小到大排列）： 寄存器，SRAM，DRAM，硬盘。</p>
-<p>我们需要一种存储容量又大，存储速度又快，价格又便宜的存储器。</p>
-<p>所以构成了层次化结构的存储器（金字塔结构）。CPU内部有寄存器和cache，CPU外部是主存（RAM和ROM），主机外部有外存（硬盘，光盘）以及后备存储器（磁带，光盘库），</p>
-<p>相邻的存储之间是要以<code>等长</code>的块（block）进行交换的。所以数据就是在<code>相邻两层之间复制传送</code>的。</p>
-<p>程序访问局部化的原因：指令是按序存放，地址连续，循环程序或子程序段重复执行；数据是连续存放的，数组元素重复，按序访问。</p>
-<blockquote>
-<p>时间局部性：刚被访问过的单元可能不久又会被访问，频繁访问（多发生于循环中）。所以要让最近访问过的信息保留在靠近CPU的存储器当中。</p>
-</blockquote>
-<blockquote>
-<p>空间局部性：刚被访问过的单元的邻近单元很可能不久被访问（数组结构，循环等）。所以也要让最近邻近单元调到靠近CPU的存储器当中。</p>
-</blockquote>
-<h4 id="引入cache（高速缓存）："><a href="#引入cache（高速缓存）：" class="headerlink" title="引入cache（高速缓存）："></a>引入cache（高速缓存）：</h4><p>cache是处于CPU和主存之间的小容量高速缓冲存储器，由SRAM组成，其中存放最活跃（被频繁访问）的程序和数据，其实是主存块中对应内容的副本。直接制作在CPU芯片内，速度与CPU一样快。</p>
-<p>程序运行后，要使用的一部分数据或指令会预先拷贝在cache中。</p>
-<p>由于程序访问局部性特征，CPU大多数情况下直接从高速缓存中取得指令和数据，称为命中（hit），而不必访问主存。提高了效率和速度。若cache中找不到所要访问的信息则称为缺失或失靶（miss），则需要访问内存了。</p>
-<p>例子：有两段程序段，程序段A中是对二维数组的访问是以行，即a[i][j]进行的。而程序段B则反过来，是以列为准，a[j][i]。虽然代码空间复杂度一样，但是执行速度相比，A比B快了21倍！！！！</p>
-<p>程序段A的访问顺序为 a[0][0]，a[0][1]…….，而在内存中数组也是按照这个顺序存放的，故访问顺序和存放顺序一致，故空间局部性好！但由于每个a[i][j]只被访问一次，所以时间局部性差。</p>
-<p>当访问到a[0][0]的时候，程序会把a[0][0]邻近的数组元素都会搬到cache里，所以访问速度将明显加快。而程序段B的访问是跳着来的，当程序把a[0][0]邻近的数组元素搬到cache时，却又要求去访问a[1][0]，哈哈哈哈，这谁顶得住，所以在cache里找不到，则又要去内存里找，然后继续把a[1][0]邻近的数组元素搬到cache里，把原先的a[0][0]的”残党“部分又给<code>冲刷</code>掉了（cache很小，容不下那么多数据），于是前面就白搬了。这效率明显很低，像是故意在调戏cache似的。</p>
-<h4 id="cache的实现："><a href="#cache的实现：" class="headerlink" title="cache的实现："></a>cache的实现：</h4><p>1.主存地址AD是否在cache中，如何判断命中（hit）？主存地址分为三部分，第一部分是16位的tag，接着第二部分是12位的index索引，最后是4位的块内地址。  如何判断？首先取中间12位的index索引，去cache中找到对应的行，第二步是取地址当中的高16位的tag标记，去和对应行的tag标记相比对，若相等，并且V=1，则判断是命中（hit）！</p>
-<p>2.淘汰问题，该把cache中哪些数据替换下来</p>
-<p>3.如何分块，块与块之间怎么分？主存被分为若干大小相等的主存块（Block），cache也被分成大小相同的块，称为cache行（line）或者 槽（Slot）。</p>
-<p>4.主存块和cache之间如何映射？</p>
-<p>映射有三种方法：</p>
-<p>4.1 直接映射：每个主存块映射到cache的固定行，所以可以直接取模mod，假如cache有16个槽，那么就把主存块块号mod 16即可。而每16块叫做一个块群。而cache中每一个槽号前还有一个标记，标记了该数据来自主存块的哪个块群。总之，拿到一个主存地址，高7位是主存标记（块群号），接下去4位是cache索引（块号），最后低9位是块内地址。例如 0000001 0001 000001100 表示的是第1块群中的1块（即第17块，17 mod 16=1）中的第12个单元。  另外标记是有效位，用V表示，v=1表示信息有效，v=0则无效。通常使V=0来冲刷cache。“冲刷cache”指令是内核指令。</p>
-<p>直接映射的特点：容易实现，决定是否命中的流程很简单，所以命中时间短；无需考虑淘汰问题，总是新的换旧的；不够灵活，cache存储空间得不到充分利用，换进换出的开销很大，命中率低。</p>
-<p>4.2 全相连，每个主存块映射到cache的任一行；主存地址分为主存块号（标记）和块内地址两部分。例如 00000001111 000001100 表示的是第15块中的第12个单元。</p>
-<p>全相连的特点：命中时间长，需要比对11位。</p>
-<p>4.3 第三种是前两种的折中，叫组相连：每个主存块映射到cache固定组中任一行。</p>
-<p>5.写数据时怎么保证cache和主存之间的一致性？</p>
-<p>6.怎么取cache中的数据？首先确认成功命中（hit），即找到对应行，且tag标记相等，且V=1。找到后，再取主存地址的第三部分-块内地址的高两位，若是32位即4字节的数（Word），则根据00,01,10,11等情况，多路选择器（Mux）会自己选择地址去取数据。</p>
+<p>要求双字对齐。不允许更改 mm.c 中的 interface（也就是函数定义），不允许直接使用 malloc/calloc/free/realloc/sbrk/brk… 实际上可以用的给我们在 memlib.h 中，也就是文档中 Support Routines 指出的可以用的函数</p>
+<p>参考代码：（原本想把每个函数分开来的，但是破坏了代码的整体性和关联性）</p>
+<pre><code class="c">/*
+ * mm-naive.c - The fastest, least memory-efficient malloc package.
+ * 
+ * In this naive approach, a block is allocated by simply incrementing
+ * the brk pointer.  A block is pure payload. There are no headers or
+ * footers.  Blocks are never coalesced or reused. Realloc is
+ * implemented directly using mm_malloc and mm_free.
+ *
+ * NOTE TO STUDENTS: Replace this header comment with your own header
+ * comment that gives a high level description of your solution.
+ */
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+
+#include &quot;mm.h&quot;
+#include &quot;memlib.h&quot;
+
+/*********************************************************
+ * NOTE TO STUDENTS: Before you do anything else, please
+ * provide your team information in the following struct.
+ ********************************************************/
+/*
+free chunk的结构
+
+    +-------------+
+    | chunksize|00|   &lt;- chunk size 包含两个标志位，表示当前chunk以及上一个chunk是否使用
+    +-------------+
+    |       fd    |   &lt;- 用户所使用的空间，包括对齐的空间。该空间以8字节为对齐标准
+    |       bk    |
+    |   (padding) |
+    +-------------+
+    |  chunksize  |   &lt;- chunk size，无标志位，可空间复用
+    +-------------+
+*/
+
+
+/* single word (4) or double word (8) alignment */
+#define ALIGNMENT 8
+/* rounds up to the nearest multiple of ALIGNMENT */
+#define ALIGN(size) (((size) + (ALIGNMENT-1)) &amp; ~0x7)
+#define SIZE_T_SIZE (ALIGN(sizeof(size_t)))
+
+#define WSIZE           4
+#define DSIZE           (2*WSIZE)
+#define MIN_CHUNKSIZE   4*WSIZE
+#define CHUNKSIZE       0
+
+/* Pack a size and allocated bit into a word. */
+#define ALLOC_MASK      1
+#define PREV_FREE_MASK  2
+//#define PACK(size, alloc, prev_free) ((size) | (alloc) | (prev_free))
+
+/* Read and write a word at address p */
+#define GET(p)              (*(unsigned int*)(p))
+
+/* Read the size and allocate fields form address p */
+/* 此时的p应指向chunk头部 */
+
+#define GET_RAW_SIZE(p)         (GET(p))
+#define GET_SIZE(p)             (GET_RAW_SIZE(p) &amp; ~0x7)
+#define GET_PREV_SIZE(p)        (GET_SIZE((p) - WSIZE))
+// 这里的SET_SIZE将会保留最后2位
+#define SET_SIZE(p, val)        (GET_RAW_SIZE(p) = (val | (GET_RAW_SIZE(p) &amp; (ALLOC_MASK | PREV_FREE_MASK))))
+
+
+#define GET_ALLOC(p)                (GET_RAW_SIZE(p) &amp; ALLOC_MASK)
+#define SET_ALLOC(p)                (GET_RAW_SIZE(p) |= ALLOC_MASK)
+#define SET_FREE(p)              (GET_RAW_SIZE(p) &amp;= ~ALLOC_MASK)
+
+#define GET_PREV_FREE(p)     (GET_RAW_SIZE(p) &amp; PREV_FREE_MASK ) 
+#define SET_PREV_FREE(p)            (GET_RAW_SIZE(p) |= PREV_FREE_MASK ) 
+#define SET_PREV_ALLOC(p)          (GET_RAW_SIZE(p) &amp;= ~PREV_FREE_MASK ) 
+
+#define getListIndx(chunkSize) \
+    ((chunkSize) &gt;= (1 &lt;&lt; 12) ? 8 :  \
+    ((chunkSize) &gt;= (1 &lt;&lt; 11) ? 7 :  \
+    ((chunkSize) &gt;= (1 &lt;&lt; 10) ? 6 :  \
+    ((chunkSize) &gt;= (1 &lt;&lt; 9) ? 5 :   \
+    ((chunkSize) &gt;= (1 &lt;&lt; 8) ? 4 :   \
+    ((chunkSize) &gt;= (1 &lt;&lt; 7) ? 3 :   \
+    ((chunkSize) &gt;= (1 &lt;&lt; 6) ? 2 :   \
+    (chunkSize) &gt;= (1 &lt;&lt; 5) ? 1 :    \
+    (chunkSize) &gt;= (1 &lt;&lt; 4) ? 0 : -1 \
+    )))))))
+
+
+// footer可以空间复用
+#define request2chunksize(size) \
+     ((size) &gt; (MIN_CHUNKSIZE - WSIZE) ? ALIGN(size+WSIZE) : MIN_CHUNKSIZE)
+
+#define FD(p)           (*(void**)((void*)(p) + WSIZE))
+// 传入指向fd的指针，传出指向该chunk的header的指针
+#define FD2HD(p)        ((void*)((void*)(p) - WSIZE))
+#define BK(p)           (*(void**)((void*)(p) + DSIZE))
+#define NEXT_CHUNK(p)   ((void*)((void*)(p) + GET_SIZE(p)))
+// PREV_CHUNK当且仅当上一个chunk是free chunk才能使用
+#define PREV_CHUNK(p)   (((void*)(p) - GET_PREV_SIZE(p)))
+#define FOOTER(p)       (NEXT_CHUNK(p) - WSIZE)
+#define HD2MEM(p)       ((void*)((void*)(p) + WSIZE))
+#define MEM2HD(p)       (FD2HD(p))
+
+
+// debug专用宏定义
+#define DBG(s) assert(s)
+// 输出block里的数据(传入的是mem指针)
+#define PRINT_BLOCK
+#ifndef PRINT_BLOCK
+#define PRINT_BLOCK(ptr, size, msg)        \
+    printf(&quot;\n\n&quot;msg&quot;:\n&quot;);                 \
+    for(size_t i = 0; i &lt; size; i++)        \
+        printf(&quot;%02x &quot;, *(((char*)ptr) + i));  \
+    printf(&quot;\n\n&quot;);
+#endif
+/*
+ChunkSize:
+
+0x10-0x20       2^4 - 2^5
+0x20-0x40       2^5
+0x40-0x80       2^6
+0x80-0x100      2^7
+0x100-0x200     2^8
+0x200-0x400     2^9
+0x400-0x800     2^106
+0x800-0x1000    2^11
+0x1000-~        2^12
+
+9 bins(void*)
+*/
+#define HEAP_LIST_NUM 9
+void* heap_listp[HEAP_LIST_NUM][2];
+// top_chunk指向的chunk不存在heap_listp中，同时其指向的chunk一定在堆的最高
+void* top_chunk = NULL;
+
+
+// 将chunk从原来的list中断开
+void unlink_chunk(void* chunk)
+{
+    void* bk = BK(chunk);
+    void* fd = FD(chunk);
+    DBG((bk &amp;&amp; fd) &amp;&amp; &quot;unlink_chunk: bk fd 不可能为空&quot;);
+    FD(bk) = fd;
+    BK(fd) = bk;
+}
+
+// 空闲内存合并
+// 该函数会修改传入chunk的footer
+static void* coalesce(void* chunk)
+{
+    int chunksize = GET_SIZE(chunk);
+    DBG(chunksize &gt;= MIN_CHUNKSIZE &amp;&amp; &quot;coalesce: chunk大小不可能小于最小值&quot;);
+
+    int* newptr = chunk;
+    // 向前合并
+    if(GET_PREV_FREE(chunk))
+    {
+        // 被合并的那个chunk要从原来的list链上断开
+        void* prevChunk = PREV_CHUNK(chunk);
+        unlink_chunk(prevChunk);
+        int prev_chunksize = GET_PREV_SIZE(chunk);
+
+        chunksize += prev_chunksize;
+        newptr = prevChunk;
+    }
+    // 向后合并（排除当前chunk是top_chunk
+    if(!GET_ALLOC(NEXT_CHUNK(chunk)) &amp;&amp; chunk != top_chunk &amp;&amp; NEXT_CHUNK(chunk) != top_chunk)
+    {
+        chunksize += GET_SIZE(NEXT_CHUNK(chunk));
+        unlink_chunk(NEXT_CHUNK(chunk));
+    }
+
+    // 重新设置chunk的header与footer。只设置了大小，没有修改任何标志位
+    SET_SIZE(newptr, chunksize);
+    SET_SIZE(FOOTER(newptr), chunksize);
+    return newptr;
+}
+
+
+static void* extend_heap(size_t words)
+{
+    void* bp;
+    size_t size;
+
+    // DSIZE对齐
+    size = (words % 2) ? (words + 1) * WSIZE : words * WSIZE;
+    if((long)(bp = mem_sbrk(size)) == -1)
+        return NULL;
+
+    return bp;
+}
+
+/* 
+ * mm_init - initialize the malloc package.
+ */
+int mm_init(void)
+{
+    // 初始化链表
+    for(int i = 0; i &lt; HEAP_LIST_NUM; i++)
+    {
+        void* headPtr = FD2HD(&amp;heap_listp[i][0]);
+        FD(headPtr) = headPtr;
+        BK(headPtr) = headPtr;
+    }
+    // 将brk抬高4字节，这样每个chunk的用户空间就满足八字节对齐标准
+    // 同时，设置top chunk
+    int topSize = (CHUNKSIZE &gt; MIN_CHUNKSIZE ? CHUNKSIZE : MIN_CHUNKSIZE);
+    top_chunk = mem_sbrk(4 + topSize) + 4;
+    SET_SIZE(top_chunk, topSize);
+    SET_FREE(top_chunk);
+    // 第一个chunk，设置前面的空间为不可合并
+    SET_PREV_ALLOC(top_chunk);
+
+    return 0;
+}
+// 在使用该函数前需要先设置size
+void insertChunk2List(void* chunk)
+{
+    // 在插入前先对周围的内存块进行合并
+    chunk = coalesce(chunk);
+    DBG(!GET_ALLOC(chunk) &amp;&amp; &quot;insertChunk2List: 所插入的块，不可能是已经分配了的块&quot;);
+    // 插入剩余的块到链表中
+    int size = GET_SIZE(chunk);
+    int listIdx = getListIndx(size);
+    DBG(listIdx &gt;= 0 &amp;&amp; &quot;insertChunk2List: listIdx出错，chunkSize可能存在问题&quot;);
+    void* headPtr = FD2HD(&amp;heap_listp[listIdx][0]);
+    void * ptr = FD(headPtr);
+
+    // 从list里的第一个chunk开始，从前到后遍历，遍历回list则停止
+    // 注意，当list里一个chunk都没有时仍然成立
+    while(ptr != headPtr &amp;&amp; GET_SIZE(ptr) &lt; size)
+        ptr = FD(ptr);
+    // 找到插入点
+    FD(chunk) = ptr;
+    BK(chunk) = BK(ptr);
+
+    FD(BK(ptr)) = chunk;
+    BK(ptr) = chunk;
+}
+
+// 传入的targetChunk必须是一块已经断开链表， 同时有意分配给用户的free chunk，
+// 返回的是一块切剩下的空闲chunk, 其中已经设置相关的标志位
+void* splitChunk(void* targetChunk, size_t targetChunksize)
+{
+    int current_chunkSize = GET_SIZE(targetChunk);
+    int remainSize = current_chunkSize - targetChunksize;
+    DBG(remainSize &gt;= MIN_CHUNKSIZE &amp;&amp; &quot;splitChunk: chunk过小，无法切割&quot;);
+    // SET_SIZE足够精巧，以至于能保存上一个chunk的INUSE_BIT
+    SET_SIZE(targetChunk, targetChunksize);
+    SET_ALLOC(targetChunk);
+    // 设置剩余chunk的size
+    void* remainChunk = NEXT_CHUNK(targetChunk);
+    SET_SIZE(remainChunk, remainSize);
+    SET_FREE(remainChunk);
+    SET_PREV_ALLOC(remainChunk);
+
+    SET_SIZE(FOOTER(remainChunk), remainSize);
+    // 将剩余的chunk插入至适合的位置
+    return remainChunk;
+}
+/* 
+ * mm_malloc - Allocate a block by incrementing the brk pointer.
+ *     Always allocate a block whose size is a multiple of the alignment.
+ */
+void *mm_malloc(size_t size)
+{
+    void* targetMemPtr = NULL;
+    int targetChunksize = request2chunksize(size);
+    // 查找链表中是否存在需要的chunk
+    for(int listIdx = getListIndx(targetChunksize); listIdx &lt; HEAP_LIST_NUM; listIdx++)
+    {
+        // 如果当前遍历到的链表非空，并且该链条中最大的chunk不小于所申请空间的大小，有机会，于是开始遍历
+        if(heap_listp[listIdx][0] != FD2HD(&amp;heap_listp[listIdx][0]) 
+            &amp;&amp; GET_SIZE(heap_listp[listIdx][1]) &gt;= targetChunksize)
+        {
+            // 遍历向下查找
+            void* ptr = heap_listp[listIdx][0];   //该ptr指向某个chunk
+            while(GET_SIZE(ptr) &lt; targetChunksize)
+                ptr = FD(ptr);   //下一链表
+            // 当跳出循环时表明此时已经获取到了所需要的chunk（第一个满足申请需求），但还需要判断是否应做切割处理
+            int current_chunkSize = GET_SIZE(ptr);  //先获取当前链表chunk的size
+
+            int remainSize = current_chunkSize - targetChunksize;   //切割剩余部分的chunk的size
+            // 先断开链表   
+            unlink_chunk(ptr);  
+            if(remainSize &gt;= MIN_CHUNKSIZE)
+            {
+                void* remainChunk = splitChunk(ptr, targetChunksize);  //指向经过切割(splitchunk函数)后剩余的chunk的指针
+                insertChunk2List(remainChunk);  //入链
+            }
+            else
+            {
+                // 设置目标chunk的header
+                SET_SIZE(ptr, current_chunkSize);
+                SET_ALLOC(ptr);
+                SET_PREV_ALLOC(NEXT_CHUNK(ptr));
+            }
+            // 返回用户空间
+            DBG(GET_ALLOC(ptr) &amp;&amp; &quot;mm_malloc: bad alloc status&quot;);
+            targetMemPtr = HD2MEM(ptr);   //根据申请得到的chunk的header指针获取对应的mem指针
+            return targetMemPtr;  //返回申请的chunk的mem指针
+        }
+    }
+
+    // 如果所有的链表中的chunk都不满足，则需要向top chunk申请
+    DBG(top_chunk &amp;&amp; &quot;mm_malloc： top_chunk不可能为空&quot;);
+    // 必须保证top_chunk在任何情况下都有空间
+    if(GET_SIZE(top_chunk) &gt;= targetChunksize + MIN_CHUNKSIZE)
+    {
+        void* ptr = top_chunk;
+        top_chunk = splitChunk(ptr, targetChunksize);
+        DBG(GET_ALLOC(ptr) &amp;&amp; &quot;mm_malloc: bad alloc status&quot;);
+        return HD2MEM(ptr);
+    }
+
+    // 如果所有的chunk都不满足，则需要向brk申请
+    int extend_size = (targetChunksize + MIN_CHUNKSIZE &gt; CHUNKSIZE ? 
+        targetChunksize + MIN_CHUNKSIZE : CHUNKSIZE);      //extend_size可能取0
+    void* extend_ptr = extend_heap(extend_size / WSIZE);   //extend_ptr可能取0
+
+    // 如果没内存了，则返回空
+    if(!extend_ptr)   //extend_ptr为0时返回NULL
+        return NULL;
+    SET_SIZE(extend_ptr, extend_size);
+    SET_FREE(extend_ptr);
+    SET_PREV_ALLOC(extend_ptr);
+    // 将旧的top chunk放回链表中
+    DBG(GET_SIZE(top_chunk) &gt;= MIN_CHUNKSIZE &amp;&amp; &quot;mm_malloc: chunk大小不可能小于最小值&quot;);
+    insertChunk2List(top_chunk);
+    top_chunk = extend_ptr;
+    // 再次查找
+    targetMemPtr = mm_malloc(size);   //递归
+    //printf(&quot;address: %p, chunkSize: %x, reqSize: %x\n&quot;, 
+      //  targetMemPtr, targetChunksize, size);
+    return targetMemPtr;
+}
+
+/*
+ * mm_free - Freeing a block does nothing.
+ */
+void mm_free(void *bp)
+{
+    void* chunk = MEM2HD(bp);
+    DBG(GET_ALLOC(chunk) &amp;&amp; &quot;mm_free: double Free detected&quot;);
+    SET_FREE(chunk);
+    SET_PREV_FREE(NEXT_CHUNK(chunk));
+    DBG(GET_SIZE(chunk) &gt;= MIN_CHUNKSIZE &amp;&amp; &quot;mm_free: chunk大小不可能小于最小值&quot;);
+    insertChunk2List(chunk);
+}
+
+/*
+ * mm_realloc - Implemented simply in terms of mm_malloc and mm_free
+ */
+// realloc要额外优化，否则最后两个样例会跑不通
+void *mm_realloc(void *ptr, size_t size)
+{
+    DBG(GET_ALLOC(MEM2HD(ptr)) &amp;&amp; &quot;mm_realloc: double free / UAF detected&quot;);
+    //return NULL;
+    /*
+        void* newp = mm_malloc(size);
+        if(newp == NULL)
+            return NULL;
+        memcpy(newp, ptr, size);
+        mm_free(ptr);
+        return newp;
+    */
+
+   // oldptr 和 newptr始终指向chunk的header，而不是mem
+    void* oldptr = MEM2HD(ptr);
+    void* newptr = oldptr;
+    size_t targetChunkSize = request2chunksize(size);
+    // 确定要复制的字节数，避免越界读取
+    size_t copySize = GET_SIZE(oldptr) - WSIZE;
+    if (size &lt; copySize)
+        copySize = size;
+
+    PRINT_BLOCK(ptr, copySize, &quot;Before realloc:&quot;);
+
+    // 先合并可能存在的空闲块, 并设置为已分配
+    // 这里的合并操作不能使用coalesce，因为这个函数是面向空闲内存的，而oldptr并非空闲
+    // newptr = coalesce(oldptr);
+
+    int chunksize = GET_SIZE(oldptr);
+
+    // 向前合并
+    if(GET_PREV_FREE(oldptr))
+    {
+        void* prevChunk = PREV_CHUNK(oldptr);
+        unlink_chunk(prevChunk);
+        int prev_chunksize = GET_PREV_SIZE(oldptr);
+        chunksize += prev_chunksize;
+        newptr = prevChunk;
+    }
+    // 向后合并
+    if(!GET_ALLOC(NEXT_CHUNK(oldptr)) &amp;&amp; NEXT_CHUNK(oldptr) != top_chunk)
+    {
+        chunksize += GET_SIZE(NEXT_CHUNK(oldptr));
+        unlink_chunk(NEXT_CHUNK(oldptr));
+    }
+
+    // 设置大小
+    SET_SIZE(newptr, chunksize);
+    // 设置被分配
+    SET_ALLOC(newptr);
+
+    // 如果合并后的大小仍然不够
+    if(chunksize &lt; targetChunkSize)
+    {
+        oldptr = newptr;
+        // 分配一块新的
+        void* newmem = mm_malloc(size);
+        if (newmem == NULL)
+            return NULL;
+        newptr = MEM2HD(newmem);
+        // 复制用户区域
+        memcpy(newmem, HD2MEM(oldptr), copySize);
+        // 同时释放之前那块
+        mm_free(HD2MEM(oldptr));
+
+        PRINT_BLOCK(HD2MEM(newptr), copySize, &quot;new alloc:&quot;);
+    }
+    // 如果可以使用
+    else
+    {
+        // 如果不是原来的内存
+        if(newptr != oldptr)
+        {
+            // 复制用户区域
+            PRINT_BLOCK(HD2MEM(newptr), copySize, &quot;Before copy newptr :&quot;);
+            PRINT_BLOCK(HD2MEM(oldptr), copySize, &quot;Before copy oldptr :&quot;);
+            // 注意这里需要使用memmove，而不是memcpy，因为新的chunk和原来的chunk之间会存在重叠（正常现象）
+            memmove(HD2MEM(newptr), HD2MEM(oldptr), copySize);
+            PRINT_BLOCK(HD2MEM(newptr), copySize, &quot;After copy:&quot;);
+        }
+        if(chunksize &gt;= targetChunkSize + MIN_CHUNKSIZE)
+        {
+            // 切割，将剩余的存到链表中
+            void* remainChunk = splitChunk(newptr, targetChunkSize);
+            PRINT_BLOCK(HD2MEM(newptr), copySize, &quot;After Split:&quot;);
+            insertChunk2List(remainChunk);
+        }
+
+        PRINT_BLOCK(HD2MEM(newptr), copySize, &quot;After All:&quot;);
+    }
+    return HD2MEM(newptr);
+}
+</code></pre>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>今天是第11周的末尾，也是交作业的时刻，然后我还有 proxy lab 没写。而且其他lab也是借着别人的代码自己领会的。觉得效果可能并不是那么明显。没写完的女装，呜呜。正经人谁会有女装照片hhhh</p>
+<p>后续自己多返回来看看吧。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
