@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>天问计划week11-day6 | sixpar&#39;s blog</title>
+  <title>天问计划week12-day2 | sixpar&#39;s blog</title>
   <meta name="keywords" content=" 天问计划 ">
-  <meta name="description" content="天问计划week11-day6 | sixpar&#39;s blog">
+  <meta name="description" content="天问计划week12-day2 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -788,9 +788,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-天问计划week11-day6" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week12-day2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">天问计划week11-day6</h1>
+        <h1 class="article-title">天问计划week12-day2</h1>
     
     <div class="article-meta">
         
@@ -815,12 +815,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-08-01 22:54:32'>2020-08-01 07:55</time>
+            Created At : <time class="date" title='Updated At: 2020-08-04 23:05:00'>2020-08-04 12:52</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:3.1k</span>
+        <span>Count:4.6k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -850,7 +850,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#shell-lab："><span class="toc-text">shell lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-eval函数："><span class="toc-text">1.eval函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-builtin-cmd函数："><span class="toc-text">2.builtin_cmd函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-do-bgfg函数："><span class="toc-text">3. do_bgfg函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-waitfg函数："><span class="toc-text">4. waitfg函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-parseline函数："><span class="toc-text">5.parseline函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-信号处理程序函数："><span class="toc-text">6.信号处理程序函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-测试阶段："><span class="toc-text">7.测试阶段：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-基于进程的并发编程："><span class="toc-text">1.基于进程的并发编程：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-基于I-O多路复用的并发编程："><span class="toc-text">2.基于I&#x2F;O多路复用的并发编程：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-基于线程的并发编程："><span class="toc-text">3.基于线程的并发编程：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#proxy-lab："><span class="toc-text">proxy lab：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -866,410 +866,668 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>中间还有个 performance lab，我就省略了，看样子是说对图像处理中的 Rotate 和 Smooth 操作函数进行优化。呜呜优化啥的我真的是优化不来。</p>
-<p>接着就来讲昨天没做完的shell lab吧。</p>
-<h2 id="shell-lab："><a href="#shell-lab：" class="headerlink" title="shell lab："></a>shell lab：</h2><h3 id="1-eval函数："><a href="#1-eval函数：" class="headerlink" title="1.eval函数："></a>1.eval函数：</h3><p>我参考的是Kiprey师傅的。</p>
-<p>可以看到 tsh.c文件里有这个函数的留白，等着我们去填空。</p>
-<pre><code class="c">void eval(char *cmdline) 
-{
-    return;
-}</code></pre>
-<p>eval函数的过程：初始化各变量以及设置<code>信号阻塞</code>合集。解析命令行，得到是否是后台命令，置位state（前后台标志）。判断是否是内置命令，若是则立即执行，否则就是<code>fork子进程</code>，子进程调用执行具体的命令文件，然后exit，而父进程则同步地将子进程的 job 加入到 job list 中。最后判断是否是bg,fg调用waifg函数等待前台运行完成，bg打印消息即可。</p>
-<p>该过程中需要仔细考虑显式阻塞的安排和设计，什么地方需要阻塞哪些信号。</p>
-<p>原则：</p>
-<ol>
-<li>在访问全局变量（jobs）时必须阻塞所有信号，包括调用文件本身已经存在的一些函数，由于这些函数基本都是for循环遍历完成功能的，所以务必要保证函数执行中不能被中断。</li>
-<li>在一些函数或者指令有必须的前后执行顺序时，请阻塞，保证在前一个函数调用完成后才进行下一个（比如必须先addjob，再deletejob）</li>
-</ol>
-<p>eval函数的实现：</p>
+        <h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><p>服务器如何将参数传送给子进程？假如接收到一个如下请求：</p>
+<p>GET /cgi-bin/adder?15000&amp;213 HTTP/1.1</p>
+<p>它调用fork函数来创建一个子进程，并调用execve在子进程的上下文中执行/cgi-bin/adder程序。像adder这样的程序通常叫做CGI程序。调用execve之前，子进程会将CGI环境变量QUERY_STRING设置为“15000&amp;213”。adder程序在运行时可以用 Linux getenv 函数来引用它，且可以设置很多环境变量。</p>
+<p>CGI程序将它的动态内容发送到标准输出，但是由于子进程加载运行CGI程序之前，就使用了 Linux dup2函数将标准输出重定向到了和客户端相关联的已连接描述符。因此CGI的输出将直接送给客户端。</p>
+<p>并发编程：（服务器可以同时处理多个客户端）</p>
+<p>使用应用级并发的应用程序称为 并发程序（concurrent program）。</p>
+<h4 id="1-基于进程的并发编程："><a href="#1-基于进程的并发编程：" class="headerlink" title="1.基于进程的并发编程："></a>1.基于进程的并发编程：</h4><p>创建一个新的子进程来为每个新客户端提供服务。</p>
+<p>具体工作机制：父进程接收请求与某一个客户端连接，然后父进程派生新子进程，让新的子进程与该客户端进行连接传输。然后父进程<code>脱身</code>，继续等待接收新请求。</p>
+<p>假设服务端建立了一个监听描述符1，然后接受客户端1的请求，返回了一个已连接描述符2。在接收请求后服务器便会fork一个子进程，这个子进程会获得服务器描述符表的完整<code>副本</code>，然后在子进程中关闭它的副本中的监听描述符（监听的事交由父进程来做，子进程不需要），而在父进程中则是关闭它的已连接字符串2（子进程已经成功与客户端连接，这个描述符在父进程中已经没有必要再存在了）。</p>
+<p>因为父进程和子进程中的已连接描述符2都是指向同一个文件表表项，所以父进程必须要<code>关闭</code>它的已连接描述符2。否则将永不释放已连接描述符2的文件表条目。</p>
 <pre><code class="c">/*
-* eval - Evaluate the command line that the user has just typed in
-*
-* If the user has requested a built-in command (quit, jobs, bg or fg)
-* then execute it immediately. Otherwise, fork a child process and
-* run the job in the context of the child. If the job is running in
-* the foreground, wait for it to terminate and then return.  Note:
-* each child process must have a unique process group ID so that our
-* background children don&#39;t receive SIGINT (SIGTSTP) from the kernel
-* when we type ctrl-c (ctrl-z) at the keyboard.  
+基于进程的并发echo服务器
 */
 
-void eval(char *cmdline)
+#include &quot;csapp.h&quot;
+
+void echo(int connfd);
+
+/*SIGCHLD处理程序：回收僵死(zombie)子进程的资源*/
+/*SIGCHLD处理程序执行时，SIGCHLD信号是阻塞的*/
+void sigchld_handler(int sig){
+    while(waitpid(-1,0,WNOHANG)&gt;0)  //waitpid函数是IPC机制（进程间通信） 
+        ;
+    return;
+}
+
+int main(int argc, char **argv)
 {
-    char* argv[MAXARGS];
-    int state = UNDEF;
-    sigset_t set;
-    pid_t pid;
-    // 处理输入的数据
-    if(parseline(cmdline, argv) == 1)
-        state = BG;
-    else
-        state = FG;
-    if(argv[0] == NULL)
-        return;
-    // 如果不是内置命令
-    if(!builtin_cmd(argv))
+    int listenfd,connfd;
+    socklen_t clientlen;
+    struct sockaddr_storage clientaddr;
+
+    if(argc!=2){
+        fprintf(stderr, &quot;usage: %s &lt;port&gt;\n&quot;,argv[0]);
+        exit(0);
+    }
+
+    Signal(SIGCHLD,sigchld_handler);
+    listenfd= Open_listenfd(argv[1]);
+    while(1){
+        clientlen=sizeof(struct sockaddr_storage);
+        connfd=Accept(listenfd, (SA *)&amp;clientaddr, &amp;clientlen);
+        if(Fork()==0){
+            Close(listenfd); // child closes its listening socket
+            echo(connfd);    // child services client
+            Close(connfd);   // child closes connection with client
+            exit(0);         // child exits
+        }
+        Close(connfd);   /*parent closes connected socket
+                        is important! it may leak memory if don&#39;t close*/
+    }
+}</code></pre>
+<h4 id="2-基于I-O多路复用的并发编程："><a href="#2-基于I-O多路复用的并发编程：" class="headerlink" title="2.基于I/O多路复用的并发编程："></a>2.基于I/O多路复用的并发编程：</h4><p>如果服务器需要在等待请求连接的同时也能对用户的键入的交互命令进行响应，那么这里就牵涉到了两个独立的I/O事件：1.客户端发起连接请求；2.用户键入命令行。</p>
+<p>所以就需要 I/O多路复用（I/O multiplexing）的技术来同时处理。基本思路是使用select函数，要求内核挂起进程，只有当一个或多个I/O事件发生后才将控制返回给应用程序。</p>
+<pre><code class="c">/*
+基于I/O多路复用技术的并发echo服务端
+*/
+
+#include &quot;csapp.h&quot;
+#include &lt;sys/select.h&gt;
+int select(int n, fd_set *fdset, NULL, NULL, NULL);
+//select函数处理类型为 fd_set 的集合，也叫做描述符集合
+
+/*处理描述符集合的宏*/
+FD_ZERO(fd_set *fdset);   //clear all bits in fdset
+FD_CLR(int fd,fd_set *fdset);  //clear bit fd in fdset
+FD_SET(int fd,fd_set *fdset);  //Turn on bit fd in fdset
+FD_ISSET(int fd,fd_set *fdset);  // is bit fd in fdset on ?
+
+typedef struct{
+    int maxfd;    // Largest descriptor in read_set
+    fd_set read_set;  //set of all active descriptors
+    fd_set ready_set;  //subset of descriptors ready for reading
+    int nready;    // number of ready descriptors from select
+    int maxi;    //
+    int clientfd[FD_SETSIZE];  // set of active descriptors 已连接描述符的集合
+    rio_t clientrio[FD_SETSIZE];  // set of active read buffers
+} pool;
+
+
+int byte_cnt=0;   //counts total bytes received by server
+
+int main(int argc, char **argv)
+{
+    int listenfd,connfd;
+    socklen_t clientlen;
+    struct sockaddr_storage clientaddr;
+    static pool pool;
+
+    if(argc!=2){
+        fprintf(stderr, &quot;usage: %s &lt;port&gt;\n&quot;,argv[0]);
+        exit(0);
+    }
+    listenfd=Open_listenfd(argv[1]);
+    init_pool(listenfd,&amp;pool);
+
+    while(1){
+        //wait for listening/connected descriptors to become ready.
+        pool.ready_set=pool.read_set;
+        pool.nready=Select(pool.maxfd+1,&amp;pool.ready_set,NULL,NULL,NULL);
+
+        //if listening descriptor ready ,add new client to pool .
+        if(FD_ISSET(listenfd,&amp;pool.ready_set)){
+            clientlen=sizeof(struct sockaddr_storage);
+            connfd=Accept(listenfd,(SA *)&amp;clientaddr,&amp;clientlen);
+            add_client(connfd,&amp;pool);  // add new client to pool
+        }
+
+        // echo a text line from ready connected descriptor
+        check_clients(&amp;pool);
+    }
+}
+
+
+// init client pool
+void init_pool(int listenfd, pool *p){
+    //initially ,there is no connected descriptors
+    int i;
+    p-&gt;maxi=-1;  //已连接描述符集合是空的
+    for(i=0;i&lt;FD_SETSIZE;i++){
+        p-&gt;clientfd[i]=-1;  // -1 表示这是个可用的槽位
+        // clientfd数组表示已连接描述符的集合
+    }
+
+    //initially,listenfd is only meber of select read set
+    //监听描述符是select读集合中唯一的描述符
+    p-&gt;maxfd=listenfd;
+    FD_ZERO(&amp;p-&gt;read_set);
+    FD_SET(listenfd,&amp;p-&gt;read_set);
+}
+
+
+void add_client(int connfd,pool *p){
+    int i;
+    p-&gt;nready--;
+    for(i=0;i&lt;FD_SETSIZE;i++){
+        if(p-&gt;clientfd[i]&lt;0){  //空槽位
+            //add connected descriptor to the pool
+            p-&gt;clientfd[i]=connfd;  //添加一个新的客户端到活动客户端池中
+            Rio_readinitb(&amp;p-&gt;clientrio[i],connfd);  
+            //初始化相应的RIO读缓冲区，为后续描述符调用rio_readlineb做准备
+
+            //add the descriptor to descriptor set
+            FD_SET(connfd,&amp;p-&gt;read_set); //将已连接描述符添加到select读集合中
+
+            //update max descriptor and pool high water mark  更新一些全局变量
+            if(connfd&gt;p-&gt;maxfd){
+                p-&gt;maxfd=connfd;  //maxfd记录了select的最大文件描述符
+            }
+            if(i &gt; p-&gt;maxi){
+                p-&gt;maxi=i;  
+                //maxi记录了clientfd数组的最大索引
+                //这样check_clients函数就无需搜索整个数组了
+            }
+            break;
+        }
+    }
+    if(i==FD_SETSIZE){
+        app_error(&quot;add_client error: Too many clietnts&quot;);
+    }
+}
+
+
+void check_clients(pool *p){
+    int i,connfd,n;
+    char buf[MAXLINE];
+    rio_t rio;
+
+    for(i=0;(i&lt;=p-&gt;maxi)&amp;&amp;(p-&gt;nready&gt;0);i++){
+        connfd=p-&gt;clientfd[i];  //从clientfd数组集合中取出已连接描述符i
+        rio=p-&gt;clientrio[i];
+
+        // if the descriptor is ready,echo a text line from it
+        if((connfd&gt;0)&amp;&amp;(FD_ISSET(connfd,&amp;p-&gt;ready_set))){
+            p-&gt;nready--;
+            if((n=Rio_readlineb(&amp;rio,buf,MAXLINE))!=0){
+                byte_cnt+=n;  //读取的字节数
+                printf(&quot;Server received %d (%d total) bytes on fd %d\n&quot;,
+                    n,byte_cnt,connfd);
+                Rio_writen(connfd,buf,n); //输出数据给connfd，给客户端
+            }
+            else{//EOF detected, remove descriptor from pool
+                Close(connfd);
+                FD_CLR(connfd,&amp;p-&gt;read_set);
+                p-&gt;clientfd[i]=-1;  //池中清空该槽位
+            }
+        }
+    }
+}</code></pre>
+<h4 id="3-基于线程的并发编程："><a href="#3-基于线程的并发编程：" class="headerlink" title="3.基于线程的并发编程："></a>3.基于线程的并发编程：</h4><p>基于进程，内核会自动调度每个进程，每个进程有它私有地址空间，所以流共享数据很困难。基于I/O的话，创建逻辑流，因为只有一个进程，所以流共享整个地址空间。而基于线程的方法是前两种方法的混合。</p>
+<p>线程（Thread）就是运行在进程上下文中的逻辑流。</p>
+<p>每个进程开始生命周期时都是单一线程，这个线程叫做主线程（Main Thread）。在某一时刻（某个需要），主线程会创建一个对等线程。然后从这个时间点开始，两条线程并发地运行着。切换线程的过程中也需要切换线程的上下文，等到其他线程执行一段时间后，再将控制权传递回主线程。</p>
+<p>线程的上下文比进程的上小文要小得多。</p>
+<p>主线程和其他线程的区别仅在于它总是进程中第一个运行的线程。 线程之间关系并不是父子关系。</p>
+<p>和一个进程相关的所有线程组成一个对等池。每个对等线程都能读写相同的共享数据。</p>
+<p>Posix线程（Pthread）是C在处理线程的一个标准接口，其定义了约60个函数，运行程序创建、杀死、回收线程，与对等线程安全地共享数据。</p>
+<p>举一个程序例子：在主线程中创建对等线程，然后等待其运行结束返回，然后主线程退出。</p>
+<pre><code class="c">#include &quot;csapp.h&quot;
+void *thread(void *vargp);//每个线程例程都以一个通用指针作为输入，并返回一个通用指针
+//如果想传递多个参数给线程例程的话，需要将参数放到一个结构中！并传递一个指向该结构的指针
+//反之亦然，返回多个参数的话， 只要返回一个指向一个结构的指针即可。
+
+int main(){
+    pthread_t tid;  //tid准备存放新线程的ID
+    Pthread_create(&amp;tid,NULL,thread,NULL); //创建一个新的对等线程
+    Pthread_join(tid,NULL);   //主线程等待对等线程运行然后终止返回
+    exit(0); //主线程退出
+}
+
+void *thread(void *vargp){
+    //thread routine
+    printf(&quot;Hello world !\n&quot;);  //对等线程只做了打印的工作
+    return NULL;  //终止对等线程
+}</code></pre>
+<p>关于线程的一些函数：</p>
+<pre><code class="c">#include &lt;pthread.h&gt;
+int pthread_create(...) //创建线程
+int pthread_exit(...)   //终止线程
+int pthread_join(...)  //等待其他线程终止，然后回收已终止线程的资源
+int pthread_detach(pthread_t tid) //分离线程
+int pthread_once(...)  //初始化线程</code></pre>
+<p>函数的具体用法就百度吧。</p>
+<p>基于线程的并发echo服务器：</p>
+<pre><code class="c">/*
+基于线程的并发echo服务器
+*/
+
+#include &quot;csapp.h&quot;
+
+void echo(int connfd);
+void *thread(void *vargp);
+
+int main(int argc, char **argv)
+{
+    int listenfd.*connfdp;
+    socklen_t clientlen;
+    struct sockaddr_storage clientaddr;
+    pthread_t tid;
+
+    if(argc!=2){
+        fprintf(stderr, &quot;usage: %s &lt;port&gt;\n&quot;,argv[0]);
+        exit(0);
+    }
+    listenfd=Open_listenfd(argv[1]);
+
+    while(1){
+        clientlen=sizeof(struct sockaddr_storage);
+        connfdp=Malloc(sizeof(int));
+        *connfdp=Accept(listenfd,(SA *)&amp;clientaddr,&amp;clientlen);
+        Pthread_create(&amp;tid,NULL,thread,connfdp);
+    }
+}
+
+//Thread routine
+void *thread(void *vargp){
+    int connfd=*((int *)vargp);
+    Pthread_detach(pthread_self());
+    Free(vargp);
+    echo(connfd);
+    Close(connfd);
+    return NULL;
+}</code></pre>
+<h2 id="proxy-lab："><a href="#proxy-lab：" class="headerlink" title="proxy lab："></a>proxy lab：</h2><p>proxy.c：</p>
+<pre><code class="c">#include &quot;csapp.h&quot;
+#include &lt;semaphore.h&gt;   //信号量
+
+/* Recommended max cache and object sizes */
+#define MAX_CACHE_SIZE 1049000
+#define MAX_OBJECT_SIZE 102400
+
+/* You won&#39;t lose style points for including this long line in your code */
+static const char *user_agent_hdr = &quot;User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:10.0.3) Gecko/20120305 Firefox/10.0.3\r\n&quot;;
+
+#define PREFIX_PRINT &quot;proxy &gt; &quot;
+#define MAX_CACHE_LINE 100
+// 最大http header数量
+#define MAXHEADERS 30
+typedef struct {
+    char name[MAXLINE];
+    char value[MAXLINE];
+}http_headers;
+
+typedef struct{
+    char requestType[MAXLINE];
+    char Protocol[MAXLINE];
+    char address[MAXLINE];
+    char resource[MAXLINE];
+    char port[10];
+}http_target;
+
+// 缓存(这部分需要设置线程互斥)
+typedef struct{
+    char address[MAXLINE];
+    char content_type[MAXLINE];
+    char* data;
+    size_t size;
+    size_t lru;
+}cache_line;
+size_t current_lru = 1, cache_nums = 0, cache_size = 0;
+cache_line cache[MAX_CACHE_LINE];
+// 互斥锁
+pthread_mutex_t thread_mutex;
+
+/*
+    写入缓存。此函数需要设置为互斥，不允许同时写
+*/
+void writeCache(const char* address, const char* data, const size_t dataSize, const char* content_type)
+{
+    size_t index = cache_nums;
+    // 如果cache已满(条目已满或大小已满)
+    // 之所以用while，是因为可能存在驱逐一个cache_line后，新的数据还是放不下的情况
+    while(cache_nums &gt;= MAX_CACHE_LINE || cache_size + dataSize &gt; MAX_CACHE_SIZE)
     {
-        if(sigemptyset(&amp;set) &lt; 0)
-            unix_error(&quot;sigemptyset error&quot;);
-        if(sigaddset(&amp;set, SIGINT) &lt; 0 || sigaddset(&amp;set, SIGTSTP) &lt; 0 || sigaddset(&amp;set, SIGCHLD) &lt; 0)
-            unix_error(&quot;sigaddset error&quot;);
-        // 在fork前，将SIGCHLD信号阻塞，防止并发错误——_竞争_ 的发生
-        if(sigprocmask(SIG_BLOCK, &amp;set, NULL) &lt; 0)
-            unix_error(&quot;sigprocmask error&quot;);
+        // 遍历所有cache，查找最近最少用的cache
+        size_t minLRU = (size_t)-1;
+        for(size_t i = 0; i &lt; cache_nums; i++){
+            if(cache[i].size &gt; 0 &amp;&amp; cache[i].lru &lt; minLRU)
+            {
+                minLRU = cache[i].lru;
+                index = i;
+            }
+        }
+        // 将该cache驱逐
+        free(cache[index].data);
+        cache[index].size = 0;
+        cache[index].address[0] = &#39;\0&#39;;
+        cache_nums--;
+    }
 
-        if((pid = fork()) &lt; 0)
-            unix_error(&quot;fork error&quot;);
-        else if(pid == 0)
+    strncpy(cache[index].content_type, content_type, MAXLINE);
+    strncpy(cache[index].address, address, MAXLINE);
+    cache[index].size = dataSize;
+    cache[index].data = malloc(dataSize); //分配内存
+    memcpy(cache[index].data, data, dataSize);  //把这块内存填充为data
+    cache[index].lru = current_lru;
+    // lru递增
+    current_lru++;
+    cache_nums++;
+    cache_size += cache[index].size;
+}
+
+/* 
+    读取缓存。此函数需要设置互斥,因为要修改缓存的LRU
+    如果在缓存中找到了数据，则返回该缓存行
+*/
+const cache_line* readCache(const char* address)
+{
+    for(size_t i = 0; i &lt; cache_nums; i++){
+        if(!strcmp(cache[i].address, address))
         {
-            /*  把新建立的进程添加到新的进程组:
-                当从bash运行tsh时，tsh在bash前台进程组中运行。
-                如果tsh随后创建了一个子进程，默认情况下，该子进程也将是bash前台进程组的成员。
-                由于输入ctrl-c将向bash前台组中的每个进程发送一个SIGINT，
-                因此输入ctrl-c将向tsh以及tsh创建的每个进程发送一个SIGINT，这显然是不正确的。
-                这里有一个解决方案:在fork之后，但在execve之前，子进程应该调用setpgid(0,0)，
-                这将把子进程放入一个新的进程组中，该进程组的ID与子进程的PID相同。
-                这确保bash前台进程组中只有一个进程，即tsh进程。
-                当您键入ctrl-c时，tsh应该捕获结果SIGINT，然后将其转发到适当的前台作业
-            */
-        // 子进程的控制流开始
-            if(sigprocmask(SIG_UNBLOCK, &amp;set, NULL) &lt; 0)
-                unix_error(&quot;sigprocmask error&quot;);
-            if(setpgid(0, 0) &lt; 0)
-                unix_error(&quot;setpgid error&quot;);
-            if(execve(argv[0], argv, environ) &lt; 0){
-                printf(&quot;%s: command not found\n&quot;, argv[0]);
-                exit(0);
-            }
+            cache[i].lru = current_lru++;
+            return &amp;cache[i];
         }
-        // 将当前进程添加进job中，无论是前台进程还是后台进程
-        addjob(jobs, pid, state, cmdline);
-        // 恢复受阻塞的信号 SIGINT SIGTSTP SIGCHLD
-        if(sigprocmask(SIG_UNBLOCK, &amp;set, NULL) &lt; 0)
-            unix_error(&quot;sigprocmask error&quot;);
-
-        // 判断子进程类型并做处理
-        if(state == FG)
-            waitfg(pid);
-        else
-            printf(&quot;[%d] (%d) %s&quot;, pid2jid(pid), pid, cmdline);
     }
-    return;
-}</code></pre>
-<p>补充知识：</p>
-<p>sigprocmask函数：<a href="https://blog.csdn.net/shaoliang_ge/article/details/57984123" target="_blank" rel="noopener">https://blog.csdn.net/shaoliang_ge/article/details/57984123</a></p>
-<p>有时候不希望在接收到新信号后立即停止当前正在执行的任务反而去处理新信号（这样的话那可能一样任务都完成不了），但同时也不想忽略该新信号，所以就会需要延迟一段时间，等处理好手头的任务后再去调用新信号然后执行，这就是<code>阻断信号</code>的原理。</p>
-<p>进程可以选择阻塞（Block）某个信号。被阻塞的信号产生时将保持在未决（Pending）状态，直到进程解除对此信号的阻塞，才执行递达（Delivery）的动作。注意，阻塞和忽略是不同，只要信号被阻塞就不会递达，而忽略是在递达之后可选的一种处理动作。</p>
-<p>要用这个函数需要 #include &lt;signal.h&gt;，tsh.c文件自己已经加上了。</p>
-<p>sigprocmask函数的用法： 可以检测或更改其信号屏蔽字</p>
-<blockquote>
-<p>int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);</p>
-</blockquote>
-<p>参数how用于指定信号修改的方式，可以有如下三种取值：</p>
-<blockquote>
-<p>SIG_BLOCK//将set所指向的信号集中包含的信号加到当前的信号掩码中。即信号掩码和set信号集进行或操作。</p>
-<p>SIG_UNBLOCK//将set所指向的信号集中包含的信号从当前的信号掩码中删除。即信号掩码和set进行与操作。</p>
-<p>SIG_SETMASK //将set的值设定为新的进程信号掩码。即set对信号掩码进行了赋值操作。</p>
-</blockquote>
-<p>set：为指向信号集的指针，在此专指新设的信号集，如果仅想读取现在的屏蔽值，可将其置为NULL。若set是一个非空指针，则参数how指示如何修改当前信号屏蔽字。</p>
-<p>oldset：也是指向信号集的指针，在此存放原来的信号集。可用来检测信号掩码中存在什么信号。若oldset是非空指针，那么进程的当前信号屏蔽字通过oldset返回</p>
-<p>返回说明：成功执行时，返回0。失败返回-1，errno被设为EINVAL。</p>
-<p>还有，eval函数里还涉及了很多函数，这些函数暂时还未实现，等着我们去实现呢。</p>
-<p>这就接着看下一个函数吧。</p>
-<h3 id="2-builtin-cmd函数："><a href="#2-builtin-cmd函数：" class="headerlink" title="2.builtin_cmd函数："></a>2.builtin_cmd函数：</h3><p>相对来说逻辑很简单，就是判断是哪个内置命令然后转到相应的函数，然后return 1；否则不是内置命令的话，啥也不做，直接返回0。</p>
-<pre><code class="c">/*
-* builtin_cmd - If the user has typed a built-in command then execute
-*    it immediately.  
-*/
-int builtin_cmd(char **argv)
+
+    return NULL;
+}
+// 初始化缓存
+void initCache(void)
 {
-    if(!strcmp(argv[0], &quot;quit&quot;))
-        exit(0);
-    else if(!strcmp(argv[0], &quot;bg&quot;) || !strcmp(argv[0], &quot;fg&quot;))
-        do_bgfg(argv);
-    else if(!strcmp(argv[0], &quot;jobs&quot;))
-        listjobs(jobs);
+    for(size_t i = 0; i &lt; MAX_CACHE_LINE; i++)
+    {
+        cache[i].data = NULL;
+        cache[i].size = 0;
+        cache[i].lru = 0;
+    }
+}
+
+/*
+    read_requesthdrs - 返回读取的http header条目个数
+*/
+int read_requesthdrs(rio_t *rp, http_headers headers[MAXHEADERS]) 
+{
+    int idx = 0;
+    char buf[MAXLINE];
+
+    Rio_readlineb(rp, buf, MAXLINE);
+    while(strcmp(buf, &quot;\r\n&quot;))
+    {
+        sscanf(buf, &quot;%[^:]:%s\r\n&quot;, headers[idx].name, headers[idx].value);
+        printf(&quot;%s: %s\r\n&quot;, headers[idx].name, headers[idx].value);
+        idx++;
+        Rio_readlineb(rp, buf, MAXLINE);
+    }
+    printf(&quot;\r\n&quot;);
+    return idx;
+}
+/*
+ * parse_uri 从给出的访问地址中，将地址，端口与资源地址分开
+ */
+void parse_uri(char *uri, http_target* targetServer) 
+{
+    // 以 http://www.baidu.com:80/index.html 为例
+    char* addressPtr = NULL;
+    // 获取协议名称
+    if((addressPtr = strstr(uri, &quot;//&quot;)))
+        addressPtr += 2;
     else
-        return 0;     /* not a builtin command */
-    return 1;
-}</code></pre>
-<p>接着就是实现do_bgfg函数了。</p>
-<h3 id="3-do-bgfg函数："><a href="#3-do-bgfg函数：" class="headerlink" title="3. do_bgfg函数："></a>3. do_bgfg函数：</h3><p>这个函数用来判断是否前台或后台命令</p>
-<p>核心就两点：</p>
-<ol>
-<li><p>区分bg和fg命令，以及传入pid或者jid参数对应的进程的状态。前者if，后者switch就可以包括所用的情况</p>
-</li>
-<li><p>注意用户输入错误处理，比如参数数量不够或者参数传入错误的情况</p>
-</li>
-</ol>
-<pre><code class="c">/*
-* do_bgfg - Execute the builtin bg and fg commands
+        addressPtr = uri;
+    // 此时的addressPtr -&gt; www.baidu.com:80/index.html
+
+    // 获取端口
+    char* portPtr = strstr(addressPtr, &quot;:&quot;);
+    // 此时的portPtr -&gt; NULL | :80/index.html
+
+    // 获取资源名
+    char* resourcePtr = strstr(addressPtr, &quot;/&quot;);
+    // 此时的resourcePtr -&gt; NULL | /index.html
+
+    if(resourcePtr != NULL)
+        strncpy(targetServer-&gt;resource, resourcePtr, MAXLINE);
+    else
+    {
+        strncpy(targetServer-&gt;resource, &quot;/&quot;, 2); // 如果没有指定资源，则默认为“/”
+        resourcePtr = addressPtr + strlen(addressPtr);
+    }
+    if(portPtr != NULL)
+        strncpy(targetServer-&gt;port, portPtr + 1, resourcePtr-(portPtr+1));
+    else
+    {
+        strncpy(targetServer-&gt;port, &quot;80&quot;, 3); // 如果没有指定端口，则默认80
+        portPtr = resourcePtr;
+    }
+    strncpy(targetServer-&gt;address, addressPtr, portPtr - addressPtr);
+    printf(PREFIX_PRINT&quot;targetResources: %s:%s%s\n&quot;, 
+        targetServer-&gt;address, targetServer-&gt;port, targetServer-&gt;resource);  //目标文件
+}
+/*
+    add_header - 添加新http header至结构体中
+        注意，如果结构体中已经存在某条name，新value将不会被设置
 */
-
-void do_bgfg(char **argv)
+void add_header(http_headers headers[MAXHEADERS], int* header_num, const char* name, const char* value)
 {
-    int parsed;
-    struct job_t *job;
-    // 没有参数的fg/bg应该被丢弃
-    if(!argv[1]){
-        printf(&quot;%s command requires PID or %%jobid argument\n&quot;, argv[0]);
-        return ;
-    }
-
-    // 检测fg/bg参数，其中%开头的数字是JobID，纯数字的是PID
-    if(argv[1][0] == &#39;%&#39;){
-        if((parsed = strtol(&amp;argv[1][1], NULL, 10)) &lt;= 0){
-            printf(&quot;%s: argument must be a PID or %%jobid\n&quot;,argv[0]);
+    // 查找是否存在相同的name
+    for(int i = 0; i &lt; *header_num; i++)
+        if(!strcmp(name, headers[i].name))
             return;
-        }
-        if((job = getjobjid(jobs, parsed)) == NULL){
-            printf(&quot;%%%d: No such job\n&quot;, parsed);
-            return;
-        }
-    } else {
-        if((parsed = strtol(argv[1], NULL, 10)) &lt;= 0){
-            printf(&quot;%s: argument must be a PID or %%jobid\n&quot;,argv[0]);
-            return;
-        }
-        if((job = getjobpid(jobs, parsed)) == NULL){
-            printf(&quot;(%d): No such process\n&quot;, parsed);
-            return;
-        }
-    }
-
-    if(!strcmp(argv[0], &quot;bg&quot;)){
-        // bg会启动子进程，并将其放置于后台执行
-        job-&gt;state = BG;
-
-        if(kill(-job-&gt;pid, SIGCONT) &lt; 0)
-            unix_error(&quot;kill error&quot;);
-        printf(&quot;[%d] (%d) %s&quot;, job-&gt;jid, job-&gt;pid, job-&gt;cmdline);
-    } else if(!strcmp(argv[0], &quot;fg&quot;)) {
-        job-&gt;state = FG;
-        if(kill(-job-&gt;pid, SIGCONT) &lt; 0)
-            unix_error(&quot;kill error&quot;);
-        // 当一个进程被设置为前台执行时，当前tsh应该等待该子进程结束
-        waitfg(job-&gt;pid);
-    } else {
-        puts(&quot;do_bgfg: Internal error&quot;);
-        exit(0);
-    }
-    return;
-}</code></pre>
-<h3 id="4-waitfg函数："><a href="#4-waitfg函数：" class="headerlink" title="4. waitfg函数："></a>4. waitfg函数：</h3><p>等前台进程执行结束。</p>
-<pre><code class="c">/*
-* waitfg - Block until process pid is no longer the foreground process
-*/
-void waitfg(pid_t pid)
-{
-    struct job_t *job = getjobpid(jobs, pid);
-    if(!job) return;
-
-    // 如果当前子进程的状态没有发生改变，则tsh继续休眠
-    while(job-&gt;state == FG)
-        // 使用sleep的这段代码会比较慢，最好使用sigsuspend
-        sleep(1);
-
-    if(verbose)
-        printf(&quot;waitfg: Process (%d) no longer the fg process\n&quot;, pid);
-
-    return;
-}</code></pre>
-<h3 id="5-parseline函数："><a href="#5-parseline函数：" class="headerlink" title="5.parseline函数："></a>5.parseline函数：</h3><pre><code class="c">/*
-* parseline - Parse the command line and build the argv array.
-*
-* Characters enclosed in single quotes are treated as a single
-* argument.  Return true if the user has requested a BG job, false if
-* the user has requested a FG job.  
-*/
-int parseline(const char *cmdline, char **argv)
-{
-    static char array[MAXLINE]; /* holds local copy of command line */
-    char *buf = array;          /* ptr that traverses command line */
-    char *delim;                /* points to first space delimiter */
-    int argc;                   /* number of args */
-    int bg;                     /* background job? */
-
-    strcpy(buf, cmdline);
-    buf[strlen(buf)-1] = &#39; &#39;;  /* replace trailing &#39;\n&#39; with space */
-    while (*buf &amp;&amp; (*buf == &#39; &#39;)) /* ignore leading spaces */
-    buf++;
-
-    /* Build the argv list */
-    argc = 0;
-    if (*buf == &#39;\&#39;&#39;) {
-        buf++;
-        delim = strchr(buf, &#39;\&#39;&#39;);
-    }
-    else {
-        delim = strchr(buf, &#39; &#39;);
-    }
-
-    while (delim) {
-        argv[argc++] = buf;
-        *delim = &#39;\0&#39;;
-        buf = delim + 1;
-        while (*buf &amp;&amp; (*buf == &#39; &#39;)) /* ignore spaces */
-            buf++;
-
-        if (*buf == &#39;\&#39;&#39;) {
-            buf++;
-            delim = strchr(buf, &#39;\&#39;&#39;);
-        }
-        else{
-            delim = strchr(buf, &#39; &#39;);
-        }
-    }
-    argv[argc] = NULL;
-
-    if (argc == 0)  /* ignore blank line */
-        return 1;
-
-    /* should the job run in the background? */
-    if ((bg = (*argv[argc-1] == &#39;&amp;&#39;)) != 0) {
-        argv[--argc] = NULL;
-    }
-    return bg;
-}</code></pre>
-<h3 id="6-信号处理程序函数："><a href="#6-信号处理程序函数：" class="headerlink" title="6.信号处理程序函数："></a>6.信号处理程序函数：</h3><p>三个信号处理程序函数：</p>
-<pre><code class="c">/*****************
- * Signal handlers
- *****************/
+    strncpy(headers[*header_num].name, name, MAXLINE);
+    strncpy(headers[*header_num].value, value, MAXLINE);
+    printf(PREFIX_PRINT&quot;add_header: %s:%s\n&quot;, headers[*header_num].name, headers[*header_num].value);
+    (*header_num)++;
+}
 
 /*
-* sigchld_handler - The kernel sends a SIGCHLD to the shell whenever
-*     a child job terminates (becomes a zombie), or stops because it
-*     received a SIGSTOP or SIGTSTP signal. The handler reaps all
-*     available zombie children, but doesn&#39;t wait for any other
-*     currently running children to terminate.  
+    transmitDataS2C 
+    transmit data from server to client- 将服务端所有数据转发给客户端
 */
-void sigchld_handler(int sig)
+void transmitDataS2C(int clientFd, int serverFd, const char* resAddr)
 {
-    int status, jid;
-    pid_t pid;
-    struct job_t *job;
+    char buf[2 * MAXLINE + 5];
+    int size = 0, header_num = 0, contentSize = -1;
+    rio_t serverRio;
+    http_headers headers[MAXHEADERS], *content_type = NULL;
 
-    if(verbose)
-        puts(&quot;sigchld_handler: entering&quot;);
+    Rio_readinitb(&amp;serverRio, serverFd);
+    // 读取并发送第一行的状态码
+    rio_readlineb(&amp;serverRio, buf, MAXLINE);
+    printf(&quot;%s&quot;, buf);
+    Rio_writen(clientFd, buf, strlen(buf));
+    // 读取服务器返回的http头
+    header_num = read_requesthdrs(&amp;serverRio, headers);
+    // 获取当前返回数据中的content-length与Content-type。并将http header全部发送给客户端
+    for(int i = 0; i &lt; header_num; i++){
+        if(!strcmp(&quot;Content-length&quot;, headers[i].name)){
+            sscanf(headers[i].value, &quot;%d&quot;, &amp;contentSize);
+            printf(PREFIX_PRINT&quot;current Content-size: %d\n&quot;, contentSize);
+        }
+        else if(!strcmp(&quot;Content-type&quot;, headers[i].name)){
+            content_type = &amp;headers[i];
+            printf(PREFIX_PRINT&quot;current Content_type: %s\n&quot;, content_type-&gt;value);
+        }
+        snprintf(buf, 2 * MAXLINE + 5, &quot;%s: %s\r\n&quot;, headers[i].name, headers[i].value);
+        printf(&quot;%s&quot;, buf);
+        Rio_writen(clientFd, buf, strlen(buf));
+    }
+    Rio_writen(clientFd, &quot;\r\n&quot;, 2);
 
+    // 如果当前请求不可被缓存(缺失内容大小/缺失内容类型/内容过大)
+    if(contentSize == -1 || contentSize &gt; MAX_OBJECT_SIZE || content_type == NULL)
+    {
+        // 直接发送
+        while ((size = Rio_readnb(&amp;serverRio, buf, MAXLINE)))
+        {
+            printf(&quot;%s&quot;, buf);
+            Rio_writen(clientFd, buf, size);
+        }
+    }
+    else
+    {
+        /* 获取客户端数据的body */
+        // 多加一字节验证正确性
+        char* data = malloc(contentSize + 1);
+        size = Rio_readnb(&amp;serverRio, data, contentSize + 1);
+        printf(&quot;%s&quot;, data);
+        if(size != contentSize)
+            printf(PREFIX_PRINT&quot;WARNING: Content-length is different from actual data lenth.\n&quot;);
+        int actualStoreSize = ((size &gt; contentSize) ? contentSize : size);
+
+        /* 将数据添加进Cache中 */
+        // 设置线程锁
+        pthread_mutex_lock(&amp;thread_mutex); 
+        writeCache(resAddr, data, actualStoreSize, content_type-&gt;value);
+        pthread_mutex_unlock(&amp;thread_mutex); 
+        // 将数据发送给客户端
+        Rio_writen(clientFd, data, actualStoreSize);
+        // 注意释放内存
+        free(data);
+    }
+}
+
+/*
+    writeToServer - 向服务器发送数据
+*/
+void writeToServer(int clientFd, int serverFd, 
+            http_target* targetServer, http_headers* headers, int header_num)
+{
+    printf(PREFIX_PRINT&quot;write to fd %d:\n&quot;, serverFd);
+    char buf[3 * MAXLINE + 5];
+    // 写入第一行
+    snprintf(buf, MAXLINE, &quot;%s %s %s\r\n&quot;, 
+        targetServer-&gt;requestType, targetServer-&gt;resource, targetServer-&gt;Protocol);
+    printf(&quot;%s&quot;, buf);
+    Rio_writen(serverFd, buf, strlen(buf));
+    // 写入http header
+    for(int i = 0; i &lt; header_num; i++)
+    {
+        snprintf(buf, 3 * MAXLINE + 5, &quot;%s: %s\r\n&quot;, headers[i].name, headers[i].value);
+        printf(&quot;%s&quot;, buf);
+        Rio_writen(serverFd, buf, strlen(buf));
+    }
+    Rio_writen(serverFd, &quot;\r\n&quot;, 2);
+    printf(&quot;\r\n&quot;);
     /*
-    以非阻塞方式等待所有子进程
-    waitpid 参数3：
-        1.     0     ： 执行waitpid时， 只有在子进程 **终止** 时才会返回。
-        2. WNOHANG   : 若子进程仍然在运行，则返回0 。
-                注意只有设置了这个标志，waitpid才有可能返回0
-        3. WUNTRACED : 如果子进程由于传递信号而停止，则马上返回。
-                只有设置了这个标志，waitpid返回时，其WIFSTOPPED(status)才有可能返回true
+    @note 一个奇怪的地方：无法检测客户端的EOF，再次读取会直接阻塞; 但却可以检测到服务端的EOF
+        初步判断原因是服务端数据一经发送，服务端断开与proxy的连接，所以就有了EOF
+    // transmitDataS2C(serverFd, clientFd);
     */
-    while((pid = waitpid(-1, &amp;status, WNOHANG | WUNTRACED)) &gt; 0){
-
-        // 如果当前这个子进程的job已经删除了，则表示有错误发生
-        if((job = getjobpid(jobs, pid)) == NULL){
-            printf(&quot;Lost track of (%d)\n&quot;, pid);
-            return;
-        }
-
-        jid = job-&gt;jid;
-        // 如果这个子进程收到了一个暂停信号（还没退出
-        if(WIFSTOPPED(status)){
-            printf(&quot;Job [%d] (%d) stopped by signal %d\n&quot;, jid, job-&gt;pid, WSTOPSIG(status));
-            job-&gt;state = ST;
-        }
-        // 如果这个子进程正常退出
-        else if(WIFEXITED(status)){
-            if(deletejob(jobs, pid))
-                if(verbose){
-                    printf(&quot;sigchld_handler: Job [%d] (%d) deleted\n&quot;, jid, pid);
-                    printf(&quot;sigchld_handler: Job [%d] (%d) terminates OK (status %d)\n&quot;, jid, pid, WEXITSTATUS(status));
-                }
-        }
-        // 如果这个子进程因为其他的信号而异常退出，例如SIGKILL
-        else {
-            if(deletejob(jobs, pid)){
-                if(verbose)
-                    printf(&quot;sigchld_handler: Job [%d] (%d) deleted\n&quot;, jid, pid);
-            }
-            printf(&quot;Job [%d] (%d) terminated by signal %d\n&quot;, jid, pid, WTERMSIG(status));
-        }
-    }
-
-    if(verbose)
-        puts(&quot;sigchld_handler: exiting&quot;);
-
-    return;
 }
 
 /*
-* sigint_handler - The kernel sends a SIGINT to the shell whenver the
-*    user types ctrl-c at the keyboard.  Catch it and send it along
-*    to the foreground job.  
-*/
-void sigint_handler(int sig)
+ * doit - handle one HTTP request/response transaction
+ * pthread多线程使用函数，始终传入clientFd与返回NULL
+ */
+void* doit(void* thread_arg) 
 {
-    if(verbose)
-        puts(&quot;sigint_handler: entering&quot;);
-    pid_t pid = fgpid(jobs);
+    // 设置客户端的文件描述符
+    int clientFd = (int)(long)thread_arg;
+    char buf[MAXLINE], uri[MAXLINE], cache_content_type[MAXLINE];
+    http_headers headers[MAXHEADERS];  
+    http_target targetServer;
+    rio_t clientRio;
+    int serverFd;
+    char* cacheData = NULL;
+    int cacheSize;
 
-    if(pid){
-        // 发送SIGINT给前台进程组里的所有进程
-        // 需要注意的是，前台进程组内的进程除了当前前台进程以外，还包括前台进程的子进程。
-        // 最多只能存在一个前台进程，但前台进程组内可以存在多个进程
-        if(kill(-pid, SIGINT) &lt; 0)
-            unix_error(&quot;kill (sigint) error&quot;);
-        if(verbose){
-            printf(&quot;sigint_handler: Job (%d) killed\n&quot;, pid);
-        }
+    /* 开始对http header做一些处理 */
+    Rio_readinitb(&amp;clientRio, clientFd);
+    // 读取第一行的get请求，例如    “GET /index.html HTTP/1.0\r\n”
+    if (!Rio_readlineb(&amp;clientRio, buf, MAXLINE))  
+        return NULL;
+    printf(PREFIX_PRINT&quot;%s&quot;, buf);
+    sscanf(buf, &quot;%s %s %s&quot;, targetServer.requestType, uri, targetServer.Protocol);  
+
+    // 设置线程锁
+    pthread_mutex_lock(&amp;thread_mutex); 
+    // 判断该资源是否存在cache中
+    const cache_line* tmpCache = readCache(uri);
+    // 如果资源存在
+    if(tmpCache)
+    {
+        // 趁着有锁，将数据复制到另一块内存中
+        cacheSize = tmpCache-&gt;size;
+        cacheData = malloc(cacheSize);
+        memcpy(cacheData, tmpCache-&gt;data, cacheSize);
+        strncpy(cache_content_type, tmpCache-&gt;content_type, MAXLINE);
     }
-
-    if(verbose)
-        puts(&quot;sigint_handler: exiting&quot;);
-
-    return;
+    // 解锁
+    pthread_mutex_unlock(&amp;thread_mutex);
+    // 如果数据存在于cache
+    if(cacheData)
+    {
+        char tmp[MAXLINE];
+        // 发送http头部
+        snprintf(buf, MAXLINE, &quot;HTTP/1.0 200 OK\r\n&quot;);
+        strncat(buf, &quot;Server: Tiny Proxy Server\r\n&quot;, MAXLINE);
+        snprintf(tmp, MAXLINE, &quot;Content-type: %s\r\n&quot;, cache_content_type);
+        strncat(buf, tmp, MAXLINE);
+        snprintf(tmp, MAXLINE, &quot;Content-length: %d\r\n&quot;, cacheSize);
+        strncat(buf, tmp, MAXLINE);
+        strncat(buf, &quot;\r\n&quot;, MAXLINE);
+        Rio_writen(clientFd, buf, strlen(buf));
+        // 发送主体内容body给客户端
+        Rio_writen(clientFd, cacheData, cacheSize);
+        printf(PREFIX_PRINT&quot;write to fd %d\n%s%s:\n&quot;, clientFd, buf, cacheData);
+        free(cacheData);
+    }
+    else
+    {
+        // 获取其余的header
+        int headers_num = read_requesthdrs(&amp;clientRio, headers);   
+        // 获取目标ip，端口、以及所申请的资源
+        parse_uri(uri, &amp;targetServer);
+        // 添加新的header
+        add_header(headers, &amp;headers_num, &quot;User-Agent&quot;, user_agent_hdr);
+        add_header(headers, &amp;headers_num, &quot;Host&quot;, targetServer.address);
+        add_header(headers, &amp;headers_num, &quot;Connection&quot;, &quot;close&quot;);
+        add_header(headers, &amp;headers_num, &quot;Proxy-Connection&quot;, &quot;close&quot;);
+        // 连接远程服务器
+        serverFd = Open_clientfd(targetServer.address, targetServer.port);
+        printf(PREFIX_PRINT&quot;Connect to %s:%s.(serverFd: %d)\n&quot;,
+            targetServer.address, targetServer.port, serverFd);
+        // 发送数据至远程服务器
+        writeToServer(clientFd, serverFd, &amp;targetServer, headers, headers_num);
+        // 将远程服务器传来的数据转发给客户端
+        transmitDataS2C(clientFd, serverFd, uri);
+    }
+    // 关闭服务端
+    close(serverFd);
+    // 关闭客户端
+    Close(clientFd);
+    printf(PREFIX_PRINT&quot;client closed\n\n&quot;);
+    return NULL;
 }
 
-/*
-* sigtstp_handler - The kernel sends a SIGTSTP to the shell whenever
-*     the user types ctrl-z at the keyboard. Catch it and suspend the
-*     foreground job by sending it a SIGTSTP.  
-*/
-void sigtstp_handler(int sig)
+int main(int argc, char* argv[])
 {
-    if(verbose)
-        puts(&quot;sigstp_handler: entering&quot;);
+    char hostname[MAXLINE], port[MAXLINE];
+    struct sockaddr_storage clientaddr;
+    pthread_attr_t thread_attr;
+    socklen_t clientlen;
+    pthread_t thread;
 
-    pid_t pid = fgpid(jobs);
-    struct job_t *job = getjobpid(jobs, pid);
-
-    if(pid){
-        if(kill(-pid, SIGTSTP) &lt; 0)
-            unix_error(&quot;kill (tstp) error&quot;);
-        if(verbose){
-            printf(&quot;sigstp_handler: Job [%d] (%d) stopped\n&quot;, job-&gt;jid, pid);
-        }
+    int connfd;
+    /* Check command line args */
+    if (argc != 2) {
+        fprintf(stderr, &quot;usage: %s &lt;port&gt;\n&quot;, argv[0]);
+        exit(1);
     }
-
-    if(verbose)
-        puts(&quot;sigstp_handler: exiting&quot;);
-    return;
-}
-
-/*********************
- * End signal handlers
- *********************/
-</code></pre>
-<h3 id="7-测试阶段："><a href="#7-测试阶段：" class="headerlink" title="7.测试阶段："></a>7.测试阶段：</h3><p>gcc编译我们的tsh.c文件：</p>
-<blockquote>
-<p>gcc tsh.c -o tsh</p>
-</blockquote>
-<p>生成tsh可执行文件</p>
-<p>然后有trace01~16这么多测试文件等着我们测试。</p>
-<blockquote>
-<p>make test12         //表明用第12个文件测试我们的shell程序</p>
-</blockquote>
-<p>然后可以看一下官方给出的正确答案：</p>
-<blockquote>
-<p>make rtest12    //文件夹自带的已经写好的程序（tshef），可以通过对比它的和我们写的输出是否有差别来检测。 </p>
-</blockquote>
+    // 设置线程状态为分离状态，防止大量线程结束后没有被回收，所导致的内存泄露
+    pthread_attr_init(&amp;thread_attr);
+    pthread_attr_setdetachstate(&amp;thread_attr, PTHREAD_CREATE_DETACHED);
+    // 初始化线程锁
+    pthread_mutex_init(&amp;thread_mutex, NULL);
+    // 初始化缓存
+    initCache();
+    //开启监听
+    int listenfd = Open_listenfd(argv[1]);
+    while (1) {
+        clientlen = sizeof(clientaddr);
+        connfd = Accept(listenfd, (SA *)&amp;clientaddr, &amp;clientlen); //接收客户端请求
+        Getnameinfo((SA *) &amp;clientaddr, clientlen, hostname, MAXLINE, 
+                    port, MAXLINE, 0);   //获取客户端的域名和端口
+        printf(PREFIX_PRINT&quot;Accepted connection from (%s, %s), clientFd: %d\n&quot;, 
+                hostname, port, connfd);
+        pthread_create(&amp;thread, &amp;thread_attr, doit, (void*)(long)connfd);  //新建线程响应客户端
+    }
+    return 0;
+}</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>今天看pdf，感觉效率很低，智商不够用  &gt;W&lt;</p>
+<p>对着最后的lab阅读了一遍，能看懂。</p>
+<p>刚好两周时间，混杂着csapp的视频以及书本，算是做完了所有lab。</p>
+<p>明天开始准备搞点新的玩意。噢~ 开始怼 kernel内核了。  upupup！</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
