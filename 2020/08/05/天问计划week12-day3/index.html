@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>教你如何编译内核 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 内核 ">
-  <meta name="description" content="教你如何编译内核 | sixpar&#39;s blog">
+  <title>天问计划week12-day3 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week12-day3 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -796,9 +796,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-教你如何编译内核" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week12-day3" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">教你如何编译内核</h1>
+        <h1 class="article-title">天问计划week12-day3</h1>
     
     <div class="article-meta">
         
@@ -808,7 +808,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="笔记">笔记</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -816,19 +816,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">内核</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-08 18:27:08'>2020-07-08 18:24</time>
+            Created At : <time class="date" title='Updated At: 2020-08-05 16:59:42'>2020-08-05 09:17</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.3k</span>
+        <span>Count:1.2k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -858,7 +858,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-小前提："><span class="toc-text">0.小前提：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-编译内核："><span class="toc-text">1.编译内核：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-下载内核源码："><span class="toc-text">1.1 下载内核源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-相关设置："><span class="toc-text">1.2 相关设置：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-编译内核："><span class="toc-text">1.3 编译内核：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-编译-busybox-–构建文件系统："><span class="toc-text">2.编译 busybox –构建文件系统：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-下载最新版的busybox的源码："><span class="toc-text">2.1 下载最新版的busybox的源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-相关设置："><span class="toc-text">2.2 相关设置：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-编译安装："><span class="toc-text">2.3 编译安装：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-创建文件系统："><span class="toc-text">2.4 创建文件系统：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-安装-qemu-system-模拟器："><span class="toc-text">3.安装 qemu-system 模拟器：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-安装qemu-system："><span class="toc-text">3.1 安装qemu-system：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-qemu运行内核："><span class="toc-text">3.2 qemu运行内核：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        
     
 <style>
     .left-col .switch-btn,
@@ -874,98 +874,64 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>今天翻阅笔记时发现我在2020年4月29日前后学习有关 kernel pwn 的有关知识，我又重新整理回顾了一遍。算是为以后调试 kernel pwn 打好基础吧。</p>
-</blockquote>
-<blockquote>
-<p>本篇将介绍如何编译内核。</p>
-</blockquote>
-<p>关于编译内核的过程我主要参考了钞sir师傅的视频：<br><a href="https://www.bilibili.com/video/BV1KE411c7mu" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1KE411c7mu</a><br>以及网路上一些编译内核文章作为辅助参考：<br><a href="https://blog.csdn.net/weixin_30326741/article/details/96114177" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30326741/article/details/96114177</a></p>
-<p>编译内核过程中有踩过一些坑，待会在下文也分享出来。</p>
-<h2 id="0-小前提："><a href="#0-小前提：" class="headerlink" title="0.小前提："></a>0.小前提：</h2><p>我自己用的是ubuntu 18.04 ,然后虚拟机开机后显示的是普通用户账户，注意我们要用 root 用户进行登录，点击“未列出”后输入root和密码。<br>但是在此之前需要设置一个root账户（默认是没有root账户的）之后才能用root用户登录。<br>具体设置root账户的办法请百度叭。</p>
-<h2 id="1-编译内核："><a href="#1-编译内核：" class="headerlink" title="1.编译内核："></a>1.编译内核：</h2><h3 id="1-1-下载内核源码："><a href="#1-1-下载内核源码：" class="headerlink" title="1.1 下载内核源码："></a>1.1 下载内核源码：</h3><p>要编译内核源码之后才可以进行Linux内核调试<br>官网下载源码进行编译:  <a href="https://www.kernel.org/" target="_blank" rel="noopener">https://www.kernel.org/</a><br>我下载了最新版的 5.6.7<br>我把所有源码文件都放在了 /usr/src/ 目录下</p>
-<p>安装依赖： </p>
-<blockquote>
-<p>sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc</p>
-</blockquote>
-<h3 id="1-2-相关设置："><a href="#1-2-相关设置：" class="headerlink" title="1.2 相关设置："></a>1.2 相关设置：</h3><blockquote>
-<p>make menuconfig</p>
-</blockquote>
-<p>注意下面的配置:<br>KernelHacking  –&gt;<br>选中Compile the kernel with debug info<br>选中Compile the kernel with frame pointers<br>去掉 Write protect kernel read-only data structures<br>在Processor type and features —&gt;<br>去掉Paravirtualized guest support</p>
-<h3 id="1-3-编译内核："><a href="#1-3-编译内核：" class="headerlink" title="1.3 编译内核："></a>1.3 编译内核：</h3><p>然后最后编译：</p>
-<blockquote>
-<p>make -j8</p>
-</blockquote>
-<blockquote>
-<p>make modules_install</p>
-</blockquote>
-<blockquote>
-<p>make install</p>
-</blockquote>
-<p>之后进入编译过程。<br>这段过程将十分的漫长！由于我自己初次实践的时候配置搞错了，所以曾编译了3次内核！对，这么长的编译时间我经历了3次，呜呜，我太菜了。</p>
-<p>编译完之后就可以从 <code>./arch/x86/boot/ 中拿到 bzlmage 镜像</code> ，<code>从源码根目录中拿到 vmlinux</code> 文件。</p>
-<h2 id="2-编译-busybox-–构建文件系统："><a href="#2-编译-busybox-–构建文件系统：" class="headerlink" title="2.编译 busybox –构建文件系统："></a>2.编译 busybox –构建文件系统：</h2><h3 id="2-1-下载最新版的busybox的源码："><a href="#2-1-下载最新版的busybox的源码：" class="headerlink" title="2.1 下载最新版的busybox的源码："></a>2.1 下载最新版的busybox的源码：</h3><blockquote>
-<p>wget <a href="https://busybox.net/downloads/busybox-1.31.0.tar.bz2" target="_blank" rel="noopener">https://busybox.net/downloads/busybox-1.31.0.tar.bz2</a></p>
-</blockquote>
-<h3 id="2-2-相关设置："><a href="#2-2-相关设置：" class="headerlink" title="2.2 相关设置："></a>2.2 相关设置：</h3><blockquote>
-<p>make menuconfig</p>
-</blockquote>
-<p>注意以下配置：<br>打开busybox Setting —-&gt; Build Options -&gt; Build Busybox as a static binary   编译成为静态文件<br>关闭以下选项：<br>Linux System Utilities  -&gt; Support mounting NFS files system   //网络文件系统<br>Networking Utilities –&gt; inetd     //internet超级服务器</p>
-<h3 id="2-3-编译安装："><a href="#2-3-编译安装：" class="headerlink" title="2.3 编译安装："></a>2.3 编译安装：</h3><blockquote>
-<p>make install</p>
-</blockquote>
-<p>安装完后ls看见非常多的文件。<br>继续配置：</p>
-<blockquote>
-<p>cd _install</p>
-</blockquote>
-<blockquote>
-<p>mkdir proc sys dev etc etc/init.d</p>
-</blockquote>
-<blockquote>
-<p>vim etc/init.d/rcS</p>
-</blockquote>
-<p>在该文件中写入以下内容：</p>
-<pre><code class="python">#!/bin/sh
-mount -t proc none /proc
-mount -t sysfs none /sys
-/sbin/mdev -s</code></pre>
-<p>然后给予权限：</p>
-<blockquote>
-<p>chmod +x etc/init.d/rcS</p>
-</blockquote>
-<h3 id="2-4-创建文件系统："><a href="#2-4-创建文件系统：" class="headerlink" title="2.4 创建文件系统："></a>2.4 创建文件系统：</h3><p>在 _install目录下执行：</p>
-<blockquote>
-<p>find . | cpio -o –format=newc &gt; ../../rootfs.img        </p>
-</blockquote>
-<p>对指令的解读：找到当前目录下全部文件，并进行打包，制作成cpio，形成一个根文件系统镜像放到父目录的rootfs.img里。<br>以后我们自己调试的时候好像也会经常使用到该类似指令。</p>
-<p>我找了好久的资料，才发现这个是在内核启动时候去读取的。所以我们可以自定义，事先往里面放我们想要的文件（比如run.sh或脏牛代码）的话就相当于是初始化了吧（只是个人理解，可能不准确），然后编译出一份<code>rootfs.img 镜像文件</code> 。这样的话我们下一次再qemu打开内核时就不会是啥都没有的默认空内核了，多了一些我们添加进去的文件。了。<br>操作：先把/usr/src/目录下旧的rootfs.img删掉，然后进到 <code>busybox文件系统的 _install目录下</code> 继续使用上面 find 和 cpio 指令进行编译，然后就会生成一个新的rootfs.img 镜像文件。</p>
-<h2 id="3-安装-qemu-system-模拟器："><a href="#3-安装-qemu-system-模拟器：" class="headerlink" title="3.安装 qemu-system 模拟器："></a>3.安装 qemu-system 模拟器：</h2><h3 id="3-1-安装qemu-system："><a href="#3-1-安装qemu-system：" class="headerlink" title="3.1 安装qemu-system："></a>3.1 安装qemu-system：</h3><blockquote>
-<p>sudo apt-get install qemu-system</p>
-</blockquote>
-<p>然后建议自己去官网找gdb的源码然后编译，以免后续使用过程中会出什么问题。不建议使用自带的原有的gdb<br><a href="http://ftp.gnu.org/gnu/gdb/" target="_blank" rel="noopener">http://ftp.gnu.org/gnu/gdb/</a></p>
-<p>依次输入下列指令：</p>
-<blockquote>
-<p>tar xjf gdb-7.8.tar.gz<br>cd gdb-7.8/<br>./configure –target=arm-linux<br>make<br>make install</p>
-</blockquote>
-<p>接下来就可以使用我们的 qemu 模拟器来运行刚刚编译好的内核了：</p>
-<h3 id="3-2-qemu运行内核："><a href="#3-2-qemu运行内核：" class="headerlink" title="3.2 qemu运行内核："></a>3.2 qemu运行内核：</h3><p>用qemu运行内核，建议写一个sh脚本，这个脚本就是自定义我们的内核文件、镜像、文件系统、安全措施，开启smap、smep等安全措施，然后还可以为gdb开启一个端口，方便我们后续调试remote连接。<br>我创建的sh脚本名为 start.sh</p>
-<p>sh脚本内容为：</p>
-<pre><code class="python">qemu-system-x86_64 \
--kernel ./bzlmage \
--initrd ./rootfs.img \
--append &quot;console=ttyS0 root=/dev/ram rdinit=/sbin/init&quot; \
--cpu kvm64,+smep,+smap \
--nographic \
--gdb tcp::6666</code></pre>
-<p>到这一步算是都设置完了。</p>
-<p>然后执行sh脚本：</p>
-<blockquote>
-<p>./start.sh</p>
-</blockquote>
-<p>终端会闪过一大堆数据后停住，然后 敲回车 即可出现 # 提示符。</p>
-<p>内核运行成功！</p>
-<p><img src="https://i.loli.net/2020/07/08/UgdqxHGkNnf6i2m.jpg" alt="qemu运行内核"></p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>现在这些文件是比较重要的：<br>1.从 ./arch/x86/boot/ 中拿到 bzlmage 镜像<br>2.可不断手动更新内容的文件系统镜像文件：rootfs.img<br>3.在源码根目录下生成的 vmlinux<br>4.内核启动脚本：start.sh</p>
+        <p>今天学习 ucore os实验</p>
+<p>ucore是一个“小而全”的操作系统，总代码量（C+asm）不超过 5k 行。包含虚存管理、进程管理、处理器调度、同步互斥、进程间通信、文件系统等主要内核功能。</p>
+<p>ucore的系统结构图如下：</p>
+<p><img src="https://chyyuu.gitbooks.io/ucore_os_docs/content/lab0_figs/image001.png" alt=""></p>
+<p>在做这部分实验之前，还是要先看视频打牢一下基础。</p>
+<p><a href="https://next.xuetangx.com/course/THU08091000267/4231154（2020年秋，现在还未开课）" target="_blank" rel="noopener">https://next.xuetangx.com/course/THU08091000267/4231154（2020年秋，现在还未开课）</a></p>
+<p><a href="https://next.xuetangx.com/course/THU08091000267/4215533（2020暑假班，正在进行中）" target="_blank" rel="noopener">https://next.xuetangx.com/course/THU08091000267/4215533（2020暑假班，正在进行中）</a></p>
+<p>还有一个在线的学生老师问法平台：Piazza</p>
+<p>源码阅读工具：Understand 。从全局角度审视代码。官网：<a href="https://scitools.com/" target="_blank" rel="noopener">https://scitools.com/</a></p>
+<p>IDE工具：Eclipse-CDT</p>
+<p>常用词汇，这里做一个记录：</p>
+<pre><code class="c">单词            释义
+Macros          宏
+Variables     变量
+Constants     常量
+Functions     函数
+Reference     引用
+Metrics          参数
+Architectures 架构
+parameters      参数
+Call          调用
+Compiler      编译器
+component     组件、部件、元件
+portability      可移植性
+Cluster           集群
+Function Static Variables    静态函数变量
+case sensitive    区分大小写
+Whole Words Only    整词匹配
+layout       布局
+summary       综述、总论
+features    特征
+control-flow graphs    控制流程图</code></pre>
+<p>清华的ucore课程，要跟着做8个lab。总行数达10000行。</p>
+<p>lab1：OS启动、中断与设备管理。（通过BootLoader启动操作系统）</p>
+<p>关于实验环境的搭建，我准备另外新建一个虚拟机。根据视频里讲的，搭在VirtualBox上（我原先就有下载），然后就可以从 <a href="http://github.com/chyyuu/mooc_os" target="_blank" rel="noopener">http://github.com/chyyuu/mooc_os</a> 上下载虚拟机，用virtualbox打开vbox后缀文件即可。用户名是moocos，口令是空格键。</p>
+<p>（网盘下载太慢了！！）</p>
+<p>任务1：尝试用qemu+gdb（or ECLIPSE-CDT）调试lab1</p>
+<p>这里我还是用老师提供的vdi文件，VirtualBox新建导入即可。</p>
+<p>RAM断电之后数据就没了。而ROM是只读存储的，断电后数据依然存在，因此系统的初始化代码都存放在这里，一加电之后便读取第一条指令。</p>
+<p>加电时，磁盘中640KB~1MB之间的是BIOS启动固件，CPU会固定地初始化CS:IP=0xf000:fff0，然后PC=16*CS+IP。所以PC指向我们要访问的第一条指令的位置。</p>
+<p>CS是段寄存器，IP是指针寄存器</p>
+<p>加电的时候CPU处于实模式，地址空间只有20位，即1MB。</p>
+<p>而在BIOS里头得提供几个功能：</p>
+<ol>
+<li>基本的输入输出  （能从磁盘上读数据，从键盘上读输入，然后再显示器上输出）  </li>
+<li>系统设置信息 </li>
+<li>开机后自检程序</li>
+<li>系统自启动程序 （硬盘启动，网络启动，光盘启动）</li>
+</ol>
+<p>BIOS首先从磁盘的引导扇区里头去装入加载程序（512字节）。加载到 0x7c00的位置，然后把控制权交给加载程序。然后加载程序实现将操作系统的代码和数据从硬盘加载到内存中，跳转到操作系统的起始地址，把控制权交给操作系统，操作系统便可以开始运行。</p>
+<p>总结计算机启动的大致流程：加电后去读BIOS，BIOS去读加载程序，加载程序去读内核映像，把操作系统加载进内存。</p>
+<p>为什么不直接由BIOS来读取操作系统的数据和代码？而是由加载程序实现这一步？因为操作系统里有不同的文件系统格式，我们BIOS应付不了多样性的文件系统，所以只好借助加载程序，而加载程序里会写有很多的约定，能识别磁盘上不同的文件系统，然后读到内核的镜像，并且加载到内存里来。</p>
+<p>计算机启动流程细分：</p>
+<p>BIOS去读取主引导记录，然后主引导扇区代码读取活动分区的引导扇区代码，然后再读取文件系统的加载程序。</p>
+<p>加载程序去读取文件系统中的启动配置文件，启动菜单包含可选的操作系统内核列表和加载参数，根据配置加载指定内核并跳转到内核执行。</p>
+<p>操作系统与外界打交道基本就是中断，异常以及系统调用这三种情况。</p>
+<p>系统调用是应用程序主动向操作系统发出的请求；异常指的是非法指令导致当前指令执行失败后的处理请求；中断是来自硬件对操作系统的请求。</p>
+<p>中断和异常处理机制：编译器负责现场（上下文）的保存和恢复，服务例程负责中断服务处理以及中断结束后清除中断标记。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
