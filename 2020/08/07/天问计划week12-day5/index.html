@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>2020年7月15日小记 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 日记 ">
-  <meta name="description" content="2020年7月15日小记 | sixpar&#39;s blog">
+  <title>天问计划week12-day5 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week12-day5 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -812,9 +812,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-2020年7月15日小记" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week12-day5" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">2020年7月15日小记</h1>
+        <h1 class="article-title">天问计划week12-day5</h1>
     
     <div class="article-meta">
         
@@ -824,7 +824,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="生活">生活</a>
+            <a  data-rel="系列">系列</a>
             
         </span>
         
@@ -832,19 +832,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">日记</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-15 22:52:51'>2020-07-15 22:07</time>
+            Created At : <time class="date" title='Updated At: 2020-08-07 22:36:36'>2020-08-07 10:33</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:829</span>
+        <span>Count:4.8k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -874,7 +874,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Ucore-lab："><span class="toc-text">Ucore - lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-lab1："><span class="toc-text">1.lab1：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-练习-2："><span class="toc-text">1.2 练习:2：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-练习3："><span class="toc-text">1.3 练习3：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-练习4："><span class="toc-text">1.4 练习4：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-练习5："><span class="toc-text">1.5 练习5：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-6-练习6："><span class="toc-text">1.6 练习6：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#本实验知识点列举："><span class="toc-text">本实验知识点列举：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -890,19 +890,462 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>我日思夜想的快递今天终于到了！<br>中午顶着大太阳，撑着把黑伞，骑着自行车，直奔快递站。风挺大的，伞大招风，单手不好骑，容易被吹走。呜呜不容易啊。</p>
-<p>这次在网上买了三本书，分别是《漏洞战争》、《加密与解密》、《0day安全软件漏洞分析技术》。<br>都是贼厚的那种，平均4cm厚，一板砖书砸skr人。</p>
-<p>没错，《0day安全软件漏洞分析技术》 这本书已经绝版了，网上二手的又卖的贼贵（某宝上卖￥400+，疯了？），所以只好买了个影印版，也很便宜。（个人还是力挺正版的，实在是没办法惹）</p>
-<p>这三本书都是二进制漏洞利用相关的书籍（我要钻研二进制），虽然都有它们的PDF版，但还是纸质书看起来舒服呀，还可以在旁做做笔记啥的。</p>
-<p>今天下午已经开始在看《加密与解密》了，介绍了ollydbg的基本用法， 然后开始上手第一个例子：traceme.exe，主张在API函数这儿下断点，由于消息框里的文本数据是由GetDlgItemTextA函数接收读取的，所以可以在此函数处下断，然后调用到该API函数时就自动截断……不对劲，怎么开始讲题目惹 QAQ</p>
-<p>说回日记，现在我正在考虑还要不要参加护网，接下去时间我就想在家里宅着，然后把这三本书给啃掉。（当然了得先应问清楚具体的情况后再做定夺）</p>
-<p>今天晚上本来想跑步，但是没想到白天还是大太阳，晚上就开始起雾，下起了毛毛雨，现在还打雷了。<br>只好在家看书。</p>
-<p>淦，自从加了考研资料群，成天滴滴滴，@ 永无止境，刚刚又滴我。</p>
-<p>说到考研，我就认准一个目标院校。</p>
-<p>然后今天晚上我在B栈搜索目标院校的相关视频时，看到目标院校的一位学姐在拍vlog，然后也是在读研究生，我私信了她，但迟迟未回我，这得等到猴年马月？不知道学姐何时才能上一回B站，所以我只好动歪脑筋。<br>所谓社工，手动滑稽。<br>最终让我在某处发现了一串数字（没错我就是列文虎克），11位，很像电话号码，于是我用手机号搜了微信，昵称看起来和B栈昵称很像，地址也和某期视频里提到的地址是一样的，确认了，先加了再说。如果不是up，那也是和up相关的人。</p>
-<p>后来已验证，还真是up的微信[笑哭]，学姐是保研的（呜呜tql），所以我通过她得到了另一位学长的微信，学长他是考研上岸的，看来以后可以多多请教他啦。 幸运欸。</p>
-<p>事后，我的好奇心推动着我继续社工，然后又发现了很有意思的东西，在这里我就不讲了，只能说学姐真是一位热爱生活的人啊。</p>
-<p>最后，我想对自己说，永远也不要怀疑自己，永远也不要埋怨自己，永远也不要放任自己。</p>
+        <h2 id="Ucore-lab："><a href="#Ucore-lab：" class="headerlink" title="Ucore - lab："></a>Ucore - lab：</h2><h3 id="1-lab1："><a href="#1-lab1：" class="headerlink" title="1.lab1："></a>1.lab1：</h3><h4 id="1-2-练习-2："><a href="#1-2-练习-2：" class="headerlink" title="1.2 练习:2："></a>1.2 练习:2：</h4><p>题目4：自己找一个bootloader或内核中的代码位置，设置断点并进行测试。</p>
+<p>因此我们这次下断点在 bootmain处，即0x7c4a。</p>
+<p>因此修改gdbinit文件：</p>
+<blockquote>
+<p>set architecture i8086 </p>
+<p>target remote :1234 </p>
+<p>break *0x7c4a</p>
+</blockquote>
+<p>结果：</p>
+<pre><code class="c">The target architecture is assumed to be i8086
+0x0000fff0 in ?? ()
+Breakpoint 1 at 0x7c4a
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x00007c4a in ?? ()
+(gdb) x/2i $pc
+=&gt; 0x7c4a:      call   0x7ccf
+   0x7c4d:      add    %al,(%bx,%si)
+</code></pre>
+<p>断点设置正常。注意这里要按 <code>“c”</code>自动运行到我们的断点处。</p>
+<p>练习1总结：</p>
+<p>可以通过如下配置在每次gdb命令行前强制反汇编当前的指令，在配置文件gdbinit中开头添加：</p>
+<blockquote>
+<p>define hook-stop</p>
+<p>x/i $pc</p>
+<p>end</p>
+</blockquote>
+<p>这样就可以不需要像我们上面这样手动输入查看PC了。</p>
+<p>target remote:1234 可以使得qemu和gdb之间使用网络端口1234进行通讯</p>
+<h4 id="1-3-练习3："><a href="#1-3-练习3：" class="headerlink" title="1.3 练习3："></a>1.3 练习3：</h4><p>题目总要求：分析bootloader进入保护模式的过程。</p>
+<p>主要就是分析理解 bootasm.S 中的代码。所以下面的代码片段均来自 bootasm.S </p>
+<p>已知bootloader入口为start, 且bootloader会被BIOS加载到内存的<code>0x7c00</code>处，此时cs=0, eip=0x7c00，在刚进入bootloader的时候，最先执行的操作分别为关闭中断、清除EFLAGS的DF位以及将ax, ds, es, ss寄存器初始化为0。如下：</p>
+<pre><code class="c">// start address should be 0:7c00, in real mode, the beginning address of the running bootloader
+.globl start
+start:
+.code16                                             
+    cli              //关中断                          
+    cld              //清除方向标志                           
+    xorw %ax, %ax    //ax清0                           
+    movw %ax, %ds    //ds清0                                
+    movw %ax, %es    //es清0                               
+    movw %ax, %ss    //ss清0           </code></pre>
+<p>题目1：为何开启A20，以及怎么开启？为了使得CPU进入保护模式之后能够充分使用32位的寻址能力，需要开启A20。初始时A20为0，访问超过1MB的地址时，就会从0循环计数，将A20地址线置为1之后，才可以访问4G内存。</p>
+<p>A20地址位由8042控制，8042有2个有两个I/O端口：0x60和0x64 ，并且用 int/outb 来进行 读/写。</p>
+<pre><code class="c">//  Enable A20:
+/*For backwards compatibility with the earliest PCs, physical
+address line 20 is tied low, so that addresses higher than
+1MB wrap around to zero by default. This code undoes this.  */
+
+seta20.1:            //Wait for not busy(8042 input buffer empty).等待8042空闲
+    inb $0x64, %al   //从0x64端口中读入一个字节到al中           
+    testb $0x2, %al  //测试al的第2位
+    jnz seta20.1     //al的第2位为0，则跳出循环
+
+    movb $0xd1, %al  //0xd1 -&gt; port 0x64                      
+    outb %al, $0x64  //0xd1 means: write data to 8042&#39;s P2 port
+
+
+seta20.2:            //Wait for not busy(8042 input buffer empty).
+    inb $0x64, %al   //从0x64端口中读入一个字节到al中           
+    testb $0x2, %al  //测试al的第2位
+    jnz seta20.2     //al的第2位为0，则跳出循环
+
+    movb $0xdf, %al  //将0xdf入al中                         
+    outb %al, $0x60  //0xdf -&gt; port 0x60，打开A20  
+                     //0xdf = 11011111, means set P2&#39;s A20 bit(the 1 bit) to 1</code></pre>
+<p>至此执行到最后一步表示A20开启，总之，我们的目的就是与A20总线交互，打开它的高地址部分，以使我们能不止操作20位地址，进入保护模式之后可以充分使用4G的寻址能力。</p>
+<p>因此可以知道开启A20 的过程：</p>
+<ol>
+<li>等待8042 input buffer 为空</li>
+<li>发送Write 8042 Output Port （P2）命令到8042 Input buffer</li>
+<li>等待8042 Input buffer为空</li>
+<li>将8042 Output Port（P2）得到字节的第2位置1，然后写入8042 Input buffer</li>
+</ol>
+<p>题目2：如何初始化GDT表？</p>
+<p>GDT是全局描述符表。</p>
+<pre><code class="c">    /*Switch from real to protected mode, using a bootstrap GDT
+      and segment translation that makes virtual addresses
+      identical to physical addresses, so that the
+      effective memory map does not change during the switch.*/
+    lgdt gdtdesc      //载入GDT表
+    movl %cr0, %eax    //加载cr0到eax
+    orl $CR0_PE_ON, %eax  //将eax的第0位置为1 ，CR0_PE_ON意为cr0寄存器PE位置1 ?
+    movl %eax, %cr0    //cr0=eax,即将cr0的第0位置为1 ，开启保护模式！！
+
+    // Jump to next instruction, but in 32-bit code segment.
+    // Switches processor into 32-bit mode.
+    ljmp $PROT_MODE_CSEG, $protcseg     //$PROT_MODE_CSEG的值为0x80
+        //上面已经打开了保护模式，所以这里需要用到逻辑地址。
+        //通过长跳转更新cs的基地址
+
+.code32                                             # Assemble for 32-bit mode
+protcseg:
+    // Set up the protected-mode data segment registers
+    //设置保护模式下的段寄存器，并建立堆栈
+    movw $PROT_MODE_DSEG, %ax                       # Our data segment selector
+    movw %ax, %ds                                   # -&gt; DS: Data Segment
+    movw %ax, %es                                   # -&gt; ES: Extra Segment
+    movw %ax, %fs                                   # -&gt; FS
+    movw %ax, %gs                                   # -&gt; GS
+    movw %ax, %ss                                   # -&gt; SS: Stack Segment
+
+    # Set up the stack pointer and call into C. The stack region is from 0--start(0x7c00)
+    movl $0x0, %ebp    //设置栈底指针
+    movl $start, %esp  //设置栈顶指针
+    call bootmain     //成功转到保护模式以及设置好参数后，调用 bootmain函数，进入boot主方法</code></pre>
+<p>在文件的尾部，已经静态地描述了一个简单的GDT。</p>
+<pre><code class="c">// Bootstrap GDT
+.p2align 2                                 // force 4 byte alignment
+gdt:
+    SEG_NULLASM                            // null seg
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)  // code seg for bootloader and kernel
+    SEG_ASM(STA_W, 0x0, 0xffffffff)       // data seg for bootloader and kernel
+        //将代码段和数据段的base均设置为0
+
+gdtdesc:
+    .word 0x17     // sizeof(gdt) - 1 ，limit = 2^32-1，即4G，此时逻辑地址就等于线性地址
+    .long gdt      // address gdt</code></pre>
+<p>题目3：如何进入保护模式？</p>
+<p>答：将cr0寄存器的第0位置为1即可进入保护模式。</p>
+<h4 id="1-4-练习4："><a href="#1-4-练习4：" class="headerlink" title="1.4 练习4："></a>1.4 练习4：</h4><p>题目要求我们阅读 bootmain.c 文件，然后分析bootloader加载ELF格式的OS的过程。并通过分析源代码和通过qemu来运行并调试bootloader&amp;OS</p>
+<p>bootmain.c和 bootasm.S均在文件夹boot下。</p>
+<p>我们知道硬盘是分为许多扇区的，每个扇区有512字节大小，结尾标识为0x55AA</p>
+<p>我把整个bootmain.c文件搬过来了，慢慢分析。</p>
+<pre><code class="c">#include &lt;defs.h&gt;
+#include &lt;x86.h&gt;
+#include &lt;elf.h&gt;
+
+/* *********************************************************************
+ * This a dirt simple boot loader, whose sole job is to boot
+ * an ELF kernel image from the first IDE hard disk.
+ *
+ * DISK LAYOUT
+ *  * This program(bootasm.S and bootmain.c) is the bootloader.
+ *    It should be stored in the first sector of the disk.
+ *
+ *  * The 2nd sector onward holds the kernel image.
+ *
+ *  * The kernel image must be in ELF format.
+ *
+ * BOOT UP STEPS
+ *  * when the CPU boots it loads the BIOS into memory and executes it
+ *
+ *  * the BIOS intializes devices, sets of the interrupt routines, and
+ *    reads the first sector of the boot device(e.g., hard-drive)
+ *    into memory and jumps to it.
+ *
+ *  * Assuming this boot loader is stored in the first sector of the
+ *    hard-drive, this code takes over...
+ *
+ *  * control starts in bootasm.S -- which sets up protected mode,
+ *    and a stack so C code then run, then calls bootmain()
+ *
+ *  * bootmain() in this file takes over, reads in the kernel and jumps to it.
+ * */
+
+#define SECTSIZE        512
+#define ELFHDR          ((struct elfhdr *)0x10000)      // scratch space
+
+/* waitdisk - wait for disk ready */
+//该函数的作用是连续不断地从 0x1F7 地址读取磁盘的状态，直到磁盘状态为 ready 为止
+static void
+waitdisk(void) {
+    while ((inb(0x1F7) &amp; 0xC0) != 0x40)
+        /* do nothing */;
+    //如果0x1F7的最高2位是01，则跳出循环
+}
+
+/* readsect - read a single sector at @secno into @dst */
+//函数功能是读取一个磁盘扇区
+static void
+readsect(void *dst, uint32_t secno) {   //保护模式下是32位
+    // *dst是指定目标内存地址，secno是LBA参数
+    // wait for disk to be ready
+    waitdisk();
+
+    outb(0x1F2, 1);         //往0x1F2地址中写入要读取的扇区数，这里是1，所以是读取一个扇区
+    outb(0x1F3, secno &amp; 0xFF);   //写入LBA参数的0-7位  (0xFF是1个字节的掩码)
+    outb(0x1F4, (secno &gt;&gt; 8) &amp; 0xFF);   //写入LBA参数的8-15位
+    outb(0x1F5, (secno &gt;&gt; 16) &amp; 0xFF);  //写入LBA参数的16-23位
+    outb(0x1F6, ((secno &gt;&gt; 24) &amp; 0xF) | 0xE0);  //写入LBA参数的24-27位（对应0-3位），第四位为0表示从主盘读取，其余位被强制置为1
+    outb(0x1F7, 0x20);   // cmd 0x20 - read sectors，向磁盘发出读命令 0x20
+
+    // wait for disk to be ready
+    waitdisk();
+
+    // read a sector
+    //从数据端口0x1F0读取数据，因为指令是 intl，“1”表示“long”，是以四字节为单位的，所以size/4
+    insl(0x1F0, dst, SECTSIZE / 4);
+}
+
+
+/* *
+ * readseg - read @count bytes at @offset from kernel into virtual address @va,
+ * might copy more than asked.
+ * */
+//将readsect进行进一步封装，提供能够从磁盘第二个扇区起（kernel起始位置）offset个位置处，读取count个字节到指定内存中。
+static void
+readseg(uintptr_t va, uint32_t count, uint32_t offset) {
+    uintptr_t end_va = va + count;
+
+    // round down to sector boundary
+    va -= offset % SECTSIZE;
+
+    // translate from bytes to sectors; kernel starts at sector 1
+    uint32_t secno = (offset / SECTSIZE) + 1;
+
+    // If this is too slow, we could read lots of sectors at a time.
+    // We&#39;d write more to memory than asked, but it doesn&#39;t matter --
+    // we load in increasing order.
+    for (; va &lt; end_va; va += SECTSIZE, secno ++) {
+        readsect((void *)va, secno);
+    }
+}
+
+/* bootmain - the entry of bootloader */
+//BootLoader的入口点
+void
+bootmain(void) {
+    // read the 1st page off disk
+    readseg((uintptr_t)ELFHDR, SECTSIZE * 8, 0);
+    //首先，从磁盘的第一个扇区（第零个扇区为bootloader）中读取OS kenerl最开始的4kB（512*8）代码
+
+    // is this a valid ELF?
+    //判断其最开始四个字节是否等于指定的ELF_MAGIC
+    //即通过存储在header的幻数来判断是否是合法的ELF文件
+    if (ELFHDR-&gt;e_magic != ELF_MAGIC) {  //如果ELF header不合法
+        goto bad;
+    }
+    //合法
+    struct proghdr *ph, *eph;
+    // load each program segment (ignores ph flags)
+    //从ELF头文件中获取program header表的位置，以及该表的入口数目
+    //将描述表的头地址存于ph
+    ph = (struct proghdr *)((uintptr_t)ELFHDR + ELFHDR-&gt;e_phoff);
+    eph = ph + ELFHDR-&gt;e_phnum;
+    //遍历该表的每一项，从每一个program header中获取到段应该被加载到内存中的位置（Load Address虚拟地址）以及段的大小
+    for (; ph &lt; eph; ph ++) { 
+        //调用readseg函数将每一个段加载到内存中
+        readseg(ph-&gt;p_va &amp; 0xFFFFFF, ph-&gt;p_memsz, ph-&gt;p_offset);
+    }
+    //至此完成了将OS加载到内存中的操作
+
+    // call the entry point from the ELF header
+    // note: does not return
+    //最后一个步骤就是从ELF header中查询到OS kernel的入口地址，然后使用函数调用的方式跳转到该地址上去
+    ((void (*)(void))(ELFHDR-&gt;e_entry &amp; 0xFFFFFF))();  // 根据ELF头部储存的入口信息，找到内核的入口
+
+bad:
+    outw(0x8A00, 0x8A00);
+    outw(0x8A00, 0x8E00);
+
+    /* do nothing */
+    while (1);
+}
+
+</code></pre>
+<p>readsect函数读取扇区的过程总结：</p>
+<ol>
+<li>等待磁盘不忙</li>
+<li>往0x1F2-0x1F6里写入读取扇区所需要的参数，包括读取扇区数量以及LBA参数</li>
+<li>往0x1F7端口发送读命令0x20</li>
+<li>等待磁盘完成读取操作</li>
+<li>从数据端口0x1F0读取数据到指定内存中</li>
+</ol>
+<p>由以上我们可以知道，bootloader的访问硬盘都是LBA模式的PIO（Program IO）方式，即所有的IO操作是通过CPU访问硬盘的IO地址寄存器完成。</p>
+<p>题目2：bootloader是如何加载ELF格式的OS？</p>
+<p>这就需要我们去阅读分析bootmain部分的函数代码段了。bootmain函数是BootLoader的入口点。</p>
+<p>加载ELF格式的OS的过程总结：</p>
+<ol>
+<li>从磁盘的第一个扇区（第零个扇区为bootloader）中读取OS kenerl最开始的4kB代码，然后判断其最开始四个字节是否等于指定的ELF_MAGIC，若不等于跳到bad</li>
+<li>接下来从ELF头文件中获取program header表的位置，以及该表的入口数目，然后遍历该表的每一项，并且从每一个program header中获取到段应该被加载到内存中的位置（Load Address，虚拟地址），以及段的大小，然后调用readseg函数将每一个段加载到内存中，至此完成了将OS加载到内存中的操作。</li>
+<li>从ELF header中查询到OS kernel的入口地址，然后使用函数调用的方式跳转到该地址上去。</li>
+</ol>
+<h4 id="1-5-练习5："><a href="#1-5-练习5：" class="headerlink" title="1.5 练习5："></a>1.5 练习5：</h4><p>实现函数调用堆栈跟踪函数 （需要编程）。我们需要在lab1中完成 kdebug.c  （文件位于/lab1/kern/debug/下）中函数 print_stackframe 的实现，然后就可以通过函数print_stackframe来跟踪函数调用堆栈中记录的返回地址</p>
+<pre><code class="c">void print_stackframe(void){
+    //call read_ebp() to get the value of ebp. the type is (uint32_t);
+    uint32_t ebp=read_ebp();
+    //call read_eip() to get the value of eip. the type is (uint32_t);
+    uint32_t eip=read_eip();
+    //from 0 to 20
+    //在开头已经define了 STACKFRAME_DEPTH = 20
+    int i,j;
+    for(i=0;i&lt;STACKFRAME_DEPTH &amp;&amp; ebp!=0;i++){
+        //printf value of ebp, eip
+        cprintf(&quot;ebp:0x%08x eip:0x%08x &quot;,ebp,eip);
+        uint32_t *args=(uint32_t *)ebp + 2;  //参数的首地址
+        for (j = 0; j &lt; 4; j ++) {
+            cprintf(&quot;0x%08x &quot;, args[j]);  //打印四个参数
+        }
+        cprintf(&quot;\n&quot;);
+        print_debuginfo(eip - 1);  //打印函数信息
+        //the calling funciton&#39;s return addr eip  = ss:[ebp+4]
+        eip = ((uint32_t *)ebp)[1];   //更新eip的值
+        //the calling funciton&#39;s ebp = ss:[ebp]
+        ebp = ((uint32_t *)ebp)[0];  //更新ebp的值
+    }
+}</code></pre>
+<p>执行 make qemu 打印栈帧信息，得到结果：</p>
+<pre><code class="c">Special kernel symbols:
+  entry  0x00100000 (phys)
+  etext  0x001032c3 (phys)
+  edata  0x0010ea16 (phys)
+  end    0x0010fd20 (phys)
+Kernel executable memory footprint: 64KB
+ebp:0x00007b08 eip:0x001009a6 0x00010094 0x00000000 0x00007b38 0x00100092 
+    kern/debug/kdebug.c:296: print_stackframe+21
+ebp:0x00007b18 eip:0x00100c95 0x00000000 0x00000000 0x00000000 0x00007b88 
+    kern/debug/kmonitor.c:125: mon_backtrace+10
+ebp:0x00007b38 eip:0x00100092 0x00000000 0x00007b60 0xffff0000 0x00007b64 
+    kern/init/init.c:48: grade_backtrace2+33
+ebp:0x00007b58 eip:0x001000bb 0x00000000 0xffff0000 0x00007b84 0x00000029 
+    kern/init/init.c:53: grade_backtrace1+38
+ebp:0x00007b78 eip:0x001000d9 0x00000000 0x00100000 0xffff0000 0x0000001d 
+    kern/init/init.c:58: grade_backtrace0+23
+ebp:0x00007b98 eip:0x001000fe 0x001032fc 0x001032e0 0x0000130a 0x00000000 
+    kern/init/init.c:63: grade_backtrace+34
+ebp:0x00007bc8 eip:0x00100055 0x00000000 0x00000000 0x00000000 0x00010094 
+    kern/init/init.c:28: kern_init+84
+ebp:0x00007bf8 eip:0x00007d68 0xc031fcfa 0xc08ed88e 0x64e4d08e 0xfa7502a8 
+    &lt;unknow&gt;: -- 0x00007d67 --
+++ setup timer interrupts
+</code></pre>
+<p>和实验要求结果大致相同。</p>
+<p>根据上述打印栈帧信息的过程，可以推测出打印出的ebp是第一个被调用函数的栈帧的base pointer，eip是在该栈帧对应函数中调用下一个栈帧对应函数的指令的下一条指令的地址（return address），而args是传递给这第一个被调用的函数的参数。</p>
+<p>对最后一行的解释：ebp:0x00007bf8 eip:0x00007d68</p>
+<p>其对应的应该是第一个使用堆栈的函数，bootmain.c中的bootmain。（因为此时ebp对应地址的值为0）<br>bootloader设置的堆栈从0x7c00开始，使用”call bootmain”转入bootmain函数。</p>
+<p> call指令导致压栈，所以bootmain中ebp为0x7bf8</p>
+<h4 id="1-6-练习6："><a href="#1-6-练习6：" class="headerlink" title="1.6 练习6："></a>1.6 练习6：</h4><p>要求我们完善中断初始化和处理。</p>
+<p>题目1：中断向量表（中断描述符表）中一个表项占多少字节？其中哪几位代表中断处理代码的入口？</p>
+<p>一个表项的结构如下：</p>
+<pre><code class="c">/*lab1/kern/mm/mmu.h*/
+/* Gate descriptors for interrupts and traps */
+struct gatedesc {
+    unsigned gd_off_15_0 : 16;        // low 16 bits of offset in segment
+    unsigned gd_ss : 16;            // segment selector
+    unsigned gd_args : 5;            // # args, 0 for interrupt/trap gates 中断/陷阱门
+    unsigned gd_rsv1 : 3;            // reserved(should be zero I guess)
+    unsigned gd_type : 4;            // type(STS_{TG,IG32,TG32})
+    unsigned gd_s : 1;                // must be 0 (system)
+    unsigned gd_dpl : 2;            // descriptor(meaning new) privilege level
+    unsigned gd_p : 1;                // Present
+    unsigned gd_off_31_16 : 16;        // high bits of offset in segment
+};</code></pre>
+<p>中断处理过程：</p>
+<p><img src="https://img-blog.csdn.net/20171122203456141?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdGFuZ3l1YW56b25n/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p>中断向量表（IDT）中一个表项占用8字节，其中2-3字节是段选择字，剩余的0-1字节和6-7字节组合拼成偏移量，</p>
+<p>先通过段选择字去GDT中找到对应的基地址（base address），然后基地址加上偏移量就是<code>中断处理程序</code>所在的地址（入口）。</p>
+<p>题目2：</p>
+<p>请编程完善kern/trap/trap.c中对中断向量表进行初始化的函数idt_init。在idt_init函数中，依次对所有中断入口进行初始化。使用mmu.h中的SETGATE宏，填充IDT数组内容。每个中断的入口由 tools/vectors.c生成，使用trap.c中声明的vectors数组即可。</p>
+<pre><code class="c">/* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S */
+void idt_init(void){
+    extern uintptr_t __vectors[];   //保存在vectors.S中的256个中断处理例程的入口地址数组
+    int i;
+    //使用SETGATE宏，对中断描述符表中的每一个表项进行设置
+    for(i=0;i&lt;sizeof(idt) / sizeof(struct gatedesc);i++){ //IDT表项的个数
+        //在中断门描述符中建立中断门描述符，其中存储了中断处理例程的代码段GD_KTEXT和偏移量__vectors[i]，
+        //特权级为DPL_KERNEL。这样通过查询idt[i]就可定位到中断服务例程的起始地址。
+        SETGATE(idt[i], 0, GD_KTEXT, __vectors[i], DPL_KERNEL);
+    }
+    // set for switch from user to kernel
+    SETGATE(idt[T_SWITCH_TOK], 0, GD_KTEXT, __vectors[T_SWITCH_TOK], DPL_USER);
+    //建立好中断门描述符后，通过指令lidt把中断门描述符的起始地址装入IDTR寄存器中，从而完成中断描述符的初始化工作
+    // load the IDT
+    lidt(&amp;idt_pd);
+}</code></pre>
+<p>题目3：</p>
+<p>请编程完善trap.c中的中断处理函数trap（需要对多个地方进行修改），在对时钟中断进行处理的部分填写trap函数中处理时钟中断的部分，使操作系统每遇到100次时钟中断后，调用print_ticks子程序，向屏幕上打印一行文字”100 ticks”</p>
+<p>首先需要另外加入 string.h文件，为了能够使用 memmove函数。</p>
+<pre><code class="c">void *memmove(void *dst, const void *src, size_t n);</code></pre>
+<p>定义一个结构体trapframe：（已经定义在了其他文件里，在本文件里不需要定义）</p>
+<pre><code class="c">struct trapframe{
+    struct pushregs tf_regs;
+    uint16_t tf_gs;
+    uint16_t tf_padding0;
+    uint16_t tf_fs;
+    uint16_t tf_padding1;
+    uint16_t tf_es;
+    uint16_t tf_padding2;
+    uint16_t tf_ds;
+    uint16_t tf_padding3;
+    uint32_t tf_trapno;
+    /* below here defined by x86 hardware */
+    uint32_t tf_err;
+    uintptr_t tf_eip;
+    uint16_t tf_cs;
+    uint16_t tf_padding4;
+    uint32_t tf_eflags;
+    /* below here only when crossing rings, such as from user to kernel */
+    uintptr_t tf_esp;
+    uint16_t tf_ss;
+    uint16_t tf_padding5;
+} __attribute__((packed));</code></pre>
+<p>定义变量：</p>
+<blockquote>
+<p>struct trapframe switchk2u, *switchu2k;</p>
+</blockquote>
+<p>然后就可以来编写trap_dispatch函数了。</p>
+<pre><code class="c">static void trap_dispatch(struct trapframe *tf){
+    char c;
+
+    switch(tf-&gt;tf_trapno){
+            case IRQ_OFFSET+IRQ_TIMER;
+ /* LAB1 YOUR CODE : STEP 3 */
+ /* handle the timer interrupt */
+  /*(1) After a timer interrupt, you should record this event using a global variable (increase it), such as ticks in kern/driver/clock.c
+  * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
+  * (3) Too Simple? Yes, I think so!
+  */
+                ticks++;  //静态全局变量加1，并且等待计数到达100
+                if(ticks % TICK_NUM == 0){  //TICK_NUM=100 ,每一百次就中断打印
+                    print_ticks();  //现成的，不知道定义在了哪
+                }
+                break;
+
+            //下面的代码不需要我们修改
+            case IRQ_OFFSET + IRQ_COM1:
+            ........
+    }
+}</code></pre>
+<p>拓展练习1：</p>
+<p>扩展proj4,增加syscall功能，即增加一用户态函数（可执行一特定系统调用：获得时钟计数值），当内核初始完毕后，可从内核态返回到用户态的函数，而用户态的函数又通过系统调用得到内核态的服务。</p>
+<p>实验要求使用中断处理的形式进行从内核态的用户态的切换，因此不妨考虑在ISR中进行若干对硬件保存的现场的修改，伪造出一个从用户态切换到内核态的中断的现场，然后使用iret指令进行返回，就能够实现内核态到用户态的切换</p>
+<p>拓展练习2：</p>
+<p>用键盘实现用户模式内核模式切换。具体目标是：“键盘输入3时切换到用户模式，键盘输入0时切换到内核模式”。 基本思路是借鉴软中断(syscall功能)的代码，并且把trap.c中软中断处理的设置语句拿过来</p>
+<p>软中断是利用了临时栈来处理的，所以有压栈和出栈的汇编语句。硬件中断本身就在内核态了，直接处理就可以了</p>
+<p>拓展练习的参考答案：<a href="https://www.jianshu.com/p/2f95d38afa1d" target="_blank" rel="noopener">https://www.jianshu.com/p/2f95d38afa1d</a></p>
+<h4 id="本实验知识点列举："><a href="#本实验知识点列举：" class="headerlink" title="本实验知识点列举："></a>本实验知识点列举：</h4><p>在本实验设计到的知识点分别有：</p>
+<blockquote>
+<ul>
+<li>基于分段的内存管理机制；</li>
+<li>CPU的中断机制；</li>
+<li>x86 CPU的保护模式；</li>
+<li>计算机系统的启动过程；</li>
+<li>ELF文件格式；</li>
+<li>读取LBA模式硬盘的方法；</li>
+<li>编译ucore OS和bootloader的过程；</li>
+<li>GDB的使用方法；</li>
+<li>c函数的函数调用实现机制；</li>
+</ul>
+</blockquote>
+<p>对应到的OS中的知识点分别有：</p>
+<blockquote>
+<ul>
+<li>物理内存的管理；</li>
+<li>外存的访问；</li>
+<li>OS的启动过程；</li>
+<li>OS中对中断机制的支持；</li>
+<li>OS使用保护机制对关键代码和数据的保护；</li>
+</ul>
+</blockquote>
+<p>两者的关系为，前者硬件中的机制为OS中相应功能的实现提供了底层支持</p>
+<p>我只关注实验部分了，实验手册里面还有详细列举了各个实验需要涉及的知识点，我补看。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>晚上又去跑步了，强行没下雨。（傍晚时候还有雷声）</p>
+<p>给自己定一个计划，然后坚决执行它。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
