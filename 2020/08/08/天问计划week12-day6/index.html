@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>天问计划week10-day6 | sixpar&#39;s blog</title>
+  <title>天问计划week12-day6 | sixpar&#39;s blog</title>
   <meta name="keywords" content=" 天问计划 ">
-  <meta name="description" content="天问计划week10-day6 | sixpar&#39;s blog">
+  <meta name="description" content="天问计划week12-day6 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -820,9 +820,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-天问计划week10-day6" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week12-day6" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">天问计划week10-day6</h1>
+        <h1 class="article-title">天问计划week12-day6</h1>
     
     <div class="article-meta">
         
@@ -847,12 +847,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-27 23:02:17'>2020-07-25 10:41</time>
+            Created At : <time class="date" title='Updated At: 2020-08-08 22:20:07'>2020-08-08 12:48</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:4.6k</span>
+        <span>Count:5.6k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -882,7 +882,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#bomb-lab："><span class="toc-text">bomb lab：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前排提示："><span class="toc-text">前排提示：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-phase-1"><span class="toc-text">1.phase_1:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-phase-2"><span class="toc-text">2.phase_2:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-phase-3"><span class="toc-text">3.phase_3:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-phase-4："><span class="toc-text">4.phase_4：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-phase-5："><span class="toc-text">5.phase_5：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-phase-6："><span class="toc-text">6.phase_6：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#今日总结："><span class="toc-text">今日总结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-lab2："><span class="toc-text">2. lab2：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-练习1："><span class="toc-text">2.1 练习1：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#今日总结："><span class="toc-text">今日总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -898,297 +898,318 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="bomb-lab："><a href="#bomb-lab：" class="headerlink" title="bomb lab："></a>bomb lab：</h2><h3 id="前排提示："><a href="#前排提示：" class="headerlink" title="前排提示："></a>前排提示：</h3><ol>
-<li><p>可以新建一个名为string.txt 的文件 ，然后把之前解出来的答案写到里面，每个答案一行，然后在gdb调试时设置如下命令行参数：<br>set args string.txt</p>
-<p>即可直接输入已经解出的答案，避免每次都重新从头输入，那么繁琐。</p>
-</li>
-<li><p>使用tmux虽然方便，但是发现并不能滚动滚轮上下文查看。所以这样设置：</p>
-<p>运行tmux后，按Ctrl+b 之后，输入冒号进入命令行模式，然后输入：</p>
-<p>set -g mouse on</p>
-<p>即可使用滚轮 </p>
-</li>
-</ol>
-<h3 id="1-phase-1"><a href="#1-phase-1" class="headerlink" title="1.phase_1:"></a>1.phase_1:</h3><p>关于昨天做的phase_1，除了在gdb里输入：”x/s 0x402400” 或者 “p (char*)(0x402400)” 之外，</p>
-<p>我发现在IDA里可以直接找到string ：“Border relations with Canada have never been better.” </p>
-<p>IDA会把字符串指针的值直接显示出来了。</p>
-<p>还有，第一次觉得IDA里那个流程图好有用哦。jz跳转啥的都能一目了然</p>
-<p>如果不适应AT&amp;T的，可以调为Intel格式的： objdump -M intel -d bomb</p>
-<h3 id="2-phase-2"><a href="#2-phase-2" class="headerlink" title="2.phase_2:"></a>2.phase_2:</h3><p>接下来做phase_2：</p>
-<p>我用的是Intel格式的： objdump -M intel -d bomb</p>
-<p>得到phase_2的汇编代码段：</p>
-<pre><code class="c">0000000000400efc &lt;phase_2&gt;:
-  400efc:    55                       push   rbp
-  400efd:    53                       push   rbx
-  400efe:    48 83 ec 28              sub    rsp,0x28
-  400f02:    48 89 e6                 mov    rsi,rsp
-  400f05:    e8 52 05 00 00           call   40145c &lt;read_six_numbers&gt; //读入6个数，且第一个数将存在rsp处
-  400f0a:    83 3c 24 01              cmp    DWORD PTR [rsp],0x1   //第一个数和1进行比较
-  400f0e:    74 20                    je     400f30 &lt;phase_2+0x34&gt;  //相等就跳转到400f30，这里必须相等，要不然就会执行到explore爆炸函数，即第一个数必须为1
-  400f10:    e8 25 05 00 00           call   40143a &lt;explode_bomb&gt;  //爆炸
-  400f15:    eb 19                    jmp    400f30 &lt;phase_2+0x34&gt;  //这句好像没意义？
-  400f17:    8b 43 fc                 mov    eax,DWORD PTR [rbx-0x4] //把rbx-0x4的值给eax
-  400f1a:    01 c0                    add    eax,eax   // 2*eax
-  400f1c:    39 03                    cmp    DWORD PTR [rbx],eax  //比较rbx和2*(rbx-0x4)的值
-  400f1e:    74 05                    je     400f25 &lt;phase_2+0x29&gt;  //相等就跳转到400f25
-  400f20:    e8 15 05 00 00           call   40143a &lt;explode_bomb&gt;  //爆炸
-  400f25:    48 83 c3 04              add    rbx,0x4  // rbx+0x4
-  400f29:    48 39 eb                 cmp    rbx,rbp  // rbx与rbp进行比较
-  400f2c:    75 e9                    jne    400f17 &lt;phase_2+0x1b&gt; //如果rbx和rbp不相等就跳回400f17处继续循环
-  400f2e:    eb 0c                    jmp    400f3c &lt;phase_2+0x40&gt; //跳到phase_2函数末尾
-  400f30:    48 8d 5c 24 04           lea    rbx,[rsp+0x4]   //加载 rsp+0x4处的值给rbx
-  400f35:    48 8d 6c 24 18           lea    rbp,[rsp+0x18] //加载 rsp+0x18处的值给rbp
-  400f3a:    eb db                    jmp    400f17 &lt;phase_2+0x1b&gt;
-  400f3c:    48 83 c4 28              add    rsp,0x28
-  400f40:    5b                       pop    rbx
-  400f41:    5d                       pop    rbp
-  400f42:    c3                       ret    
-</code></pre>
-<p>根据以上我已经大致了解了程序的运行原理。</p>
-<p>首先会call调用 read_six_numbers函数，读取6个数字，且最后返回的时候 rsp 的位置存着第1个数字的地址。然后后面的数字依次存入 rsp+0x4 ，rsp+0x8，rsp+0xC , rsp+0x10 , rsp+0x14 中</p>
-<p>然后第一个数必须是1，要不然会引爆炸弹。</p>
-<p>然后跳转到 0x400f30处， 把 rsp+0x4 处的值给rbx，把 rsp+0x18 处的值给rbp</p>
-<p>ok，现在rbx里存的是第2个数字， rbp存的是第6个数字之后+4的地址。</p>
-<p>然后跳转回0x400f17开始执行核心代码了：</p>
-<p>把rbx-0x4 赋给eax，eax=(rsp+0x4 )-0x4 ，所以现在eax 中存的是 第1个数字。</p>
-<p>add eax,eax  ，即eax=eax*2</p>
-<p>然后比较eax和rbx。就是比较 rsp与 rsp+0x4 ，即第1个数字和第2个数字</p>
-<p>也就是说<code>第2个数字将会是第1个数字的2倍</code>。ok，找到关键点了。</p>
-<p>绕过爆炸函数后接着把 rbx+0x4，即 (rsp+0x4)+0x4= rsp+0x8 ，开始轮到第3个数字了。</p>
-<p>然后比较 rbx和rbp 。rbx肯定还没到达rbp的地址，所以返回0x400f17处继续循环。</p>
-<p>所以根据以上，就可以大致猜出，第1个数字是1，且后一个数字是前一个数字的两倍。</p>
-<p>所以最后得到这6个数字为 ： 1 , 2 , 4 , 8 , 16 , 32</p>
-<h2 id="3-phase-3"><a href="#3-phase-3" class="headerlink" title="3.phase_3:"></a>3.phase_3:</h2><p>知识点：jb 和 ja 用无符号整数的比较。指令 ja 表示 CF=0 且ZF=0 即A&gt;B转移； 指令 jb 表示 CF=1 且ZF=0 即A &lt;B转移；</p>
-<p>而 jg 则表示 带符号整数的大小比较。 jg则表示大于关系跳转。</p>
-<pre><code class="c">0000000000400f43 &lt;phase_3&gt;:
-  400f43:    48 83 ec 18              sub    rsp,0x18
-  400f47:    48 8d 4c 24 0c           lea    rcx,[rsp+0xc]
-  400f4c:    48 8d 54 24 08           lea    rdx,[rsp+0x8]
-  400f51:    be cf 25 40 00           mov    esi,0x4025cf  //字符串常量0x4025cf存入esi
-  400f56:    b8 00 00 00 00           mov    eax,0x0
-  400f5b:    e8 90 fc ff ff           call   400bf0 &lt;__isoc99_sscanf@plt&gt;
-  400f60:    83 f8 01                 cmp    eax,0x1   //eax必须大于1
-  400f63:    7f 05                    jg     400f6a &lt;phase_3+0x27&gt;
-  400f65:    e8 d0 04 00 00           call   40143a &lt;explode_bomb&gt;
-  400f6a:    83 7c 24 08 07           cmp    DWORD PTR [rsp+0x8],0x7  //rsp+0x8处的值必须小于等于7
-  400f6f:    77 3c                    ja     400fad &lt;phase_3+0x6a&gt; //大于7则爆炸
-  400f71:    8b 44 24 08              mov    eax,DWORD PTR [rsp+0x8] //eax=rsp+0x8处的值
-  400f75:    ff 24 c5 70 24 40 00     jmp    QWORD PTR [rax*8+0x402470] //switch跳转
-  400f7c:    b8 cf 00 00 00           mov    eax,0xcf 
-  400f81:    eb 3b                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400f83:    b8 c3 02 00 00           mov    eax,0x2c3
-  400f88:    eb 34                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400f8a:    b8 00 01 00 00           mov    eax,0x100
-  400f8f:    eb 2d                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400f91:    b8 85 01 00 00           mov    eax,0x185
-  400f96:    eb 26                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400f98:    b8 ce 00 00 00           mov    eax,0xce
-  400f9d:    eb 1f                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400f9f:    b8 aa 02 00 00           mov    eax,0x2aa 
-  400fa4:    eb 18                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400fa6:    b8 47 01 00 00           mov    eax,0x147 
-  400fab:    eb 11                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400fad:    e8 88 04 00 00           call   40143a &lt;explode_bomb&gt;
-  400fb2:    b8 00 00 00 00           mov    eax,0x0
-  400fb7:    eb 05                    jmp    400fbe &lt;phase_3+0x7b&gt;
-  400fb9:    b8 37 01 00 00           mov    eax,0x137
-  400fbe:    3b 44 24 0c              cmp    eax,DWORD PTR [rsp+0xc]
-  400fc2:    74 05                    je     400fc9 &lt;phase_3+0x86&gt;
-  400fc4:    e8 71 04 00 00           call   40143a &lt;explode_bomb&gt;
-  400fc9:    48 83 c4 18              add    rsp,0x18
-  400fcd:    c3                       ret</code></pre>
-<p>看到了调用了 sscanf，所以这个函数前面一定会有一个字符串常量存储需要读取的数据格式，所以字符串常量一定是 0x4025cf ，用gdb打印出来确定格式： </p>
+        <h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><p>在lab2,中，bootloader的流程不像lab1那样直接调用kern_init函数，而是先调用位于 lab2/kern/init/entry.S 中的kern_entry函数。<code>kern_entry函数</code>的主要任务是为后续执行kern_init建立一个良好的C语言运行环境（<code>设置堆栈</code>），而且临时建立了一个段映射关系，为之后建立分页机制的过程做一个准备。完成这些工作后，才调用kern_init函数，kern_init函数在完成一些输出并对lab1实验结果的检查后，将进入物理内存管理初始化的工作，即调用pmm_init函数完成物理内存的管理（基于bootloader已经探测出了物理内存，方能进行管理），这也是我们lab2的内容。接着是执行中断和异常相关的初始化工作，即调用pic_init函数和idt_init函数等，这些工作与lab1的中断异常初始化工作的内容是相同的。也就是说，与lab1实验代码相比，无非就是多出了探测物理内存并进行初始化管理的工作。</p>
+<p>操作系统需要了解整个计算机系统中的物理内存分布，哪些可用or不可用。获取物理内存的分布和大小的方法有两种：1.<code>BIOS中断调用（实模式下）</code>；2.<code>直接探测（保护模式下）</code>；</p>
+<p>要在实模式中通过BIOS中断调用来协助探测物理内存分布及大小，所以在bootloader进入保护模式前来完成探测工作相对比较合适。所以bootloader的工作有增加，这一部分工作在 boot/bootasm.S 中从 probe_memory 处到finish_probe处完成。相关代码如下：</p>
+<pre><code class="c">probe_memory:
+           movl $0, 0x8000   //对0x8000处的32位单元清零,即给位于0x8000处的
+           xorl %ebx, %ebx   //ebx清零，即 struct e820map的成员变量nr_map清零
+           movw $0x8004, %di//设置调用INT 15h BIOS中断后BIOS返回的映射地址描述符的起始地址
+start_probe:
+           movl $0xE820, %eax  // INT 15的中断调用参数
+           movl $20, %ecx //设置地址范围描述符的大小为20字节，其大小等于struct e820map的成员变量map的大小
+           movl $SMAP, %edx  //设置edx为534D4150h (即4个ASCII字符“SMAP”)，这是一个约定
+           int $0x15 //调用int 0x15中断，要求BIOS返回一个用地址范围描述符表示的内存段信息
+           jnc cont  //如果eflags的CF位为0，则表示还有内存段需要探测
+           movw $12345, 0x8000  //探测有问题，结束探测
+           jmp finish_probe
+cont:
+           addw $20, %di  //设置下一个BIOS返回的映射地址描述符的起始地址，di递增20
+           incl 0x8000  //递增struct e820map的成员变量nr_map
+           cmpl $0, %ebx  //如果INT0x15返回的ebx为零，表示探测结束，否则继续探测
+           jnz start_probe
+finish_probe:</code></pre>
+<p>上述代码正常执行完毕后，在0x8000地址处保存了从BIOS中获得的内存分布信息，此信息按照struct e820map的设置来进行填充。这部分信息将在bootloader启动ucore后，由ucore的page_init函数来根据struct e820map的memmap（定义了起始地址为0x8000）来完成对整个机器中的物理内存的总体管理。</p>
+<p>BIOS中断获取内存布局有三种方式，都是基于 <code>INT 15h中断</code>，分别为 88h、e801h、e820h。</p>
+<p>在lab2实验中将使用参数为e820h的INT 15h BIOS中断来获取内存信息，在BootLoader进入保护模式前调用这个BIOS中断，并把e820映射结构保存在物理地址0x8000处。</p>
+<p>BIOS通过系统内存映射地址描述符（Adress Range Descriptor）格式来表示系统物理内存布局。表示如下：</p>
+<pre><code class="python">Offset  Size    Description
+00h    8字节   base address              #系统内存块基地址
+08h    8字节   length in bytes           #系统内存大小
+10h    4字节   type of address range     #内存类型</code></pre>
+<p>而系统内存映射地址类型的状态值有这些：</p>
+<pre><code class="c">Values for System Memory Map address type:
+01h    memory, available to OS
+02h    reserved, not available (e.g. system ROM, memory-mapped device)
+03h    ACPI Reclaim Memory (usable by OS after reading ACPI tables)
+04h    ACPI NVS Memory (OS is required to save this memory between NVS sessions)
+other  not defined yet -- treat as Reserved</code></pre>
+<p>当调用INT15h BIOS中断时的调用参数详细：</p>
+<pre><code class="c">eax：e820h：INT 15的中断调用参数；
+edx：534D4150h (即4个ASCII字符“SMAP”) ，这只是一个签名而已；
+ebx：如果是第一次调用或内存区域扫描完毕，则为0。 如果不是，则存放上次调用之后的计数值；
+ecx：保存地址范围描述符的内存大小,应该大于等于20字节；
+es:di：指向保存地址范围描述符结构的缓冲区，BIOS把信息写入这个结构的起始地址。</code></pre>
+<p>此中断的返回值为：</p>
+<pre><code class="c">cflags的CF位：若INT 15中断执行成功，则不置位，否则置位；
+eax：534D4150h (&#39;SMAP&#39;) ；
+es:di：指向保存地址范围描述符的缓冲区,此时缓冲区内的数据已由BIOS填写完毕
+ebx：下一个地址范围描述符的计数地址
+ecx    ：返回BIOS往ES:DI处写的地址范围描述符的字节大小
+ah：失败时保存出错代码</code></pre>
+<p>这样，我们就可以通过调用INT 15h BIOS中断，递增di的值（20的倍数），让BIOS帮我们查找出一个一个的内存布局entry，并放入到一个保存地址范围描述符结构的缓冲区中，供后续的ucore进一步进行物理内存管理。这个缓冲区结构（struct e820map）定义在memlayout.h中。</p>
+<p>在获得可用物理内存范围后，系统需要建立<code>Page数据结构</code>来管理物理页（按4KB对齐，且大小为4KB的物理内存单元）为最小单位的整个物理内存，以固定页面大小来划分整个物理内存空间，要做到每个物理页可以用一个 Page数据结构来表示，以配合后续涉及的分页管理机制。</p>
+<p>由于每一个物理页的属性都要用结构Page来表示，所以接下来仔细讲讲Page</p>
+<p>Page的数据结构定义在 kern/mm/memlayout.h 中，如下：</p>
+<pre><code class="c">struct Page {
+    int ref;        // page frame&#39;s reference counter
+    uint32_t flags; // array of flags that describe the status of the page frame
+    unsigned int property;// the num of free block, used in first fit pm manager
+    list_entry_t page_link;// free list link
+};
+/*
+ref表示该页被页表的引用记数.即若在某页表中有一个页表项设置了一个虚拟页到这个Page管理的物理页的映射关系，则ref+1；反之若是取消了页表项即映射关系解除则ref-1
+
+flags标志位表示此物理页的状态标记，为0则表示被保留（reserved），不可再被分配；标志位为1则表示该物理页被free，变为空闲页，可以被分配出去。
+
+page_link是便于把多个连续内存空闲块链接在一起的双向链表指针。这里需要注意的是用到此成员变量的这个Page比较特殊，它是这个连续内存空闲块地址最小的一页（即头一页，Head Page）。连续内存空闲块利用这个页的成员变量page_link来链接比它地址小和大的其他连续内存空闲块。
+*/</code></pre>
+<p>可以看到Page结构包含了映射此物理页的虚拟页个数，描述物理页属性的flags和双向链接各个Page结构的page_link双向链表</p>
+<p>在初始情况下，也许物理内存的空闲物理页都是连续的，这样就形成了一个大的连续内存空闲块。但随着物理页的分配与释放，这个大的连续内存空闲块会分裂为一系列地址不连续的多个小连续内存空闲块，且每个连续内存空闲块内部的物理页是连续的。那么为了有效地管理这些小连续内存空闲块。所有的连续内存空闲块可用一个双向链表管理起来，便于分配和释放，为此定义了一个free_area_t数据结构，包含了一个list_entry结构的双向链表指针和记录当前空闲页的个数的无符号整型变量nr_free。其中的链表指针指向了空闲的物理页。</p>
+<pre><code class="c">/* free_area_t - maintains a doubly linked list to record free (unused) pages */
+typedef struct {
+            list_entry_t free_list;                                // the list header
+            unsigned int nr_free;                                 // # of free pages in this free list
+} free_area_t;</code></pre>
+<p>有了这两个数据结构，ucore就可以管理起来整个以页为单位的物理内存空间。</p>
+<p>接下来需要解决两个问题：</p>
+<p>• 管理页级物理内存空间所需的Page结构的内存空间从哪里开始，占多大空间？ </p>
+<p>• 空闲内存空间的起始地址在哪里？</p>
+<p>根据bootloader给出的内存布局信息找出最大的物理内存地址maxpa（定义在page_init函数中的局部变量），由于x86的起始物理内存地址为0，所以可以得知需要管理的物理页个数为: （物理内存大小/每页大小=页数）</p>
 <blockquote>
-<p>gdb-peda$ p (char*)(0x4025cf)<br>$1 = 0x4025cf “%d %d”</p>
+<p>npage = maxpa / PGSIZE</p>
 </blockquote>
-<p>我靠，学到了。 一个字符串常量来存储需要的数据格式。</p>
-<p>可以看到数据格式”%d %d”，故需要输入两个整数。而 eax存储的是scanf函数的返回值。</p>
-<p>由开头的语句得知：</p>
+<p>这样，我们就可以预估出管理页级物理内存空间所需的Page结构的内存空间所需的内存<code>大小</code>为：</p>
 <blockquote>
-<p>lea    rcx,[rsp+0xc]</p>
-<p>lea    rdx,[rsp+0x8]</p>
+<p>sizeof(struct Page *npage)</p>
 </blockquote>
-<p>所以知道了第1个数存在rsp+0x8处，第2个数存在rsp+0xc处。</p>
-<p>代码段的后半段有很多的jmp，且都是通过0x400f75处的处理结果来判断跳转的，所以推测0x400f75处是switch语句。</p>
-<p>0x400f75处的语句是根据  rax*8+0x402470  的结果跳转的。 而rax就是我们输入的第一个数。</p>
-<p>查看 “基址”：0x402470：</p>
-<pre><code class="c">gdb-peda$ x/10xg 0x402470
-0x402470:    0x0000000000400f7c    0x0000000000400fb9
-0x402480:    0x0000000000400f83    0x0000000000400f8a
-0x402490:    0x0000000000400f91    0x0000000000400f98
-0x4024a0:    0x0000000000400f9f    0x0000000000400fa6</code></pre>
-<p>可以发现，若eax=1时，会跳转到 [0x402470+1*8]= [0x402478] = 0x400fb9 ，即跳转到对应的case语句。</p>
-<p>而每一个case语句一开始都会将某个参数赋给eax，然后统一跳转到 0x400fbe 处。而在这个地方则是将我们输入的第二个数和每个case传给eax中不同的值进行比较，相等就跳过炸弹否则爆炸。</p>
-<p>而刚才分析了eax的值是根据第一个值跳转到不同的case得到的。那么有多少个case就应该有多少个解题的答案，我们只需要确定第一个数然后顺着跳转到其中一个case中，然后看这个case中的常量值是多少即为我们输入的第二个值了。</p>
-<p>所以根据之前分析的，我第一个数输入1，然后顺着跳转来到了0x400fb9处，找到了第二个数为0x137，即十进制的311</p>
-<p>所以最后我只要输入  1 , 311 即可通过本关。（当然，本题还有其他的选择，eax取0,1,2,3,4,5,6都可）</p>
-<h2 id="4-phase-4："><a href="#4-phase-4：" class="headerlink" title="4.phase_4："></a>4.phase_4：</h2><p>jbe指令：（无符号整数）低于(below)或等于(equal)则跳转</p>
-<p>jle指令：（有符号整数）小于(less)或等于(equal)则跳转</p>
-<p>jge指令：（有符号整数）大于(large)或等于(equal)则跳转</p>
-<p>根据x86汇编的约定， rdi，rsi，rdx 分别存储第1,2,3个参数，rax存储函数的返回值</p>
-<pre><code class="c">000000000040100c &lt;phase_4&gt;:
-  40100c:    48 83 ec 18              sub    rsp,0x18
-  401010:    48 8d 4c 24 0c           lea    rcx,[rsp+0xc]
-  401015:    48 8d 54 24 08           lea    rdx,[rsp+0x8]
-  40101a:    be cf 25 40 00           mov    esi,0x4025cf
-  40101f:    b8 00 00 00 00           mov    eax,0x0
-  401024:    e8 c7 fb ff ff           call   400bf0 &lt;__isoc99_sscanf@plt&gt;
-  401029:    83 f8 02                 cmp    eax,0x2
-  40102c:    75 07                    jne    401035 &lt;phase_4+0x29&gt;
-  40102e:    83 7c 24 08 0e           cmp    DWORD PTR [rsp+0x8],0xe //第一个数必须小于等于0xe
-  401033:    76 05                    jbe    40103a &lt;phase_4+0x2e&gt;
-  401035:    e8 00 04 00 00           call   40143a &lt;explode_bomb&gt;
-  40103a:    ba 0e 00 00 00           mov    edx,0xe  //edx=0xe
-  40103f:    be 00 00 00 00           mov    esi,0x0 //esi=0x0
-  401044:    8b 7c 24 08              mov    edi,DWORD PTR [rsp+0x8]  //edi=第1个数
-  401048:    e8 81 ff ff ff           call   400fce &lt;func4&gt;  //调用 fun_4函数
-  40104d:    85 c0                    test   eax,eax  //测试返回值是否为0，否则爆炸
-  40104f:    75 07                    jne    401058 &lt;phase_4+0x4c&gt;
-  401051:    83 7c 24 0c 00           cmp    DWORD PTR [rsp+0xc],0x0 //判断第2个数是否为0
-  401056:    74 05                    je     40105d &lt;phase_4+0x51&gt; //所以第2个数必须为0
-  401058:    e8 dd 03 00 00           call   40143a &lt;explode_bomb&gt;
-  40105d:    48 83 c4 18              add    rsp,0x18
-  401061:    c3                       ret    
-</code></pre>
-<p>本题前面的代码和phase_3差不多。也是调用scanf函数，然后输入两个数字存起来，rsp+0x8 和 rsp+0xC。</p>
-<p>不同的是本题调用了 fun_4 函数。</p>
-<pre><code class="c">0000000000400fce &lt;func4&gt;:
-  400fce:    48 83 ec 08              sub    rsp,0x8 //分配栈帧
-  400fd2:    89 d0                    mov    eax,edx  // eax=edx=0xe
-  400fd4:    29 f0                    sub    eax,esi  // eax=0xe-0x0=0xe ??不变
-  400fd6:    89 c1                    mov    ecx,eax  //ecx=eax=0xe
-  400fd8:    c1 e9 1f                 shr    ecx,0x1f //ecx右移31位，取ecx的符号位?所以ecx为0咯
-  400fdb:    01 c8                    add    eax,ecx  //eax=0xe+0x0=0xe ??又不变，迷惑行为
-  400fdd:    d1 f8                    sar    eax,1 //右移1位，相当于除2 ，即 eax=(eax/2)=7
-  400fdf:    8d 0c 30                 lea    ecx,[rax+rsi*1]  //ecx=0x7+0x0=0x7
-  400fe2:    39 f9                    cmp    ecx,edi  //edi是第1个数，即比较0x7是否小于等于第1个数 
-  400fe4:    7e 0c                    jle    400ff2 &lt;func4+0x24&gt; //第1个数大于等于0x7则跳转到0x400ff2
-  400fe6:    8d 51 ff                 lea    edx,[rcx-0x1] // edx=0x7-0x1=0x6
-  400fe9:    e8 e0 ff ff ff           call   400fce &lt;func4&gt; //递归调用
-  400fee:    01 c0                    add    eax,eax  //递归返回值加倍
-  400ff0:    eb 15                    jmp    401007 &lt;func4+0x39&gt; //跳转到fun_4函数末尾
-  400ff2:    b8 00 00 00 00           mov    eax,0x0  //eax=0
-  400ff7:    39 f9                    cmp    ecx,edi  //又比较一遍，第1个数是否小于等于0x7
-  400ff9:    7d 0c                    jge    401007 &lt;func4+0x39&gt; //第1个数小于等于0x7则跳转至函数末尾，结束函数
-  400ffb:    8d 71 01                 lea    esi,[rcx+0x1]
-  400ffe:    e8 cb ff ff ff           call   400fce &lt;func4&gt;  //递归调用
-  401003:    8d 44 00 01              lea    eax,[rax+rax*1+0x1] //递归返回值加倍加1
-  401007:    48 83 c4 08              add    rsp,0x8 //清空栈帧
-  40100b:    c3                       ret    //返回函数</code></pre>
-<p>在fun_4的函数体中发现它又有调用自身，于是想到了这里用的是递归。</p>
-<p>关于本题的调试手法：</p>
-<p>set args string.txt    把答案集作为参数传入，自动输入。</p>
-<p>然后 b *0x401048  在调用fun_4处下断点。</p>
-<p>输入r开始运行，前面三个phase自动输入答案跳过，然后在第4个phase处输入 3 0 ，然后程序自动截断，断在了0x401048处。</p>
-<p>此时 rdi是我们输入的第1个数0x3，rsi=0x0，rdx=0xe</p>
-<p>然后 si 步入fun_4函数。</p>
-<p>运行几步后ecx=0x7，然后就把ecx和edi(我们输入的第1个数)进行比较。</p>
-<p>比较结果：我们输入的3比7小，所以不跳转，继续顺序往下执行，只见把edx的值减1后继续调用fun_4函数。</p>
-<p>所以这里我们如果令输入的第1个数为7，会怎样？</p>
-<p>重新来一遍，这一回输入 7 0，然后第一遍比较的时候由于 符合“第1个数大于等于0x7”所以跳转到 0x400ff2，</p>
-<p>而0x400ff2处的代码将检查 是否符合“第1个数小于等于0x7”。</p>
-<p>哈哈，这回明白了，要想同时符合这两个条件，第1个数就只能为 7 了 。</p>
-<p>又由于fun_4函数返回时有一个判断，第2个数必须等于0才不会引爆炸弹。</p>
-<p>所以综上，得到本题的答案： 7 0</p>
-<p>另外附上某位师傅逆向出的fun_4的C源程序：（我是没能力逆向出源程序的，只是大致了解程序的功能，wtcl）</p>
-<pre><code class="c">int func4(int target, int step, int limit) {
-  /*由调用约定得： edi = target; esi = step; edx = limit */
-  int temp = (limit - step) * 0.5;  //右移1位，即除以2
-  int mid = temp + step;
-  if (mid &gt; target) {
-    limit = mid - 1;
-    int ret1 = func4(target, step, limit);
-    return 2 * ret1;
-  } else {
-    if (mid &gt;= target) {
-      return 0;
-    } else {
-      step = mid + 1;
-      int ret2 = func4(target, step, limit);
-      return (2 * ret2 + 1);
-    }
-  }
+<p>由于bootloader加载ucore的结束地址（用全局指针变量end记录）以上的那些空间没有被使用，所以我们可以把end地址按页大小为边界去整后，作为管理页级物理内存空间所需的Page结构的<code>内存空间</code>，记为：</p>
+<blockquote>
+<p>pages = (struct Page *)ROUNDUP((void *)end, PGSIZE);</p>
+</blockquote>
+<p>从地址0到地址pages+ sizeof(struct Page) * npage)结束的物理内存空间设定为已占用物理内存空间（起始0~640KB的空间是空闲的），地址pages+ sizeof(struct Page) * npage)以上的空间为空闲物理内存空间，这时的空闲空间起始地址为:</p>
+<blockquote>
+<p>uintptr_t freemem = PADDR((uintptr_t)pages + sizeof(struct *Page) * npage);</p>
+</blockquote>
+<p>为此我们需要把这两部分空间给标识出来。</p>
+<p>首先，对于所有物理空间，通过如下语句即可实现 占用 标记：</p>
+<pre><code class="c">for(i=0;i&lt;npage;i++){  //一共有 npage 页
+    SetPageReserved(pages+i);
+}
+//SetPageReserved把物理地址对应的Page结构中的flags标志设置为了PG_reserved ，表示这些页已经被使用了，将来不能再被用于分配</code></pre>
+<p>然后空闲物理空间通过如下语句进行 空闲 标记：</p>
+<pre><code class="c">//获得空闲空间的起始地址begin 和 结束地址end
+....
+init_memmap(pa2page(begin), (end-begin) / PGSIZE);
+//init_memmap函数作用是把空闲物理页对应的Page结构中的flags和引用计数ref清零，并加到free_area.free_list指向的双向列表中，为将来的空闲页管理做好初始化准备工作</code></pre>
+<p>关于内存分配有很多方法，本实验只实现了简单的内存页分配算法。相应的实现在 default_pmm.c 中的 default_alloc_pages 函数和 default_free_pages函数。</p>
+<p>内存分配和释放方面最主要的作用是建立了一个物理内存页管理器框架，这实际上是一个函数指针列表，定义如下：</p>
+<pre><code class="c">struct pmm_manager {
+            const char *name; //物理内存页管理器的名字
+            void (*init)(void); //初始化内存管理器
+            void (*init_memmap)(struct Page *base, size_t n); //初始化管理空闲内存页的数据结构
+            struct Page *(*alloc_pages)(size_t n); //分配n个物理内存页
+            void (*free_pages)(struct Page *base, size_t n); //释放n个物理内存页
+            size_t (*nr_free_pages)(void); //返回当前剩余的空闲页数
+            void (*check)(void); //用于检测分配/释放实现是否正确的辅助函数
+};</code></pre>
+<p>重点是实现init_memmap/ alloc_pages/ free_pages这三个函数。当完成物理内存页管理初始化工作后，计算机系统的内存布局如下图所示:</p>
+<p><img src="https://objectkuan.gitbooks.io/ucore-docs/content/lab2_figs/image003.png" alt=""></p>
+<p>以页为单位的物理内存分配管理的实现在kern/default_pmm.[ch]。</p>
+<p>所以接下来ucore kernel就要建立页表， 启动分页机制，让CPU的MMU把预先建立好的页表中的页表项读入到TLB中，根据页表项描述的虚拟页（Page）与物理页帧（Page Frame）的对应关系完成CPU对内存的读、写和执行操作。</p>
+<h2 id="2-lab2："><a href="#2-lab2：" class="headerlink" title="2. lab2："></a>2. lab2：</h2><p>实验目的：理解基于段页式内存地址的转换机制；理解页表的建立和使用方法；理解物理内存的管理方法；</p>
+<p>本次实验包含三个部分。1.如何发现系统中的物理内存；2.如何建立对连续物理内存的初步管理；3.了解页表相关的操作，即如何建立页表来实现虚拟内存到物理内存之间的映射，对段页式内存管理机制有一个比较全面的了解。</p>
+<p>本实验里面实现的内存管理还是非常基本的，并没有涉及到对实际机器的优化，比如针对 cache 的优化等。</p>
+<p>练习0：填写已有实验，把lab1中已经编写的代码填入到lab2中标有“LAB1”注释的相应部分。通过Meld比对lab1和lab2所有文件的差异，发现lab2缺少了kdebug.c和trap.c两个文件的相关代码。</p>
+<p>跳过。</p>
+<h3 id="2-1-练习1："><a href="#2-1-练习1：" class="headerlink" title="2.1 练习1："></a>2.1 练习1：</h3><p>实现 first-fit 连续物理内存分配算法。</p>
+<p>first-fit算法原理：</p>
+<p>要求空闲分区链以地址递增的次序链接。在分配内存时，从链首开始顺序查找，直至找到一个大小能满足要求的分区为止；然后再按照作业的大小，从该分取中划出一块内存空间分配给请求者，余下的空闲分区仍留在空闲链中。若从链首直到链尾都不能找到一个能满足要求的分区，则此次内存分配失败，返回。该算法倾向于优先利用内存中低地址部分的空闲分区，从而保留了高址部分的大空闲区。这给为以后到达的大作业分配大的内存空间创造了条件，其缺点是低址部分不断被划分，会留下许多难以利用的、很小的空闲分区，而每次查找又都是从低址部分开始，这无疑会增加查找可用空闲分区时的开销。</p>
+<p>通过之前学习，我们知道了有这么一个 结构体：<code>pmm_manager</code> 将分配和释放函数的有关函数指针封装起来，形成了一个物理内存页管理器框架，而我们只需要实例化一个物理内存管理器，然后调用已经初始化完成的pmm_manager的实例中的相关函数指针即可。</p>
+<p>根据实验指导书，我们练习1需要完成的是对<code>default_pmm.c</code>中的<code>default_init</code>，<code>default_init_memmap</code>，<code>default_alloc_pages</code>， <code>default_free_pages</code>几个函数的修改。我们查看 /kern/mm/default_pmm.c文件可以发现，果然，最终ucore中所使用的物理内存管理器中的函数指针分别指向了default_init, default_init_memmap等若干函数，但是我们要想实现first-fit 连续内存分配算法就必须得修改这些文件了，重新实现（所谓的rewrite functions）若干的ff_init, ff_init_memmap等专门为FF（first-fit）算法实现的函数。</p>
+<p>所以就开始了每个函数的修改之旅。</p>
+<p>1.首先查看 default_init函数：</p>
+<pre><code class="c">/*
+default_init: 
+you can reuse the  demo default_init fun to init the free_list and set nr_free to 0.
+free_list is used to record the free mem blocks. 
+nr_free is the total number for free mem blocks.
+ */
+
+static void default_init(void) {
+    list_init(&amp;free_list);
+    nr_free = 0;
 }</code></pre>
-<h2 id="5-phase-5："><a href="#5-phase-5：" class="headerlink" title="5.phase_5："></a>5.phase_5：</h2><p>同样先贴上汇编代码进行分析：</p>
-<p>本题我输入了 “123456”作为测试数据。</p>
-<pre><code class="c">0000000000401062 &lt;phase_5&gt;:
-  401062:    53                       push   rbx
-  401063:    48 83 ec 20              sub    rsp,0x20
-  401067:    48 89 fb                 mov    rbx,rdi
-  40106a:    64 48 8b 04 25 28 00     mov    rax,QWORD PTR fs:0x28  //canary保护
-  401071:    00 00 
-  401073:    48 89 44 24 18           mov    QWORD PTR [rsp+0x18],rax
-  401078:    31 c0                    xor    eax,eax
-  40107a:    e8 9c 02 00 00           call   40131b &lt;string_length&gt;
-  40107f:    83 f8 06                 cmp    eax,0x6   //要求输入的字符串长度为6，否则爆炸
-  401082:    74 4e                    je     4010d2 &lt;phase_5+0x70&gt;
-  401084:    e8 b1 03 00 00           call   40143a &lt;explode_bomb&gt;
-  401089:    eb 47                    jmp    4010d2 &lt;phase_5+0x70&gt;
-  40108b:    0f b6 0c 03              movzx  ecx,BYTE PTR [rbx+rax*1] //取rbx处地址的1字节，然后0拓展为32位，然后存到ecx里，果然ecx变为了 0x31 (&#39;1&#39;)
-  40108f:    88 0c 24                 mov    BYTE PTR [rsp],cl //此刻[rsp]值的低1字节从&quot;0x10&quot;变为了&quot;0x31&quot; ，即变为了 0x402231 ，能理解
-  401092:    48 8b 14 24              mov    rdx,QWORD PTR [rsp] // rdx=[rsp]=0x402231
-  401096:    83 e2 0f                 and    edx,0xf //掩码，把edx的高28位清零，只剩余低4位。所以edx变为了0x1
-  401099:    0f b6 92 b0 24 40 00     movzx  edx,BYTE PTR [rdx+0x4024b0] //以我们给出的低4位的值作为索引，取出程序中固定的一长串字符串里的某个字符，然后存储到edx里。比如我们这里取出的是[0x4024b1]=0x61=&quot;a&quot;。
-  4010a0:    88 54 04 10              mov    BYTE PTR [rsp+rax*1+0x10],dl //用edx的低1字节覆盖[rsp+0x0+0x10]的低1字节
-  4010a4:    48 83 c0 01              add    rax,0x1 //rax=0x0+0x1=0x1
-  4010a8:    48 83 f8 06              cmp    rax,0x6 //不满6次，继续循环
-  4010ac:    75 dd                    jne    40108b &lt;phase_5+0x29&gt;
-  4010ae:    c6 44 24 16 00           mov    BYTE PTR [rsp+0x16],0x0 //[rsp+0x16]=0x0
-  4010b3:    be 5e 24 40 00           mov    esi,0x40245e  //esi=0x40245e 这个地址存储了字符串&quot;flyers&quot; ,懂了，肯定是要让我们从那一长串固定字符串里寻找出这6个字符。
-  4010b8:    48 8d 7c 24 10           lea    rdi,[rsp+0x10] //rdi=[rsp+0x10]
-  4010bd:    e8 76 02 00 00           call   401338 &lt;strings_not_equal&gt; //字符比较。
-  4010c2:    85 c0                    test   eax,eax
-  4010c4:    74 13                    je     4010d9 &lt;phase_5+0x77&gt;
-  4010c6:    e8 6f 03 00 00           call   40143a &lt;explode_bomb&gt;
-  4010cb:    0f 1f 44 00 00           nop    DWORD PTR [rax+rax*1+0x0]
-  4010d0:    eb 07                    jmp    4010d9 &lt;phase_5+0x77&gt;
-  4010d2:    b8 00 00 00 00           mov    eax,0x0
-  4010d7:    eb b2                    jmp    40108b &lt;phase_5+0x29&gt;
-  4010d9:    48 8b 44 24 18           mov    rax,QWORD PTR [rsp+0x18]
-  4010de:    64 48 33 04 25 28 00     xor    rax,QWORD PTR fs:0x28
-  4010e5:    00 00 
-  4010e7:    74 05                    je     4010ee &lt;phase_5+0x8c&gt;
-  4010e9:    e8 42 fa ff ff           call   400b30 &lt;__stack_chk_fail@plt&gt;
-  4010ee:    48 83 c4 20              add    rsp,0x20
-  4010f2:    5b                       pop    rbx
-  4010f3:    c3                       ret    
+<p>发现仅有对空闲内存块链表的初始化以及将总空闲数目置零的操作，这是与具体物理内存分配算法是无关的，因此直接使用默认的函数实现即可；</p>
+<p>2.default_init_memmap函数修改后如下：</p>
+<pre><code class="c">/*
+default_init_memmap:
+CALL GRAPH: kern_init --&gt; pmm_init--&gt;page_init--&gt;init_memmap--&gt; pmm_manager-&gt;init_memmap
+This fun is used to init a free block (with parameter: addr_base, page_number).
+First you should init each page (in memlayout.h) in this free block, include:
+    p-&gt;flags should be set bit PG_property (means this page is valid. In pmm_init fun (in pmm.c),the bit PG_reserved is setted in p-&gt;flags).if this page is free and is not the first page of free block, p-&gt;property should be set to 0;  if this page is free and is the first page of free block, p-&gt;property should be set to total num of block.
+    p-&gt;ref should be 0, because now p is free and no reference.
+    p-&gt;page_link. We can use p-&gt;page_link to link this page to free_list, (such as: list_add_before(&amp;free_list, &amp;(p-&gt;page_link)); )
+Finally, we should sum the number of free mem block: nr_free+=n
+*/
+
+static void
+default_init_memmap(struct Page *base, size_t n) {
+    assert(n &gt; 0);   //判断是否有连续物理页
+    struct Page *p = base;  //n块物理页的基址
+    for (; p != base + n; p ++) {  //初始化n块物理页
+        assert(PageReserved(p)); //检查该页是否为保留页
+        p-&gt;flags = 0;  //标志位清0
+        SetPageProperty(p);  //设置标志位
+        p-&gt;property = 0;  //连续空闲页个数清0
+        set_page_ref(p, 0);  //清空被引用的次数
+        list_add_before(&amp;free_list, &amp;(p-&gt;page_link)); //将该页插入到空闲页链表里
+    }
+    nr_free += n; //有n个连续空闲块
+    //first block
+    base-&gt;property = n;  //修改base的连续空闲页值为n，表示连续内存空闲块的大小为n
+}</code></pre>
+<p>可见，函数传入物理页基地址和物理页的个数(个数必须大于0)，然后对每一块物理页进行设置：先判断是否为保留页，如果不是，则进行下一步。将标志位清0，连续空页个数清0，然后将标志位设置为1，将引用此物理页的虚拟页的个数清0。然后<code>把空闲块加入到空闲链表中（只需要将第一个Page的page_link插入即可）</code>。循环结束后计算空闲页的个数，修改物理基地址页的property的个数为n。</p>
+<p>3.default_alloc_pages函数（修改后）：</p>
+<pre><code class="c">/*
+default_alloc_pages: 
+search find a first free block (block size &gt;=n) in free list and resize the free block, return the addr of malloced block.
+So you should search freelist like this:
+    list_entry_t le = &amp;free_list;
+    while((le=list_next(le))!=&amp;free_list){
+        in this loop,get the struct page and check the p-&gt;property (record the num of free block) &gt;= n ?
+        struct Page *p=le2page(le,page_link);
+        if(p-&gt;property &gt;= n){
+            if we come here,then it means we find a free block(block size &gt;= n),and the first n pages can be malloced.
+            some flag bits of this page should be setted after it have been malloced: PG_reserved=1,PG_property=0;
+            unlink the pages from free_list
+            And if (p-&gt;property &gt; n),we should re-calculate number of the rest of this free block.such as: le2page(le,page_link)-&gt;property = p-&gt;property-n;
+            re-calculate nr_free (number of the rest of all free block).
+            return p.
+        }
+if we can not find a free block (block size &gt;= n),then return NULL.
+    }
+*/
+
+//宏定义
+#define offsetof(type, member) ((size_t)(&amp;((type *)0)-&gt;member))
+#define to_struct(ptr, type, member) ((type *)((char *)(ptr) - offsetof(type, member)))
+#define le2page(le, member) to_struct((le), struct Page, member)
+#define ClearPageReserved(page) clear_bit(PG_reserved, &amp;((page)-&gt;flags))
+
+//需要用到的数据结构
+static inline list_entry_t *
+list_next(list_entry_t *listelm) { //返回下一个节点
+    return listelm-&gt;next;
+}
+static inline void
+list_del(list_entry_t *listelm) { //删除当前节点
+    __list_del(listelm-&gt;prev, listelm-&gt;next);
+}
+static inline void
+__list_del(list_entry_t *prev, list_entry_t *next) {  //unlink常规操作
+    prev-&gt;next = next;  
+    next-&gt;prev = prev;
+}
+
+//函数实现
+static struct Page *
+default_alloc_pages(size_t n){
+    assert(n&gt;0); //判断n是否大于0
+    if(n&gt;nr_free){ 
+        //当需要分配页的个数小于空闲页的总数，则直接返回
+        return NULL;
+    }
+    list_entry_t *le, *len; //定义空闲链表的头部和长度
+    le=&amp;free_list;   //空闲链表的头部
+    while((le=list_next(le)) != &amp;free_list){
+        //遍历整个空闲链表
+        struct Page *p=le2page(le,page_link); //转换为页结构
+        if(p-&gt;property &gt;= n){
+            //试图找到合适的空闲页
+            int i;
+            for(i=0;i&lt;n;i++){
+                len=list_next(le); //下一个链节点的头部
+                struct Page *pp=le2page(le,page_link);  //转换为页结构
+                SetPageReserved(pp);  //设置每一页的标志位
+                ClearPageProperty(pp);  //清除每一页的连续页个数
+                list_del(le);  //将此页从free_list中清除
+                le=len;  //把空闲链表的头部设置为某链节点的头部
+            }
+            if(p-&gt;property &gt; n){
+                //如果页块大小大于所需大小，则需要分割页块
+                (le2page(le,page_link))-&gt;property = p-&gt;property-n;   //分割后剩下的
+            }
+            ClearPageProperty(p);
+            SetPageReserved(p);
+            nr_free -= n;  //减去已经分配的页块大小
+            return p;   //找到合适的页p，然后返回
+        }
+    }
+    return NULL;
+}    </code></pre>
+<p>这个函数是用来分配空闲页的（算是核心函数）。首先判断空闲页的大小是否大于所需的页块大小。如果小于空闲页的大小。则遍历整个空闲链表。如果找到合适的空闲页，则重新设置标志位。然后从空闲链表中删除此页。如果当前空闲页的大小大于所需大小。则分割页块。如果合适则不进行操作，最后计算剩余空闲页个数并返回分配的页块地址。</p>
+<p>4.default_free_pages（修改后）：</p>
+<pre><code class="c">/*
+default_free_pages:
+relink the pages into free list,maybe merge small free blocks into big free blocks.
+according the base addr of withdrawed blocks,search free list, find the correct position (form low to high addr),and insert the pages .(may use list_next, le2page,list_add_before)
+try to merge low addr or high addr blocks.
+Notice: should change some pages&#39;s -&gt; property correctly.
+*/
+
+static inline list_entry_t *list_prev(list_entry_t *listelm){
+    return listelm-&gt;prev;
+}
+
+static void default_free_pages(struct Page *base, size_t n){
+    assert(n&gt;0); //n是否大于0
+    assert(PageReserved(base));  //检查需要释放的页块是否已被分配
+    list_entry_t *le=&amp;free_list;
+    struct Page *p;
+    while((le=list_next(le)) != &amp;free_list){
+        //试图寻找合适的位置
+        p=le2page(le,page_link);  //转换获取链表对应的page
+        if(p&gt;base){ //找到了
+            break;
+        }
+    }
+    for(p=base;p&lt;base+n;p++){
+        list_add_before(le,&amp;(p-&gt;page_link));  //将每一空闲块对应的链表插入到链表中
+    }
+    base-&gt;flags=0;  //修改标志位为0
+    set_pages_ref(base,0);  //ref引用计数清0
+    ClearPageProperty(base);
+    SetPageProperty(base);
+    base-&gt;property=n; //设置连续大小为n
+    //如果是高位，则向高地址合并
+    p=le2page(le,page_link);//转换页结构
+    if(base+n==p){
+        base-&gt;property += p-&gt;property; 
+        p-&gt;property=0;
+    }
+    //如果是在低位且在范围内，则向低地址合并
+    le=list_prev(&amp;(base-&gt;page_link));
+    p=le2page(le,page_link);
+    if(le!=&amp;free_list &amp;&amp; p==base-1){
+        while(le!=&amp;free_list){
+            if(p-&gt;property){
+                p-&gt;property += base-&gt;property;
+                base-&gt;property=0;
+                break;
+            }
+            le=list_prev(le);
+            p=le2page(le,page_link);
+        }
+    }
+    nr_free+=n;
+    return ;
+}
 </code></pre>
-<p>调试：</p>
-<p>输入”123456”，然后断在 0x40107a 即call string_length处。</p>
-<p>此时 rdi，rsi，rbx均指向存储字符串“123456”的地址 0x6038c0。</p>
-<p>步入，进入string_length函数：(以下的根据我输入的“123456”来解释)</p>
-<pre><code class="c">   0x000000000040131b &lt;+0&gt;:    cmp    BYTE PTR [rdi],0x0
-   0x000000000040131e &lt;+3&gt;:    je     0x401332 &lt;string_length+23&gt;
-   0x0000000000401320 &lt;+5&gt;:    mov    rdx,rdi // rdx=rdi=0x6038C0 -&gt;0x363534333231(&#39;123456&#39;)
-   0x0000000000401323 &lt;+8&gt;:    add    rdx,0x1 // rdx=0x6038C1 -&gt; 0x3635343332(&#39;23456&#39;)
-   0x0000000000401327 &lt;+12&gt;:    mov    eax,edx //eax=edx=0x6038C1
-   0x0000000000401329 &lt;+14&gt;:    sub    eax,edi //eax=0x6038C1-0x6038C0=0x1
-   0x000000000040132b &lt;+16&gt;:    cmp    BYTE PTR [rdx],0x0 //rdx还未清空为0x0，还有23456
-   0x000000000040132e &lt;+19&gt;:    jne    0x401323 &lt;string_length+8&gt; //继续循环清空[rdx]，使其为0x0的时候才退出循环。此时rax里保存的值肯定是最终字符串高位地址减去低位地址得到的值，即是字符串的长度。
-   0x0000000000401330 &lt;+21&gt;:    repz ret //执行到这一步的时候就返回到了phase_5函数里。此时eax作为函数返回值，记录了字符串的长度。
-   0x0000000000401332 &lt;+23&gt;:    mov    eax,0x0
-   0x0000000000401337 &lt;+28&gt;:    ret    
-</code></pre>
-<p>返回到phase_5函数后，检查eax是否等于0x6，若等于则跳转到 0x4010d2 ，令eax=0后跳转到0x40108b。现在我们算是通过了第一个小关卡，即检查字符串长度为6，然后eax清零，进入下一个小关卡咯。</p>
-<p>至于0x40108b处的调试过程，我在代码段后面都有注释，自己看吧。</p>
-<p>直到0x401099这里，movzx  edx,BYTE PTR [rdx+0x4024b0]</p>
-<p>这个“基址” 0x4024b0里面存着什么内容呢？</p>
-<p>打印一下：</p>
-<pre><code class="c">gdb-peda$ p (char*)(0x4024b0)
-$10 = 0x4024b0 &lt;array&gt; &quot;maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?&quot;</code></pre>
-<p>那么我们应该要做的就是：以输入字符的低4位作为索引，去访问这个字符串的某一个字符，取出来0扩展为32位（movzx），并存储到%edx里</p>
-<p>0x4010bd调用字符串比对函数，参数是rdi为 rsp+0x10（即rsp+16） 处的值， 而要比对的对象esi是从0x40245e这个地址来的。查看一下这个地址：</p>
-<pre><code class="c">gdb-peda$ p (char*)(0x40245e)
-$11 = 0x40245e &quot;flyers&quot;</code></pre>
-<p>“flyers”刚好也是6个字符，所以猜测我们需要从 <code>&quot;maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?&quot;</code>  这一长串字符串里寻找出这6个字符。</p>
-<p>就可以得到相应的索引位。（由于只有4位，所以最多能索引15）</p>
-<p>通过正确的索引位，把6个字符分别存到 rsp+16里,rsp+17里，rsp+18里……..rsp+21里。</p>
-<p>ok，大致流程搞明白了。</p>
-<p>所以分别算出 f l y e r s 各自的索引号为：9, 15 , 14 , 5 ,6 , 7 </p>
-<p>就拿f来说好了，f的索引为9,即二进制1001，所以只需要查询ascall码表后四位为 1001 的字符均可，我取的Ｙ(0x59)。</p>
-<p>以此类推得到6个字符的一个组合：YONEFG</p>
-<h2 id="6-phase-6："><a href="#6-phase-6：" class="headerlink" title="6.phase_6："></a>6.phase_6：</h2><p>先咕着，听说有点难。明天做吧。（准备跑步去了….</p>
-<h2 id="今日总结："><a href="#今日总结：" class="headerlink" title="今日总结："></a>今日总结：</h2><p>现在是晚上22:16，今晚浙江高考成绩以及分数线出来了。一段594分。今晚有多少家在狂喜，而又有多少家在忧愁呢。</p>
-<p>我还是不够努力。</p>
+<p>这个函数的作用是释放已经使用完的页，把他们合并到freelist中。在freelist中查找合适的位置以供插入。改变被释放页的标志位，以及头部的计数器尝试在freelist中向高地址或低地址合并.</p>
+<h2 id="今日总结："><a href="#今日总结：" class="headerlink" title="今日总结："></a>今日总结：</h2><p>今天是第十二个“全民健身日”，怪不得今晚出去跑步，公园那儿全是人，hh，目测应该有200多号人，在公园马路沿上跑着。我也跟着跑了7公里。可惜当时没有报名（应该可以报名的）。然后我跑完后继续骑车绕着城区骑了10公里。回来的时候看见他们还在跑，太强了。</p>
+<p>多多运动身体好。</p>
+<p>白天学习，晚上抽时间跑跑步。这个模式挺好的。以后考研期间就这么干。UP！</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
