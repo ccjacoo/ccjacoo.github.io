@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ADword-reverse2 | sixpar&#39;s blog</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="ADword-reverse2 | sixpar&#39;s blog">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
+<meta property="og:type" content="website">
+<meta property="og:title" content="about">
+<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta property="og:site_name" content="sixpar&#39;s blog">
+<meta property="og:description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-02T13:45:54.000Z">
+<meta property="article:modified_time" content="2020-07-04T03:37:23.628Z">
+<meta property="article:author" content="sixpar">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/sunburst.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+</div>
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>sixpar</span>
+</div>
+
+<div class="icon">
+    
+        
+    
+        
+        <a title="github" href="https://github.com/ccjacoo" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=570791563&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="All">All<small>(69)</small></div></li>
+    
+        
+            
+            <li><div data-rel="PWN题">PWN题<small>(17)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="笔记">笔记<small>(8)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="系列">系列<small>(30)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="生活">生活<small>(6)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="学习">学习<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="逆向题">逆向题<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="69">
+<input type="hidden" id="yelog_site_word_count" value="144.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://47.107.81.38">sixpar的小站</a></li>
+            
+            <li><a target="_blank" href="http://v3ged4g.top">V3D4师傅</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Bypass-Canary</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>canary</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>ctfwiki</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>DynELF</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>fd</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>gdb</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>heap</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>IO_File</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>IO缓冲区</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>partial_write</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>pyc反编译</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>reverse</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>ROP</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>shellcode</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>tcache dup</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>UAF</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>webpwn</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>入门</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>关于我</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>内核</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>劫持函数</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>基础</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>天问计划</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>实验</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>延迟绑定</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>数组溢出</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>日记</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>格式化字串</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>汇编</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class="All 逆向题 "
+           href="/2020/10/15/ADword-reverse2/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="ADword-reverse2">ADword-reverse2</span>
+            <span class="post-date" title="2020-10-15 11:47:49">2020/10/15</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/10/11/%E6%97%A0%E7%BA%BF%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%8E%A9%E6%B3%951/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="无线渗透测试玩法1">无线渗透测试玩法1</span>
+            <span class="post-date" title="2020-10-11 20:24:58">2020/10/11</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/10/11/%E5%88%9D%E8%AF%95%E6%97%A0%E7%BA%BF%E7%BD%91%E5%8D%A1/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="初试无线网卡">初试无线网卡</span>
+            <span class="post-date" title="2020-10-11 13:32:31">2020/10/11</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/10/01/XCTF%E6%80%BB%E5%86%B3%E8%B5%9BPwn%E9%A2%98flag-robot/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="XCTF总决赛Pwn题flag-robot">XCTF总决赛Pwn题flag-robot</span>
+            <span class="post-date" title="2020-10-01 17:15:50">2020/10/01</span>
+        </a>
+        
+        <a  class="All 逆向题 "
+           href="/2020/09/25/2019%E5%B9%B4%E6%B5%99%E6%B1%9F%E7%BD%91%E5%AE%89%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B%E9%80%86%E5%90%91%E9%A2%98%E5%A4%8D%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="2019年浙江网安省赛决赛逆向题复现">2019年浙江网安省赛决赛逆向题复现</span>
+            <span class="post-date" title="2020-09-25 15:58:01">2020/09/25</span>
+        </a>
+        
+        <a  class="All 逆向题 "
+           href="/2020/09/11/AD-world-reverse1/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="AD_world-reverse1">AD_world-reverse1</span>
+            <span class="post-date" title="2020-09-11 09:36:21">2020/09/11</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/30/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week15-day7/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week15-day7">天问计划week15-day7</span>
+            <span class="post-date" title="2020-08-30 14:00:46">2020/08/30</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/27/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week15-day4/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week15-day4">天问计划week15-day4</span>
+            <span class="post-date" title="2020-08-27 10:09:57">2020/08/27</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/13/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week13-day4/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week13-day4">天问计划week13-day4</span>
+            <span class="post-date" title="2020-08-13 13:03:59">2020/08/13</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/11/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week13-day2/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week13-day2">天问计划week13-day2</span>
+            <span class="post-date" title="2020-08-11 11:26:47">2020/08/11</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/10/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week13-day1/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week13-day1">天问计划week13-day1</span>
+            <span class="post-date" title="2020-08-10 14:59:22">2020/08/10</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/09/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day7/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day7">天问计划week12-day7</span>
+            <span class="post-date" title="2020-08-09 08:24:52">2020/08/09</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/08/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day6/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day6">天问计划week12-day6</span>
+            <span class="post-date" title="2020-08-08 12:48:26">2020/08/08</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/07/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day5/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day5">天问计划week12-day5</span>
+            <span class="post-date" title="2020-08-07 10:33:36">2020/08/07</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/06/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day4/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day4">天问计划week12-day4</span>
+            <span class="post-date" title="2020-08-06 14:53:46">2020/08/06</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/05/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day3/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day3">天问计划week12-day3</span>
+            <span class="post-date" title="2020-08-05 09:17:38">2020/08/05</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/04/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day2/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day2">天问计划week12-day2</span>
+            <span class="post-date" title="2020-08-04 12:52:06">2020/08/04</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/03/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week12-day1/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week12-day1">天问计划week12-day1</span>
+            <span class="post-date" title="2020-08-03 17:02:08">2020/08/03</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/02/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day7/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day7">天问计划week11-day7</span>
+            <span class="post-date" title="2020-08-02 09:20:37">2020/08/02</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/08/01/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day6/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day6">天问计划week11-day6</span>
+            <span class="post-date" title="2020-08-01 07:55:09">2020/08/01</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/08/01/2020-8-1%E5%B0%8F%E8%AE%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="2020-8-1小记">2020-8-1小记</span>
+            <span class="post-date" title="2020-08-01 07:54:34">2020/08/01</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/31/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day5/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day5">天问计划week11-day5</span>
+            <span class="post-date" title="2020-07-31 08:41:21">2020/07/31</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/30/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day4/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day4">天问计划week11-day4</span>
+            <span class="post-date" title="2020-07-30 10:48:58">2020/07/30</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/29/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day3/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day3">天问计划week11-day3</span>
+            <span class="post-date" title="2020-07-29 09:07:17">2020/07/29</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/07/28/2020-7-28%E5%B0%8F%E8%AE%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="2020-7-28小记">2020-7-28小记</span>
+            <span class="post-date" title="2020-07-28 22:17:33">2020/07/28</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/28/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day2/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day2">天问计划week11-day2</span>
+            <span class="post-date" title="2020-07-28 09:40:53">2020/07/28</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/27/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week11-day1/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week11-day1">天问计划week11-day1</span>
+            <span class="post-date" title="2020-07-27 23:00:48">2020/07/27</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/26/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week10-day7/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week10-day7">天问计划week10-day7</span>
+            <span class="post-date" title="2020-07-26 10:39:28">2020/07/26</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/25/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week10-day6/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week10-day6">天问计划week10-day6</span>
+            <span class="post-date" title="2020-07-25 10:41:06">2020/07/25</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/24/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week10-day5/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week10-day5">天问计划week10-day5</span>
+            <span class="post-date" title="2020-07-24 22:20:40">2020/07/24</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/23/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week10-day4/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划weeek10-day4">天问计划weeek10-day4</span>
+            <span class="post-date" title="2020-07-23 23:11:16">2020/07/23</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/22/%E5%A4%A9%E9%97%AE%E8%AE%A1%E5%88%92week10-day3/"
+           data-tag="天问计划"
+           data-author="" >
+            <span class="post-title" title="天问计划week10-day3">天问计划week10-day3</span>
+            <span class="post-date" title="2020-07-22 22:12:41">2020/07/22</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/19/0day%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C-2-4%E4%BB%A3%E7%A0%81%E6%A4%8D%E5%85%A5/"
+           data-tag="实验"
+           data-author="" >
+            <span class="post-title" title="0day安全实验-2.4代码植入">0day安全实验-2.4代码植入</span>
+            <span class="post-date" title="2020-07-19 20:27:06">2020/07/19</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/07/19/%EF%BC%88%E8%BD%AC%EF%BC%89%E6%B5%85%E8%B0%88%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E7%97%85%E6%AF%92%E7%A0%94%E7%A9%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="（转）浅谈二进制漏洞与病毒研究">（转）浅谈二进制漏洞与病毒研究</span>
+            <span class="post-date" title="2020-07-19 15:08:34">2020/07/19</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/19/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cpwn%E8%BF%9B%E9%98%B6%E9%A2%98-stack2/"
+           data-tag="ROP,数组溢出"
+           data-author="" >
+            <span class="post-title" title="攻防世界pwn进阶题-stack2">攻防世界pwn进阶题-stack2</span>
+            <span class="post-date" title="2020-07-19 09:26:26">2020/07/19</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/18/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cpwn%E8%BF%9B%E9%98%B6%E9%A2%98-babyfengshui/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="攻防世界pwn进阶题-babyfengshui">攻防世界pwn进阶题-babyfengshui</span>
+            <span class="post-date" title="2020-07-18 14:37:24">2020/07/18</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/17/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E8%BF%9B%E9%98%B6pwn%E9%A2%98-easypwn/"
+           data-tag="格式化字串,partial_write"
+           data-author="" >
+            <span class="post-title" title="攻防世界进阶pwn题-easypwn">攻防世界进阶pwn题-easypwn</span>
+            <span class="post-date" title="2020-07-17 21:19:04">2020/07/17</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/16/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cpwn%E8%BF%9B%E9%98%B6-easyfmt/"
+           data-tag="格式化字串"
+           data-author="" >
+            <span class="post-title" title="攻防世界pwn进阶-easyfmt">攻防世界pwn进阶-easyfmt</span>
+            <span class="post-date" title="2020-07-16 22:24:45">2020/07/16</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/16/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E5%88%9D%E9%98%B6%E5%9B%9E%E9%A1%BE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="攻防世界初阶回顾">攻防世界初阶回顾</span>
+            <span class="post-date" title="2020-07-16 16:24:59">2020/07/16</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/07/15/2020%E5%B9%B47%E6%9C%8815%E6%97%A5%E5%B0%8F%E8%AE%B0/"
+           data-tag="日记"
+           data-author="" >
+            <span class="post-title" title="2020年7月15日小记">2020年7月15日小记</span>
+            <span class="post-date" title="2020-07-15 22:07:29">2020/07/15</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/13/DynELF-L-CTF-2016-pwn100/"
+           data-tag="DynELF,ROP"
+           data-author="" >
+            <span class="post-title" title="DynELF--L-CTF-2016-pwn100">DynELF--L-CTF-2016-pwn100</span>
+            <span class="post-date" title="2020-07-13 14:39:51">2020/07/13</span>
+        </a>
+        
+        <a  class="All 逆向题 "
+           href="/2020/07/12/%E5%AE%89%E6%81%92%E6%9C%88%E8%B5%9B2019-1-%E6%9D%A5%E7%8E%A9%E8%9B%87%E5%90%A7/"
+           data-tag="reverse,pyc反编译"
+           data-author="" >
+            <span class="post-title" title="安恒月赛2019.1-来玩蛇吧">安恒月赛2019.1-来玩蛇吧</span>
+            <span class="post-date" title="2020-07-12 23:12:05">2020/07/12</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/12/plaidctf-2013-ropasaurusrex-DynELF/"
+           data-tag="DynELF,ROP"
+           data-author="" >
+            <span class="post-title" title="plaidctf-2013-ropasaurusrex(DynELF)">plaidctf-2013-ropasaurusrex(DynELF)</span>
+            <span class="post-date" title="2020-07-12 22:13:50">2020/07/12</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/11/CISCN-2018-Quals-echo-back/"
+           data-tag="格式化字串,IO_File"
+           data-author="" >
+            <span class="post-title" title="CISCN-2018-Quals  echo_back">CISCN-2018-Quals  echo_back</span>
+            <span class="post-date" title="2020-07-11 23:22:35">2020/07/11</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/09/dl-runtime-resolve%E5%87%BD%E6%95%B0%E8%BF%87%E7%A8%8B/"
+           data-tag="延迟绑定"
+           data-author="" >
+            <span class="post-title" title="_dl_runtime_resolve函数过程">_dl_runtime_resolve函数过程</span>
+            <span class="post-date" title="2020-07-09 10:01:47">2020/07/09</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/09/pwnable-tw-start/"
+           data-tag="汇编,shellcode"
+           data-author="" >
+            <span class="post-title" title="pwnable.tw-start">pwnable.tw-start</span>
+            <span class="post-date" title="2020-07-09 00:08:11">2020/07/09</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/08/%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8/"
+           data-tag="内核"
+           data-author="" >
+            <span class="post-title" title="教你如何编译内核">教你如何编译内核</span>
+            <span class="post-date" title="2020-07-08 18:24:00">2020/07/08</span>
+        </a>
+        
+        <a  class="All 学习 "
+           href="/2020/07/07/IO%E7%BC%93%E5%86%B2%E5%8C%BA/"
+           data-tag="IO缓冲区"
+           data-author="" >
+            <span class="post-title" title="IO缓冲区">IO缓冲区</span>
+            <span class="post-date" title="2020-07-07 15:06:28">2020/07/07</span>
+        </a>
+        
+        <a  class="All 学习 "
+           href="/2020/07/07/file-descriptor%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"
+           data-tag="fd"
+           data-author="" >
+            <span class="post-title" title="file_descriptor文件描述符">file_descriptor文件描述符</span>
+            <span class="post-date" title="2020-07-07 13:29:46">2020/07/07</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/07/06/%E4%B8%8B%E4%B8%80%E9%98%B6%E6%AE%B5%E8%A7%84%E5%88%92/"
+           data-tag="关于我"
+           data-author="" >
+            <span class="post-title" title="下一阶段规划">下一阶段规划</span>
+            <span class="post-date" title="2020-07-06 10:15:46">2020/07/06</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/05/X-MAS-CTF-web%E5%92%8Cpwn%E7%BB%93%E5%90%88/"
+           data-tag="webpwn"
+           data-author="" >
+            <span class="post-title" title="X-MAS-CTF-web和pwn结合">X-MAS-CTF-web和pwn结合</span>
+            <span class="post-date" title="2020-07-05 23:11:34">2020/07/05</span>
+        </a>
+        
+        <a  class="All 学习 "
+           href="/2020/07/05/%E4%BB%80%E4%B9%88%E6%98%AFweb-server/"
+           data-tag="webpwn"
+           data-author="" >
+            <span class="post-title" title="什么是web_server">什么是web_server</span>
+            <span class="post-date" title="2020-07-05 21:37:36">2020/07/05</span>
+        </a>
+        
+        <a  class="All 生活 "
+           href="/2020/07/05/%E7%94%9F%E6%B4%BB%E5%8C%BA%E5%BC%80%E7%AF%87/"
+           data-tag="关于我"
+           data-author="" >
+            <span class="post-title" title="生活区开篇">生活区开篇</span>
+            <span class="post-date" title="2020-07-05 16:07:45">2020/07/05</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/05/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/"
+           data-tag="格式化字串"
+           data-author="" >
+            <span class="post-title" title="格式化字符串漏洞总结">格式化字符串漏洞总结</span>
+            <span class="post-date" title="2020-07-05 14:48:42">2020/07/05</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/05/Bypass-Canary%E7%B3%BB%E5%88%97-%E5%8A%AB%E6%8C%81stack-chk-fail%E5%87%BD%E6%95%B0/"
+           data-tag="Bypass-Canary,劫持函数,格式化字串"
+           data-author="" >
+            <span class="post-title" title="Bypass-Canary系列-劫持stack_chk_fail函数">Bypass-Canary系列-劫持stack_chk_fail函数</span>
+            <span class="post-date" title="2020-07-05 10:00:41">2020/07/05</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/04/Bypass-Canary%E7%B3%BB%E5%88%97-one-by-one-%E7%88%86%E7%A0%B4/"
+           data-tag="Bypass-Canary"
+           data-author="" >
+            <span class="post-title" title="Bypass-Canary系列-one-by-one-爆破">Bypass-Canary系列-one-by-one-爆破</span>
+            <span class="post-date" title="2020-07-04 23:26:42">2020/07/04</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/04/Bypass-Canary%E7%B3%BB%E5%88%97-%E6%B3%84%E9%9C%B2Canary%E5%80%BC/"
+           data-tag="Bypass-Canary,格式化字串"
+           data-author="" >
+            <span class="post-title" title="Bypass-Canary系列-泄露Canary值">Bypass-Canary系列-泄露Canary值</span>
+            <span class="post-date" title="2020-07-04 18:32:52">2020/07/04</span>
+        </a>
+        
+        <a  class="All 系列 "
+           href="/2020/07/04/Bypass-Canary%E7%B3%BB%E5%88%97-%E7%B3%BB%E5%88%97%E4%BB%8B%E7%BB%8D/"
+           data-tag="Bypass-Canary"
+           data-author="" >
+            <span class="post-title" title="Bypass-Canary系列-系列介绍">Bypass-Canary系列-系列介绍</span>
+            <span class="post-date" title="2020-07-04 16:41:05">2020/07/04</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/04/%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%B8%AAELF%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%A1%E6%81%AF/"
+           data-tag="基础"
+           data-author="" >
+            <span class="post-title" title="查看一个ELF文件的信息">查看一个ELF文件的信息</span>
+            <span class="post-date" title="2020-07-04 14:58:18">2020/07/04</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/04/ELF%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/"
+           data-tag="基础"
+           data-author="" >
+            <span class="post-title" title="ELF保护机制">ELF保护机制</span>
+            <span class="post-date" title="2020-07-04 14:33:16">2020/07/04</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/03/PWN%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/"
+           data-tag="入门"
+           data-author="" >
+            <span class="post-title" title="PWN入门基础">PWN入门基础</span>
+            <span class="post-date" title="2020-07-03 13:05:08">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/bjdctf-2020-babyrop2/"
+           data-tag="ROP,canary"
+           data-author="" >
+            <span class="post-title" title="bjdctf_2020_babyrop2">bjdctf_2020_babyrop2</span>
+            <span class="post-date" title="2020-07-03 12:47:06">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/bjdctf-2020-babyrop/"
+           data-tag="ROP"
+           data-author="" >
+            <span class="post-title" title="bjdctf_2020_babyrop">bjdctf_2020_babyrop</span>
+            <span class="post-date" title="2020-07-03 12:40:13">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/BJDCTF-2nd-ydsneedgirlfriend2/"
+           data-tag="UAF,tcache dup"
+           data-author="" >
+            <span class="post-title" title="[BJDCTF 2nd]ydsneedgirlfriend2">[BJDCTF 2nd]ydsneedgirlfriend2</span>
+            <span class="post-date" title="2020-07-03 12:22:23">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/HITCON-training-hacknote-UAF/"
+           data-tag="UAF,ctfwiki"
+           data-author="" >
+            <span class="post-title" title="HITCON-training-hacknote(UAF)">HITCON-training-hacknote(UAF)</span>
+            <span class="post-date" title="2020-07-03 10:43:46">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/2018%E9%A6%96%E5%B1%8A%E7%BD%91%E5%AE%89%E7%9C%81%E8%B5%9B-cont/"
+           data-tag="heap"
+           data-author="" >
+            <span class="post-title" title="2018首届网安省赛 -cont">2018首届网安省赛 -cont</span>
+            <span class="post-date" title="2020-07-03 09:04:04">2020/07/03</span>
+        </a>
+        
+        <a  class="All 笔记 "
+           href="/2020/07/03/gdb%E8%B0%83%E8%AF%95%E6%80%BB%E7%BB%93/"
+           data-tag="gdb"
+           data-author="" >
+            <span class="post-title" title="gdb调试总结">gdb调试总结</span>
+            <span class="post-date" title="2020-07-03 07:10:59">2020/07/03</span>
+        </a>
+        
+        <a  class="All PWN题 "
+           href="/2020/07/03/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E7%BD%91%E5%AE%89%E7%AB%9E%E8%B5%9B%E5%88%9D%E8%B5%9B-uninit/"
+           data-tag="ROP"
+           data-author="" >
+            <span class="post-title" title="第二届浙江省网安竞赛初赛-uninit">第二届浙江省网安竞赛初赛-uninit</span>
+            <span class="post-date" title="2020-07-03 01:15:23">2020/07/03</span>
+        </a>
+        
+        <a  class="All "
+           href="/2020/07/02/hello-world/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2020-07-02 20:49:04">2020/07/02</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-ADword-reverse2" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">ADword-reverse2</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="逆向题">逆向题</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-10-18 16:13:31'>2020-10-15 11:47</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:6.9k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                Comment:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-guess-the-number"><span class="toc-text">1. guess-the-number</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-shuffle"><span class="toc-text">2. shuffle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-re-for-50-plz-50"><span class="toc-text">3. re-for-50-plz-50</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-dmd-50"><span class="toc-text">4. dmd-50:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-simple-check-100："><span class="toc-text">5. simple-check-100：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Mysterious"><span class="toc-text">6.Mysterious</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-secret-galaxy-300"><span class="toc-text">7. secret-galaxy-300</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Reversing-x64Elf-100"><span class="toc-text">8.Reversing-x64Elf-100</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-elrond32"><span class="toc-text">9. elrond32</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-srm-50"><span class="toc-text">10. srm-50</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-Newbie-calculations"><span class="toc-text">11.Newbie_calculations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-IgniteMe"><span class="toc-text">12. IgniteMe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-parallel-comparator-200"><span class="toc-text">13. parallel-comparator-200</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-re1-100"><span class="toc-text">14. re1-100</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#结语："><span class="toc-text">结语：</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>接下来是攻防世界进阶题目，多滴很</p>
+</blockquote>
+<h2 id="1-guess-the-number"><a href="#1-guess-the-number" class="headerlink" title="1. guess-the-number"></a>1. guess-the-number</h2><p>得到的是一个jar包，利用jd-gui工具进行java反编译：</p>
+<pre><code class="java">import java.math.BigInteger;
+
+public class guess
+{
+  static String XOR(String _str_one, String _str_two) {
+    BigInteger i1 = new BigInteger(_str_one, 16);
+    BigInteger i2 = new BigInteger(_str_two, 16);
+    BigInteger res = i1.xor(i2);
+    String result = res.toString(16);
+    return result;
+  }
+
+  public static void main(String[] args) {
+    int guess_number = 0;
+    int my_num = 349763335;
+    int my_number = 1545686892;
+    int flag = 345736730;
+
+    if (args.length &gt; 0) {
+      try {
+        guess_number = Integer.parseInt(args[0]);
+        if (my_number / 5 == guess_number) {
+          String str_one = &quot;4b64ca12ace755516c178f72d05d7061&quot;;
+          String str_two = &quot;ecd44646cfe5994ebeb35bf922e25dba&quot;;
+          my_num += flag;
+          String answer = XOR(str_one, str_two);
+
+          System.out.println(&quot;your flag is: &quot; + answer);
+        } else {
+          System.err.println(&quot;wrong guess!&quot;);
+          System.exit(1);
+        } 
+      } catch (NumberFormatException e) {
+        System.err.println(&quot;please enter an integer \nexample: java -jar guess 12&quot;);
+        System.exit(1);
+      } 
+    } else {
+      System.err.println(&quot;wrong guess!&quot;);
+      int num = 1000000;
+      num++;
+      System.exit(1);
+    } 
+  }
+}</code></pre>
+<p>分析这个程序，然后把无关的代码去除，只留真正能得到flag的相关代码</p>
+<p><img src="https://i.loli.net/2020/09/13/wU4jrCnqzhYFDaR.jpg" alt=""></p>
+<p>也可以使用 DJ java Decompiler 工具（我装在了XP上）来反编译，两个反编译出来的内容还不一样。</p>
+<h2 id="2-shuffle"><a href="#2-shuffle" class="headerlink" title="2. shuffle"></a>2. shuffle</h2><p>利用 Exeinfo PE 工具可以查看关于这个文件的信息，(这是个32位的ELF文件</p>
+<p>用ida打开，又是一大堆变量，根据题目的提示：在随机化之前找到字符串 ，所以可以把这些数字逐个转为char类型即字符，所以就可以直接得到flag:   ECCON{Welcome to the SECCON 2014 CTF!}</p>
+<h2 id="3-re-for-50-plz-50"><a href="#3-re-for-50-plz-50" class="headerlink" title="3. re-for-50-plz-50"></a>3. re-for-50-plz-50</h2><p>载入IDA的时候出现 ELF for MIPS(Executable) [elf.dll]  ，所以可以知道这是个MIPS指令架构编写的文件</p>
+<p>恶补MIPS的知识：<a href="https://www.cnblogs.com/thoupin/p/4018455.html" target="_blank" rel="noopener">https://www.cnblogs.com/thoupin/p/4018455.html</a>   （另外写一个学习MIPS的md）</p>
+<p>ida打开，啊哈果然看不懂MIPS的指令，看main函数：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1228809/201909/1228809-20190919153016210-1516814055.png" alt=""></p>
+<p>字符串，以及接下来的对逐个字符进行 xor</p>
+<p>所以可以大致猜测，我佛了，这都能猜到。</p>
+<pre><code class="python">#encoding:utf-8
+str1=&#39;cbtcqLUBChERV[[Nh@_X^D]X_YPV[CJ&#39;
+flag=&#39;&#39;
+for i in str1:
+    flag+=chr(ord(i)^0x37)
+print(flag)</code></pre>
+<p>得到： TUCTF{but_really_whoisjohngalt}</p>
+<p>用到的相关工具：jeb-mips， 下载地址<a href="https://www.pnfsoftware.com/jeb/demomips" target="_blank" rel="noopener">https://www.pnfsoftware.com/jeb/demomips</a></p>
+<p>jeb-mips貌似是可以把MIPS给反汇编的，如下：</p>
+<p><img src="https://img2020.cnblogs.com/blog/1800791/202004/1800791-20200421084221923-243326233.png" alt=""></p>
+<h2 id="4-dmd-50"><a href="#4-dmd-50" class="headerlink" title="4. dmd-50:"></a>4. dmd-50:</h2><p>64位，载入ida</p>
+<p>可以看到第50行出现了md5字眼，进行了md5加密。</p>
+<blockquote>
+<p>md5(&amp;v40, &amp;v39);</p>
+</blockquote>
+<pre><code class="c">if ( *v41 != 55
+    || v41[1] != 56
+    || v41[2] != 48
+    || v41[3] != 52
+    || v41[4] != 51
+    || v41[5] != 56
+    || v41[6] != 100
+    || v41[7] != 53
+    || v41[8] != 98
+    || v41[9] != 54
+    || v41[10] != 101
+    || v41[11] != 50
+    || v41[12] != 57
+    || v41[13] != 100
+    || v41[14] != 98
+    || v41[15] != 48
+    || v41[16] != 56
+    || v41[17] != 57
+    || v41[18] != 56
+    || v41[19] != 98
+    || v41[20] != 99
+    || v41[21] != 52
+    || v41[22] != 102
+    || v41[23] != 48
+    || v41[24] != 50
+    || v41[25] != 50
+    || v41[26] != 53
+    || v41[27] != 57
+    || v41[28] != 51
+    || v41[29] != 53
+    || v41[30] != 99
+    || v41[31] != 48 )
+  {
+    //输出信息：invalid key
+}else{
+    //输出信息：valid key
+}  </code></pre>
+<p>所以就很明了了。我们输入的flag经过md5加密后要与这个字符串数组的内容相等，那我们直接把这个字符数组进行一次md5解密即可。</p>
+<p>即 780438d5b6e29db0898bc4f0225935c0  ，解密后得到我们的flag : b781cbb29054db12f88f08c6e161c199</p>
+<h2 id="5-simple-check-100："><a href="#5-simple-check-100：" class="headerlink" title="5. simple-check-100："></a>5. simple-check-100：</h2><p>32位，题目给出了win版本的和linux版本的两个文件。</p>
+<p>win版本的：IDA中打开，分析程序流，把 jz 这个语句(key输入错误将跳转到 wrong程序块) 给nop掉。然后保存，运行exe程序，发现输出的是乱码…….动态调试的时候也是这样。(Linux远程调试没问题)</p>
+<p>所以换到Linux版本的做一做： gdb打开，然后 b main下断点，r运行起来，然后n一步步执行下去，直到call完chek_key函数，在执行test eax,eax语句之前，输入  <code>set $eax=1 ,修改eax的值</code>，使得看起来key输入正确一样，然后继续执行几步就能输出flag了。</p>
+<p><img src="https://www.pianshen.com/images/828/03d4b36591450cb1e957fc1af2160ef4.png" alt=""></p>
+<h2 id="6-Mysterious"><a href="#6-Mysterious" class="headerlink" title="6.Mysterious"></a>6.Mysterious</h2><p>32位，IDA打开，搜字符串，看到 “well done”，跟进，然后查看交叉引用，来到对应的sub_401090函数，Tab反编译：</p>
+<pre><code class="c">.....
+if ( v10 == 123 &amp;&amp; v12 == 120 &amp;&amp; v14 == 122 &amp;&amp; v13 == 121 )
+      {
+        strcpy(Text, &quot;flag&quot;);
+        memset(&amp;v7, 0, 0xFCu);
+        v8 = 0;
+        v9 = 0;
+        _itoa(v10, &amp;v5, 10);
+        strcat(Text, &quot;{&quot;);
+        strcat(Text, &amp;v5);
+        strcat(Text, &quot;_&quot;);
+        strcat(Text, &quot;Buff3r_0v3rf|0w&quot;);
+        strcat(Text, &quot;}&quot;);
+        MessageBoxA(0, Text, &quot;well done&quot;, 0);
+      }
+.....</code></pre>
+<p>我只取了关键代码，可以看到flag大致成型，只差中间那个 V5不确定了。前面的 _itoa函数有涉及到v5，于是我们跟进 _itoa函数。</p>
+<pre><code class="c">char *__cdecl _itoa(int a1, char *a2, int a3)    // _itoa(v10, &amp;v5, 10);
+{
+  if ( a3 != 10 || a1 &gt;= 0 )
+    xtoa(a1, a2, a3, 0);
+  else
+    xtoa(a1, a2, 0xAu, 1);   //执行这句
+  return a2;
+}</code></pre>
+<p>跟进 xtoa函数：</p>
+<pre><code class="c">int __cdecl xtoa(unsigned int a1, char *a2, unsigned int a3, int a4)  
+    //xtoa(a1, a2, 0xAu, 1);
+{
+  char v4; // ST00_1
+  int result; // eax
+  unsigned int v6; // [esp+4h] [ebp-Ch]
+  char *v7; // [esp+8h] [ebp-8h]
+  char *v8; // [esp+Ch] [ebp-4h]
+  char *v9; // [esp+Ch] [ebp-4h]
+
+  v8 = a2;
+  if ( a4 )  //if成立
+  {
+    *a2 = 45;
+    v8 = a2 + 1;
+    a1 = -a1;
+  }
+  v7 = v8;
+  do
+  {
+    v6 = a1 % a3;   // 123 % 10
+    a1 /= a3;
+    if ( v6 &lt;= 9 )
+      *v8 = v6 + 48;
+    else
+      *v8 = v6 + 87;
+    ++v8;
+  }
+  while ( a1 );
+  *v8 = 0;
+  v9 = v8 - 1;
+  do
+  {
+    v4 = *v9;
+    *v9 = *v7;
+    *v7 = v4;
+    --v9;
+    result = (int)(v7++ + 1);
+  }
+  while ( v7 &lt; v9 );
+  return result;
+}</code></pre>
+<p>itoa函数我看不懂，反正只知道它是将一个整数转换为字符串 ，其中v10是需要转换为字符串的数字，而v5是保存转换结果的变量， 而 v10为123，所以转为字符串是’123’。</p>
+<p>所以最后flag为： flag{123_Buff3r_0v3rf|0w}</p>
+<p>还有另一种做法：</p>
+<pre><code class="c">if ( strlen(&amp;myinput) &gt; 6 )    // 输入要不超过6位
+        ExitProcess(0);
+v10 = atoi(&amp;myinput) + 1;   // int atoi(const char *nptr);是把字符串转换成整型数的一个函数。工作机制是：扫描nptr，如果遇到‘0-9’之外的字符便停止    ，所以最后 v10=转换的数字+1
+if ( v10 == 123 &amp;&amp; v12 == ‘x‘ &amp;&amp; v14 == ‘z‘ &amp;&amp; v13 == ‘y‘ )// 输入atoi转整形得到结果+1等于123,则输入开始的数字部分为122   // 并且输入的后3位必须要为xyz ，所以答案也就出来了，为 122xyz
+{
+    //输出flag的步骤
+}</code></pre>
+<p>直接运行exe，然后输入122xyz，弹出flag。</p>
+<p>“122xyz” 经过 atoi函数 出来之后竟然变为了 122  ？？ 这就牵涉到了atoi函数的工作机制：<code>扫描nptr，如果遇到‘0-9’之外的字符便停止</code></p>
+<h2 id="7-secret-galaxy-300"><a href="#7-secret-galaxy-300" class="headerlink" title="7. secret-galaxy-300"></a>7. secret-galaxy-300</h2><p>32位。明天再调吧。</p>
+<p>先运行一下，</p>
+<p><img src="https://www.pianshen.com/images/773/fff992549634d6ec32f42785e2a48a0d.png" alt=""></p>
+<p>然后IDA分析，定位到 rdata数据段，发现 Galaxy_game 的最后一个字符串没有输出，猜测有猫腻</p>
+<p><img src="https://www.pianshen.com/images/443/06b244aeb88f566d2fd54e4db2f1a0fb.png" alt=""></p>
+<p>ctrl+x 交叉引用，追踪这个字符串，</p>
+<p><img src="https://www.pianshen.com/images/433/9663e3e68457f44a9ea3e6323661c259.png" alt=""></p>
+<p>继续引用跟踪</p>
+<p><img src="https://www.pianshen.com/images/450/c74dac9ed33a4029e6853e36c1ffe982.png" alt=""></p>
+<p>tab键反编译，发现是一堆赋值操作，推测这里有字符串：</p>
+<p><img src="https://www.pianshen.com/images/655/3b6a810277b7904f2adb3fc92b2e8787.png" alt=""></p>
+<p>追踪off_409004，然后知道了这段程序段的初始地址是0x401416 ，同理，得知末尾是 0x401519</p>
+<p>使用Ollydbg，在0x401519下断点，然后运行，回推就能看到一个字符串，</p>
+<p><img src="https://i.loli.net/2020/10/02/ihuF1Xb5pwym32e.jpg" alt="44444.jpg"></p>
+<p>可见最终是把字符串存到了0x40DAC0里，我们跟随内存窗口，便找到了flag：  aliens_are_around_us</p>
+<h2 id="8-Reversing-x64Elf-100"><a href="#8-Reversing-x64Elf-100" class="headerlink" title="8.Reversing-x64Elf-100"></a>8.Reversing-x64Elf-100</h2><p>给了一个re后缀的文件,,,,,</p>
+<p>IDA分析main：</p>
+<pre><code class="c">if ( (unsigned int)sub_4006FD((__int64)&amp;s) )
+  {
+    puts(&quot;Incorrect password!&quot;);
+    result = 1LL;
+  }
+  else
+  {
+    puts(&quot;Nice!&quot;);
+    result = 0LL;
+  }</code></pre>
+<p>sub_4006FD决定走向。查看这个函数:</p>
+<pre><code class="c">signed __int64 __fastcall sub_4006FD(__int64 a1)   //a1未知
+{
+  signed int i; // [rsp+14h] [rbp-24h]
+  const char *v3; // [rsp+18h] [rbp-20h]
+  const char *v4; // [rsp+20h] [rbp-18h]
+  const char *v5; // [rsp+28h] [rbp-10h]
+    v3 = &quot;Dufhbmf&quot;;
+    v4 = &quot;pG`imos&quot;;
+    v5 = &quot;ewUglpt&quot;;
+    for ( i = 0; i &lt;= 11; ++i )
+    {
+        if ( (&amp;v3)[i % 3][2 * (i / 3)] - *(char *)(i + a1) != 1 )   //其中a1未知，需要反推
+            return 1LL;
+    }
+    return 0LL;</code></pre>
+<p>当 (&amp;v3)[i % 3][2 * (i / 3)] - *(char *)(i + a1) == 1 时返回0，if不成立于是输出 “Nice”。</p>
+<p>所以我们就可以写个脚本。反推 a1 ，即flag</p>
+<pre><code class="python">v3 = [&#39;Dufhbmf&#39;,&#39;pG`imos&#39;,&#39;ewUglpt&#39;]
+flag = &#39;&#39;
+for i in range(12):
+    flag += chr(ord(v3[i%3][2*int(i/3)])-1)
+print(flag)</code></pre>
+<p>得到flag：Code_Talkers</p>
+<h2 id="9-elrond32"><a href="#9-elrond32" class="headerlink" title="9. elrond32"></a>9. elrond32</h2><p>32位elf。IDA分析main：</p>
+<pre><code class="c">int __cdecl main(int a1, char **a2)
+{
+  if ( a1 &gt; 1 &amp;&amp; sub_8048414(a2[1], 0) )
+  {
+    puts(&quot;Access granted&quot;);
+    sub_8048538((int)a2[1]);
+  }
+  else
+  {
+    puts(&quot;Access denied&quot;);
+  }
+  return 0;
+}</code></pre>
+<p>运行程序就直接输出一个”Access denied“。 于是就要使得if成立，先来看sub_8048414函数，</p>
+<pre><code class="c">signed int __cdecl sub_8048414(_BYTE *x, int y)   //传进 a2[1],0 ，所以 x=a2[1]，y=0
+{
+  signed int result; // eax
+
+  switch ( y )  //第一次y=0
+  {
+    case 0:  //第一次执行这里
+      if ( *x == 105 )
+        goto LABEL_19;
+      result = 0;
+      break;
+    case 1: ....
+    case 3: ....
+    case 4: ....
+    case 5: ....
+    case 6: ....
+    case 7: ....  
+    case 9: ....    
+LABEL_19:
+        result = sub_8048414(x + 1, 7 * (y + 1) % 11);  
+          //递归调用，得到下一个&#39;y&#39; 为： 7 * (当前的y + 1) % 11
+      else
+        result = 0;
+      break;
+    default:  //默认result为1
+      result = 1;
+      break;
+  }        </code></pre>
+<p>总之就是对 y 进行switch，不同的case会对 x进行比对，比对成功就都跳转至LABEL_19，然后 result = sub_8048414(x + 1, 7 * (y + 1) % 11);  得到下一个y.</p>
+<p>写一个脚本得出 y 的顺序：</p>
+<pre><code class="python">key=0
+print(key)
+for i in range(9):
+    key= 7*(key+1)%11
+    print(key)
+
+#得到y的顺序：
+0
+7
+1
+3
+6
+5
+9
+4
+2   #由于没有case2，所以到这里的时候就会执行default段,后续就执行不下去了，退出
+10  </code></pre>
+<p>由于没有case2，所以执行到case2的时候会执行default，使得result=1，返回值返回后if条件成立，所以我们就不取case2了，取到case4为止，那么 x[] 数组的元素也就只有8个了。</p>
+<p>根据case顺序我们也就得到了 x = [105,115,101,110,103,97,114,100]  ,  x即传入的a2[]数组。所以：</p>
+<blockquote>
+<p>a2 = [105,115,101,110,103,97,114,100]</p>
+</blockquote>
+<p>此时sub_8048414函数算是执行好了。。</p>
+<p>if条件成立，接下来就是利用sub_8048538函数打印flag，sub_8048538函数需要传入我们刚刚得到的a2[]数组。</p>
+<pre><code class="c">int __cdecl sub_8048538(int a1)   //a1=[105,115,101,110,103,97,114,100]
+{
+  int v2[33]; // [esp+18h] [ebp-A0h]
+  int i; // [esp+9Ch] [ebp-1Ch]
+
+  qmemcpy(v2, &amp;unk_8048760, sizeof(v2));
+  for ( i = 0; i &lt;= 32; ++i )
+    putchar(v2[i] ^ *(char *)(a1 + i % 8));
+  return putchar(10);
+}</code></pre>
+<p>v2 是从 unk_8048760 处复制了33个int，我们查看unk_8048760b处的数据</p>
+<p><img src="https://img-blog.csdnimg.cn/20200912212323496.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N0ZXZlOTU=,size_16,color_FFFFFF,t_70#pic_center" alt=""></p>
+<p>由于一个int占4字节(由图中得知，数据实际占1字节，剩下的3字节用0填充)，所以33个int就是 hex(33x4) =  0x84 ，刚好取到末尾。</p>
+<p>所以手动肝出 :</p>
+<blockquote>
+<p>v2 = [0x0F,0x1F,0x04,0x09,0x1C,0x12,0x42,0x09,0x0C,0x44,0x0D,0x07,0x09,0x06,0x2D,0x37,0x59,0x1E,0x00,0x59,0x0F,0x08,0x1C,0x23,0x36,0x07,0x55,0x02,0x0C,0x08,0x41,0x0A,0x14]</p>
+</blockquote>
+<p>最终脚本如下：</p>
+<pre><code class="python">a2=[105,115,101,110,103,97,114,100]
+v2=[0x0F,0x1F,0x04,0x09,0x1C,0x12,0x42,0x09,0x0C,0x44,0x0D,0x07,0x09,0x06,0x2D,0x37,0x59,0x1E,0x00,0x59,0x0F,0x08,0x1C,0x23,0x36,0x07,0x55,0x02,0x0C,0x08,0x41,0x0A,0x14]
+flag=&#39;&#39;
+for i in range(33):
+    flag+=chr(v2[i]^a2[(i%8)])
+print(flag)</code></pre>
+<p>得到最后的flag：flag{s0me7hing_S0me7hinG_t0lki3n}</p>
+<h2 id="10-srm-50"><a href="#10-srm-50" class="headerlink" title="10. srm-50"></a>10. srm-50</h2><p>win32 GUI文件，ida打开，找到关键函数 DialogFunc：</p>
+<pre><code class="c">BOOL __stdcall DialogFunc(HWND hDlg, UINT a2, WPARAM a3, LPARAM a4)
+{
+  HMODULE v5; // eax
+  HICON v6; // eax
+  HMODULE v7; // eax
+  HCURSOR v8; // ST20_4
+  HWND v9; // eax
+  CHAR String; // [esp+8h] [ebp-340h]
+  CHAR v11[4]; // [esp+108h] [ebp-240h]   //从这里定义了 v11 ~ v23
+  char v12; // [esp+10Ch] [ebp-23Ch]
+  char v13; // [esp+10Dh] [ebp-23Bh]
+  char v14; // [esp+10Eh] [ebp-23Ah]
+  char v15; // [esp+10Fh] [ebp-239h]
+  char v16; // [esp+110h] [ebp-238h]
+  char v17; // [esp+111h] [ebp-237h]
+  char v18; // [esp+112h] [ebp-236h]
+  char v19; // [esp+113h] [ebp-235h]
+  char v20; // [esp+114h] [ebp-234h]
+  char v21; // [esp+115h] [ebp-233h]
+  char v22; // [esp+116h] [ebp-232h]
+  char v23; // [esp+117h] [ebp-231h]
+  CHAR Text; // [esp+208h] [ebp-140h]
+  char Src[16]; // [esp+308h] [ebp-40h]
+  __int128 v26; // [esp+318h] [ebp-30h]
+  int v27; // [esp+328h] [ebp-20h]
+  __int128 v28; // [esp+32Ch] [ebp-1Ch]
+  int v29; // [esp+33Ch] [ebp-Ch]
+  __int16 v30; // [esp+340h] [ebp-8h]
+
+  if ( a2 == 16 )
+  {
+    EndDialog(hDlg, 0);
+    return 0;
+  }
+  if ( a2 == 272 )
+  {
+    v5 = GetModuleHandleW(0);
+    v6 = LoadIconW(v5, (LPCWSTR)0x67);
+    SetClassLongA(hDlg, -14, (LONG)v6);
+    v7 = GetModuleHandleW(0);
+    v8 = LoadCursorW(v7, (LPCWSTR)0x66);
+    v9 = GetDlgItem(hDlg, 1);
+    SetClassLongA(v9, -12, (LONG)v8);
+    return 1;
+  }
+  if ( a2 != 273 || (unsigned __int16)a3 != 1 )
+    return 0;
+  memset(&amp;String, (unsigned __int16)a3 - 1, 0x100u);
+  memset(v11, 0, 0x100u);
+  memset(&amp;Text, 0, 0x100u);
+  GetDlgItemTextA(hDlg, 1001, &amp;String, 256);
+  GetDlgItemTextA(hDlg, 1002, v11, 256);
+
+  //关键部分从这里开始：  
+  if ( strstr(&amp;String, &quot;@&quot;) &amp;&amp; strstr(&amp;String, &quot;.&quot;) &amp;&amp; strstr(&amp;String, &quot;.&quot;)[1] &amp;&amp; strstr(&amp;String, &quot;@&quot;)[1] != 46 )
+  {
+    v28 = xmmword_410AA0;
+    v29 = 1701999980;
+    *(_OWORD *)Src = xmmword_410A90;
+    v30 = 46;
+    v26 = xmmword_410A80;
+    v27 = 3830633;
+     //重点关注这里： 
+    if ( strlen(v11) != 16
+      || v11[0] != 67          //  v11[0] = &#39;C&#39;
+      || v23 != 88             //  v23 = &#39;X&#39; 
+      || v11[1] != 90          //  v11[1] = &#39;Z&#39;
+      || v11[1] + v22 != 155   //  v22 = 155-90 = 65 = 0x41 = &#39;A&#39;
+      || v11[2] != 57          //  v11[2] = &#39;9&#39;
+      || v11[2] + v21 != 155   //  v21 = 155-57 = 98 = 0x62 = &#39;b&#39;
+      || v11[3] != 100         //  v11[3] = &#39;d&#39;
+      || v20 != 55             //  v20 = &#39;7&#39;
+      || v12 != 109            //  v12 = &#39;m&#39;
+      || v19 != 71             //  v19 = &#39;G&#39;
+      || v13 != 113            //  v13 = &#39;q&#39;
+      || v13 + v18 != 170      //  v18 = 170-113 = 57 = 0x39 = &#39;9&#39;
+      || v14 != 52             //  v14 = &#39;4&#39;
+      || v17 != 103            //  v17 = &#39;g&#39;
+      || v15 != 99             //  v15 = &#39;c&#39;
+      || v16 != 56 )           //  v16 = &#39;8&#39;
+    {
+      strcpy_s(&amp;Text, 0x100u, (const char *)&amp;v28);
+    }
+    else
+    {
+      strcpy_s(&amp;Text, 0x100u, Src);
+      strcat_s(&amp;Text, 0x100u, v11);
+    }
+  }
+  else
+  {
+    strcpy_s(&amp;Text, 0x100u, &quot;Your E-mail address in not valid.&quot;);
+  }
+  MessageBoxA(hDlg, &amp;Text, &quot;Registeration&quot;, 0x40u);
+  return 1;
+}
+</code></pre>
+<p>if语句里面讲到，v11的长度要等于16，且各个变量都要等于指定的数字(字符)</p>
+<p>我们双击v11变量，来到了栈中，</p>
+<p><img src="https://img-blog.csdnimg.cn/20190907232627447.png" alt=""></p>
+<p>发现 v11对应着 var_240 , 且各个变量之间紧挨着，所以就想到：可以输入很长的v11，然后覆盖下面的每个变量，使得符合if语句条件。</p>
+<p>所以最终按栈中变量顺序得到：  CZ9dmq4c8g9G7bAX</p>
+<h2 id="11-Newbie-calculations"><a href="#11-Newbie-calculations" class="headerlink" title="11.Newbie_calculations"></a>11.Newbie_calculations</h2><p>是个32位文件，凡是看见IDA中一大堆变量以及看似重复的东西就头疼….根据题目应该是会实现计算器的功能。</p>
+<p>main源码很长，就不放上来了，总之就是，代码经常会调用这三个函数：sub_401000，sub_401100，sub_401220。以及最末尾有一个输出函数sub_401C7F。</p>
+<p>最末尾有一个循环，会循环32遍，每次输出一个：sub_401C7F(“%c”, SLOBYTE(v120[j]));</p>
+<p>程序没有输入，只有输出。额，那这样的话程序运行就应该输出flag，但程序中肯定会有<code>垃圾循环操作</code>，就让你跑不出来。<code>这种题目就要分析函数作用，简化，自己实现算法</code>。所以就逐一分析这三个函数分别要干嘛</p>
+<p>首先跟进mul_401100函数：</p>
+<pre><code class="c">_DWORD *__cdecl sub_401100(_DWORD *a1, int a2)
+{
+  int v2; // ST20_4
+  signed int v4; // [esp+Ch] [ebp-1Ch]
+  int v5; // [esp+14h] [ebp-14h]
+  int v6; // [esp+18h] [ebp-10h]
+  int v7; // [esp+1Ch] [ebp-Ch]
+  int v8; // [esp+20h] [ebp-8h]
+
+  v5 = *a1;
+  v6 = a2;
+  v4 = -1;
+  v8 = 0;
+  v7 = a2 * v5;
+  while ( a2 )
+  {
+    v2 = v7 * v5;  
+    sub_401000(&amp;v8, *a1);  //调用了sub_401000函数
+    ++v7;
+    --a2;
+    v6 = v2 - 1;
+  }
+  while ( v4 )
+  {
+    ++v7;
+    ++*a1;
+    --v4;
+    --v6;
+  }
+  ++*a1;
+  *a1 = v8;
+  return a1;
+}</code></pre>
+<p>发现中间调用了 sub_401000函数，于是先来分析sub_401000：</p>
+<pre><code class="c">//sub_401000(&amp;v8, *a1);
+int *__cdecl sub_401000(int *a1, int a2)  // a1=0  a2=1
+{
+  int v2; // edx
+  int v4; // [esp+Ch] [ebp-18h]
+  signed int v5; // [esp+10h] [ebp-14h]
+  int v6; // [esp+18h] [ebp-Ch]
+  signed int v7; // [esp+1Ch] [ebp-8h]
+
+  v5 = -1;
+  v4 = -1 - a2 + 1;  //v4=-a2 ，在汇编中也就是100000000-a2，
+  v7 = 1231;
+  v2 = *a1;
+  v6 = a2 + 1231;
+  while ( v4 )
+  {
+    ++v7;
+    --*a1;
+    --v4;
+    --v6;
+  }
+  while ( v5 )  //v5=-1
+  {
+    --v6;
+    ++*a1;
+    --v5;
+  }
+  ++*a1;
+  return a1;
+}</code></pre>
+<p>其中第一个循环结束时 ，a1=a1-(100000000-a2)</p>
+<p>第二个循环一开始时，v5=-1，即FFFFFFFF，第二个循环结束时 ，a1=a1-(100000000-a2)+FFFFFFFF</p>
+<p>最后a1自增1，所以最终整体逻辑结合起来就是 a1=a1-(100000000-a2)+FFFFFFFF+1 = <code>a1+a2</code></p>
+<p>所以sub_401000这个函数实现了加法。</p>
+<p>返回到sub_401100的函数体，发现循环了a2 两次，add函数执行了a2次，所以就是a2个a1相加，所以sub_401100函数的逻辑就是 <code>a1*a2</code>.</p>
+<p>最后再看sub_401220函数：</p>
+<pre><code class="c">_DWORD *__cdecl sub_401220(_DWORD *a1, int a2)
+{
+  int v3; // [esp+8h] [ebp-10h]
+  signed int v4; // [esp+Ch] [ebp-Ch]
+  signed int v5; // [esp+14h] [ebp-4h]
+  int v6; // [esp+14h] [ebp-4h]
+
+  v4 = -1;
+  v3 = -1 - a2 + 1;
+  v5 = -1;
+  while ( v3 )  // v3 = -a2 ，在汇编角度就是 100000000-a2  （100000000在x86汇编中就是0了）
+  {
+    ++*a1;
+    --v3;
+    --v5;
+  }
+  v6 = v5 * v5;
+  while ( v4 )
+  {
+    v6 *= 123;
+    ++*a1;
+    --v4;
+  }
+  ++*a1;
+  return a1;
+}</code></pre>
+<p>和add函数一样的思路，第一个循环要执行100000000- a2次，所以第一次循环结束后就是a1=a1-a2，又等同于：a1=a1 + (100000000- a2)</p>
+<p>第二次循环也类似。最终得出a1=a1 + (100000000- a2) + FFFFFFFF + 1= <code>a1-a2</code></p>
+<p>所以sub_401220函数实现了减法功能。</p>
+<p>之后我们就可以简化函数，实现算法</p>
+<p>我看网上wp有人是用python写的，差不多是把所有的源代码都给翻新了一遍，我觉得好麻烦啊，我还是用C语言吧，然后把IDA里的源码粘贴上去跑出来就行了。</p>
+<pre><code class="c">#include&lt;stdio.h&gt;   
+//首先是定义三个核心函数
+int sub_401100(int *a1,int a2){
+    *a1=*a1*a2;
+    return a1;
+}
+int sub_401220(int *a1,int a2){
+    *a1=*a1-a2;
+    return a1;
+} 
+int sub_401000(int *a1,int a2){
+    *a1=*a1+a2;
+    return a1;
+}
+
+int main(int argc,const char **argv){
+    //以下定义直接照搬IDA里，类型统一改为int
+    int *v3; // eax
+    int *v4; // eax
+    int *v5; // eax
+    int *v6; // eax
+    int *v7; // eax
+    int *v8; // eax
+    int *v9; // eax
+    int *v10; // eax
+    int *v11; // eax
+    int *v12; // eax
+    int *v13; // eax
+    int *v14; // eax
+    int *v15; // eax
+    int *v16; // eax
+    int *v17; // eax
+    int *v18; // eax
+    int *v19; // eax
+    int *v20; // eax
+    int *v21; // eax
+    int *v22; // eax
+    int *v23; // eax
+    int *v24; // eax
+    int *v25; // eax
+    int *v26; // eax
+    int *v27; // eax
+    int *v28; // eax
+    int *v29; // eax
+    int *v30; // eax
+    int *v31; // eax
+    int *v32; // eax
+    int *v33; // eax
+    int *v34; // eax
+    int *v35; // eax
+    int *v36; // eax
+    int *v37; // eax
+    int *v38; // eax
+    int *v39; // eax
+    int *v40; // eax
+    int *v41; // eax
+    int *v42; // eax
+    int *v43; // eax
+    int *v44; // eax
+    int *v45; // eax
+    int *v46; // eax
+    int *v47; // eax
+    int *v48; // eax
+    int *v49; // eax
+    int *v50; // eax
+    int *v51; // eax
+    int *v52; // eax
+    int *v53; // eax
+    int *v54; // eax
+    int *v55; // eax
+    int *v56; // eax
+    int *v57; // eax
+    int *v58; // eax
+    int *v59; // eax
+    int *v60; // eax
+    int *v61; // eax
+    int *v62; // eax
+    int *v63; // eax
+    int *v64; // eax
+    int *v65; // eax
+    int *v66; // eax
+    int *v67; // eax
+    int *v68; // eax
+    int *v69; // eax
+    int *v70; // eax
+    int *v71; // eax
+    int *v72; // eax
+    int *v73; // eax
+    int *v74; // eax
+    int *v75; // eax
+    int *v76; // eax
+    int *v77; // eax
+    int *v78; // eax
+    int *v79; // eax
+    int *v80; // eax
+    int *v81; // eax
+    int *v82; // eax
+    int *v83; // eax
+    int *v84; // eax
+    int *v85; // eax
+    int *v86; // eax
+    int *v87; // eax
+    int *v88; // eax
+    int *v89; // eax
+    int *v90; // eax
+    int *v91; // eax
+    int *v92; // eax
+    int *v93; // eax
+    int *v94; // eax
+    int *v95; // eax
+    int *v96; // eax
+    int *v97; // eax
+    int *v98; // eax
+    int *v99; // eax
+    int *v100; // eax
+    int *v101; // eax
+    int *v102; // eax
+    int *v103; // eax
+    int *v104; // eax
+    int *v105; // eax
+    int *v106; // eax
+    int *v107; // eax
+    int *v108; // eax
+    int v109; // ST1C_4
+    int *v110; // eax
+    int *v111; // eax
+    int v112; // ST20_4
+    int *v113; // eax
+    int *v114; // eax
+    int v115; // ST20_4
+    int *v116; // eax
+    signed int i; // [esp+4h] [ebp-90h]
+    signed int j; // [esp+8h] [ebp-8Ch]
+    int v120[32]; // [esp+Ch] [ebp-88h]
+    int v121; // [esp+8Ch] [ebp-8h]
+
+    for(i=0;i&lt;32;i++){
+        v120[i]=1;  //初始化数组为1 
+    }
+    v121=0;
+    printf(&quot;Your flag is :&quot;);
+    //*******以下代码原封不动粘贴IDA的源码：*********
+      v3 = sub_401100(v120, 0x3B9ACA00);
+      v4 = sub_401220(v3, 999999950);
+      sub_401100(v4, 2);
+      v5 = sub_401000(&amp;v120[1], 5000000);
+      v6 = sub_401220(v5, 6666666);
+      v7 = sub_401000(v6, 1666666);
+      v8 = sub_401000(v7, 45);
+      v9 = sub_401100(v8, 2);
+      sub_401000(v9, 5);
+      v10 = sub_401100(&amp;v120[2], 1000000000);
+      v11 = sub_401220(v10, 999999950);
+      v12 = sub_401100(v11, 2);
+      sub_401000(v12, 2);
+      v13 = sub_401000(&amp;v120[3], 55);
+      v14 = sub_401220(v13, 3);
+      v15 = sub_401000(v14, 4);
+      sub_401220(v15, 1);
+      v16 = sub_401100(&amp;v120[4], 100000000);
+      v17 = sub_401220(v16, 99999950);
+      v18 = sub_401100(v17, 2);
+      sub_401000(v18, 2);
+      v19 = sub_401220(&amp;v120[5], 1);
+      v20 = sub_401100(v19, 1000000000);
+      v21 = sub_401000(v20, 55);
+      sub_401220(v21, 3);
+      v22 = sub_401100(&amp;v120[6], 1000000);
+      v23 = sub_401220(v22, 999975);
+      sub_401100(v23, 4);
+      v24 = sub_401000(&amp;v120[7], 55);
+      v25 = sub_401220(v24, 33);
+      v26 = sub_401000(v25, 44);
+      sub_401220(v26, 11);
+      v27 = sub_401100(&amp;v120[8], 10);
+      v28 = sub_401220(v27, 5);
+      v29 = sub_401100(v28, 8);
+      sub_401000(v29, 9);
+      v30 = sub_401000(&amp;v120[9], 0);
+      v31 = sub_401220(v30, 0);
+      v32 = sub_401000(v31, 11);
+      v33 = sub_401220(v32, 11);
+      sub_401000(v33, 53);
+      v34 = sub_401000(&amp;v120[10], 49);
+      v35 = sub_401220(v34, 2);
+      v36 = sub_401000(v35, 4);
+      sub_401220(v36, 2);
+      v37 = sub_401100(&amp;v120[11], 1000000);
+      v38 = sub_401220(v37, 999999);
+      v39 = sub_401100(v38, 4);
+      sub_401000(v39, 50);
+      v40 = sub_401000(&amp;v120[12], 1);
+      v41 = sub_401000(v40, 1);
+      v42 = sub_401000(v41, 1);
+      v43 = sub_401000(v42, 1);
+      v44 = sub_401000(v43, 1);
+      v45 = sub_401000(v44, 1);
+      v46 = sub_401000(v45, 10);
+      sub_401000(v46, 32);
+      v47 = sub_401100(&amp;v120[13], 10);
+      v48 = sub_401220(v47, 5);
+      v49 = sub_401100(v48, 8);
+      v50 = sub_401000(v49, 9);
+      sub_401000(v50, 48);
+      v51 = sub_401220(&amp;v120[14], 1);
+      v52 = sub_401100(v51, -294967296);
+      v53 = sub_401000(v52, 55);
+      sub_401220(v53, 3);
+      v54 = sub_401000(&amp;v120[15], 1);
+      v55 = sub_401000(v54, 2);
+      v56 = sub_401000(v55, 3);
+      v57 = sub_401000(v56, 4);
+      v58 = sub_401000(v57, 5);
+      v59 = sub_401000(v58, 6);
+      v60 = sub_401000(v59, 7);
+      sub_401000(v60, 20);
+      v61 = sub_401100(&amp;v120[16], 10);
+      v62 = sub_401220(v61, 5);
+      v63 = sub_401100(v62, 8);
+      v64 = sub_401000(v63, 9);
+      sub_401000(v64, 48);
+      v65 = sub_401000(&amp;v120[17], 7);
+      v66 = sub_401000(v65, 6);
+      v67 = sub_401000(v66, 5);
+      v68 = sub_401000(v67, 4);
+      v69 = sub_401000(v68, 3);
+      v70 = sub_401000(v69, 2);
+      v71 = sub_401000(v70, 1);
+      sub_401000(v71, 20);
+      v72 = sub_401000(&amp;v120[18], 7);
+      v73 = sub_401000(v72, 2);
+      v74 = sub_401000(v73, 4);
+      v75 = sub_401000(v74, 3);
+      v76 = sub_401000(v75, 6);
+      v77 = sub_401000(v76, 5);
+      v78 = sub_401000(v77, 1);
+      sub_401000(v78, 20);
+      v79 = sub_401100(&amp;v120[19], 1000000);
+      v80 = sub_401220(v79, 999999);
+      v81 = sub_401100(v80, 4);
+      v82 = sub_401000(v81, 50);
+      sub_401220(v82, 1);
+      v83 = sub_401220(&amp;v120[20], 1);
+      v84 = sub_401100(v83, -294967296);
+      v85 = sub_401000(v84, 49);
+      sub_401220(v85, 1);
+      v86 = sub_401220(&amp;v120[21], 1);
+      v87 = sub_401100(v86, 1000000000);
+      v88 = sub_401000(v87, 54);
+      v89 = sub_401220(v88, 1);
+      v90 = sub_401000(v89, 1000000000);
+      sub_401220(v90, 1000000000);
+      v91 = sub_401000(&amp;v120[22], 49);
+      v92 = sub_401220(v91, 1);
+      v93 = sub_401000(v92, 2);
+      sub_401220(v93, 1);
+      v94 = sub_401100(&amp;v120[23], 10);
+      v95 = sub_401220(v94, 5);
+      v96 = sub_401100(v95, 8);
+      v97 = sub_401000(v96, 9);
+      sub_401000(v97, 48);
+      v98 = sub_401000(&amp;v120[24], 1);
+      v99 = sub_401000(v98, 3);
+      v100 = sub_401000(v99, 3);
+      v101 = sub_401000(v100, 3);
+      v102 = sub_401000(v101, 6);
+      v103 = sub_401000(v102, 6);
+      v104 = sub_401000(v103, 6);
+      sub_401000(v104, 20);
+      v105 = sub_401000(&amp;v120[25], 55);
+      v106 = sub_401220(v105, 33);
+      v107 = sub_401000(v106, 44);
+      v108 = sub_401220(v107, 11);
+      sub_401000(v108, 42);
+      sub_401000(&amp;v120[26], v120[25]);
+      sub_401000(&amp;v120[27], v120[12]);
+      v109 = v120[27];
+      v110 = sub_401220(&amp;v120[28], 1);
+      v111 = sub_401000(v110, v109);
+      sub_401220(v111, 1);
+      v112 = v120[23];
+      v113 = sub_401220(&amp;v120[29], 1);
+      v114 = sub_401100(v113, 1000000);
+      sub_401000(v114, v112);
+      v115 = v120[27];
+      v116 = sub_401000(&amp;v120[30], 1);
+      sub_401100(v116, v115);
+      sub_401000(&amp;v120[31], v120[30]);
+     printf(&quot;CTF{&quot;);
+    for(j=0;j&lt;32;j++){
+        printf(&quot;%c&quot;,(v120[j]));   //打印flag数组
+    } 
+    printf(&quot;}\n&quot;);
+    return 0;
+}</code></pre>
+<p>最后得到flag:</p>
+<p>CTF{daf8f4d816261a41a115052a1bc21ade}</p>
+<h2 id="12-IgniteMe"><a href="#12-IgniteMe" class="headerlink" title="12. IgniteMe"></a>12. IgniteMe</h2><p>32位文件，运行程序，显示“Give me your flag”，输入东西回车后就没了，闪退</p>
+<p>IDA打开，搜索字符串，跟踪“Give me your flag”，然后来到main主函数。</p>
+<pre><code class="c">int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  int v3; // edx
+  int result; // eax
+  size_t i; // [esp+4Ch] [ebp-8Ch]
+  char v6[4]; // [esp+50h] [ebp-88h]
+  char v7[28]; // [esp+58h] [ebp-80h]
+  char v8; // [esp+74h] [ebp-64h]
+
+  printff(&amp;unk_446360, &quot;Give me your flag:&quot;);
+  sub_4013F0(sub_403670);
+  sub_401440((int)&amp;dword_4463F0, v3, (int)v7, 127);    //v7存储着我们输入的字符串
+  if ( strlen(v7) &lt; 0x1E &amp;&amp; strlen(v7) &gt; 4 )
+  {
+    strcpy(v6, &quot;EIS{&quot;);                          //v6为&#39;EIS{&#39;
+    for ( i = 0; i &lt; strlen(v6); ++i )
+    {
+      if ( v7[i] != v6[i] )   //意思就是我们的输入必须要以&#39;EIS{&#39;开头，否则失败
+      {
+        printff(&amp;unk_446360, &quot;Sorry, keep trying! &quot;);
+        sub_4013F0(sub_403670);
+        return 0;
+      }
+    }
+    if ( v8 == &#39;}&#39; )
+    {
+      if ( (unsigned __int8)sub_4011C0(v7) )                 //关键点在这里
+        printff(&amp;unk_446360, &quot;Congratulations! &quot;);  
+      else
+        printff(&amp;unk_446360, &quot;Sorry, keep trying! &quot;);
+      sub_4013F0(sub_403670);
+      result = 0;
+    }
+    else
+    {
+      printff(&amp;unk_446360, &quot;Sorry, keep trying! &quot;);
+      sub_4013F0(sub_403670);
+      result = 0;
+    }
+  }
+  else
+  {
+    printff(&amp;unk_446360, &quot;Sorry, keep trying!&quot;);
+    sub_4013F0(sub_403670);
+    result = 0;
+  }
+  return result;
+}</code></pre>
+<p>main函数最引人注目的就是输出”Congratulations! “的语句，但是前面有一个判断。所以sub_4011C0函数一定要返回True才行，它把 v7 （我们的输入）作为参数传进去了，我们跟进这个函数。</p>
+<pre><code class="c">bool __cdecl sub_4011C0(char *a1)
+{
+  size_t v2; // eax
+  signed int v3; // [esp+50h] [ebp-B0h]
+  char v4[32]; // [esp+54h] [ebp-ACh]
+  int v5; // [esp+74h] [ebp-8Ch]
+  int v6; // [esp+78h] [ebp-88h]
+  size_t i; // [esp+7Ch] [ebp-84h]
+  char v8[128]; // [esp+80h] [ebp-80h]
+
+  if ( strlen(a1) &lt;= 4 )
+    return 0;
+  i = 4;
+  v6 = 0;
+  while ( i &lt; strlen(a1) - 1 )
+    v8[v6++] = a1[i++];
+  v8[v6] = 0;
+  v5 = 0;
+  v3 = 0;
+  memset(v4, 0, 0x20u);
+  for ( i = 0; ; ++i )
+  {
+    v2 = strlen(v8);
+    if ( i &gt;= v2 )
+      break;
+    if ( v8[i] &gt;= 97 &amp;&amp; v8[i] &lt;= 122 )   //与ascall码有关 
+    {
+      v8[i] -= 32;
+      v3 = 1;
+    }
+    if ( !v3 &amp;&amp; v8[i] &gt;= 65 &amp;&amp; v8[i] &lt;= 90 )
+      v8[i] += 32;
+    v4[i] = byte_4420B0[i] ^ sub_4013C0(v8[i]);
+    v3 = 0;
+  }
+  return strcmp(&quot;GONDPHyGjPEKruv{{pj]X@rF&quot;, v4) == 0;
+}</code></pre>
+<p>首先直接看末尾，是个strcmp比较函数，所以v4一定要等于这串字符串 才能返回True。</p>
+<p>所以就聚焦v4的值，程序开头memset把v4置为0。然后程序中唯一一处改变v4的值的语句：</p>
+<blockquote>
+<p>v4[i] = byte_4420B0[i] ^ sub_4013C0(v8[i]);</p>
+</blockquote>
+<p>这个语句首先涉及到 byte_4420B0，我们跟进，发现是一堆数据：</p>
+<p><img src="https://s1.ax1x.com/2020/10/13/0fzcW9.jpg" alt=""></p>
+<p>然后就是跟进  sub_4013C0函数，并且它把 v8 作为参数传进去：</p>
+<pre><code class="c">int __cdecl sub_4013C0(int a1)   //v8数组
+{
+  return (a1 ^ 0x55) + 72;
+}</code></pre>
+<p>看来是对v8数组进行做运算变换。所以现在问题就只剩下如何得到v8数组了。分析到最后，跟我们的输入即v7有关。</p>
+<p>所以最后的wp如下：</p>
+<pre><code class="python">import string
+result=&#39;&#39;
+byte_4420B0=[&#39;0x0D&#39;, &#39;0x13&#39;, &#39;0x17&#39;, &#39;0x11&#39;, &#39;0x2&#39;, &#39;0x1&#39;, &#39;0x20&#39;, &#39;0x1D&#39;,
+       &#39;0x0C&#39;, &#39;0x2&#39;, &#39;0x19&#39;, &#39;0x2F&#39;, &#39;0x17&#39;, &#39;0x2B&#39;, &#39;0x24&#39;, &#39;0x1F&#39;,
+       &#39;0x1E&#39;, &#39;0x16&#39;, &#39;0x9&#39;, &#39;0xF&#39;, &#39;0x15&#39;, &#39;0x27&#39;, &#39;0x13&#39;, &#39;0x26&#39;,
+       &#39;0x0A&#39;, &#39;0x2F&#39;, &#39;0x1E&#39;, &#39;0x1A&#39;, &#39;0x2D&#39;, &#39;0x0C&#39;, &#39;0x22&#39;, &#39;0x4&#39;]
+f = 0
+v4 = &#39;&#39;
+cmp=&#39;GONDPHyGjPEKruv{{pj]X@rF&#39;   # len(cmp)=24
+s = string.printable  #罗列所有的可打印字符
+# print(s)
+for i in range(24):
+    for x in s:   #在所有的可打印字符当中 一个个试过去
+        j = x   #替身使者
+        if( 97 &lt;= ord(j) &lt;= 122):    #if语句照搬IDA源码
+            x = chr(ord(j)-32)
+            f=1;
+        if(f==0 and 65 &lt;= ord(j) &lt;= 90):  #if语句照搬IDA源码
+            x = chr(ord(j) + 32)
+        v4 = chr(int(byte_4420B0[i],16)^(ord(x)^0x55)+72)
+        f = 0
+        if(v4 == cmp[i]):
+            result += j
+            break
+print(result)</code></pre>
+<p>运行结果得到 wadx_tdgk_aihc_ihkn_pjlm，再加上之前的 EIS{</p>
+<p>最终就是 EIS{wadx_tdgk_aihc_ihkn_pjlm} ，拿去验证，终于显示“Congratulations!”啦。</p>
+<h2 id="13-parallel-comparator-200"><a href="#13-parallel-comparator-200" class="headerlink" title="13. parallel-comparator-200"></a>13. parallel-comparator-200</h2><p>本题的附件就是一页C语言源码。</p>
+<pre><code class="c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#define FLAG_LEN 20
+void * checking(void *arg) {
+    char *result = malloc(sizeof(char));
+    char *argument = (char *)arg;
+    *result = (argument[0]+argument[1]) ^ argument[2];
+    return result;
+}
+int highly_optimized_parallel_comparsion(char *user_string)
+{
+    int initialization_number;
+    int i;
+    char generated_string[FLAG_LEN + 1];
+    generated_string[FLAG_LEN] = &#39;\0&#39;;
+
+    while ((initialization_number = random()) &gt;= 64); //开始认为是随机数且大于64，事实上为一固定数37
+
+    int first_letter;
+    first_letter = (initialization_number % 26) + 97;
+
+    pthread_t thread[FLAG_LEN];
+    char differences[FLAG_LEN] = {0, 9, -9, -1, 13, -13, -4, -11, -9, -1, -7, 6, -13, 13, 3, 9, -13, -11, 6, -7};
+    char *arguments[20];
+    for (i = 0; i &lt; FLAG_LEN; i++) {
+        arguments[i] = (char *)malloc(3*sizeof(char));
+        arguments[i][0] = first_letter;
+        arguments[i][1] = differences[i];
+        arguments[i][2] = user_string[i];
+
+        pthread_create((pthread_t*)(thread+i), NULL, checking, arguments[i]);
+    }
+    void *result;
+    int just_a_string[FLAG_LEN] = {115, 116, 114, 97, 110, 103, 101, 95, 115, 116, 114, 105, 110, 103, 95, 105, 116, 95, 105, 115};
+    for (i = 0; i &lt; FLAG_LEN; i++) {
+        pthread_join(*(thread+i), &amp;result);
+        generated_string[i] = *(char *)result + just_a_string[i];
+        free(result);
+        free(arguments[i]);
+    }
+
+    int is_ok = 1;
+    for (i = 0; i &lt; FLAG_LEN; i++) {
+        if (generated_string[i] != just_a_string[i])
+            return 0;
+    }
+    return 1;
+}
+int main()
+{
+    char *user_string = (char *)calloc(FLAG_LEN+1, sizeof(char));
+    fgets(user_string, FLAG_LEN+1, stdin);
+    int is_ok = highly_optimized_parallel_comparsion(user_string);
+    if (is_ok)
+        printf(&quot;You win!\n&quot;);
+    else
+        printf(&quot;Wrong!\n&quot;);
+    return 0;
+}</code></pre>
+<p>我一开始把这个程序编译运行一遍，发现没有 pthread.h 这个玩意，无法完整运行。所以看了网上的wp之后才知道原来initialization_number每次random出来的值都是固定的。</p>
+<p>所以我就自己尝试运行一遍，对源码稍做修剪：</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int initialization_number;
+    int i;
+
+    while ((initialization_number = random()) &gt;= 64);
+
+    int first_letter;
+    first_letter = (initialization_number % 26) + 97;
+    printf(&quot;%d\n&quot;,first_letter);
+    return 0;
+}</code></pre>
+<p>发现每次输出 first_letter的值都是固定的：（都是等于108）</p>
+<p><img src="https://s1.ax1x.com/2020/10/13/0hEgAI.jpg" alt=""></p>
+<p>写出最后的wp：</p>
+<pre><code class="python">differences = [0, 9, -9, -1, 13, -13, -4, -11, -9, -1, -7, 6, -13, 13, 3, 9, -13, -11, 6, -7]
+first_letter = 108   #固定的
+result = &#39;&#39;
+for i in range(len(differences)):
+    result += chr(first_letter+differences[i])  #看不懂这一步
+print(result)</code></pre>
+<p>得到答案： lucky_hacker_you_are</p>
+<p>上面这个wp我看不懂它为什么是 first_letter+differences[i]</p>
+<p>于是我又分析了一遍。</p>
+<pre><code class="c">arguments[i][0] = first_letter;
+arguments[i][1] = differences[i];
+arguments[i][2] = user_string[i];</code></pre>
+<p>user_string是我们的输入，然后differences数组是固定的，first_letter也是固定的</p>
+<p>它们在 Checking函数里 存在以下关系：</p>
+<pre><code class="c">*result = (argument[0]+argument[1]) ^ argument[2];
+// [0]是108 ，  [1]是difference ， [2]是我们的输入
+    return result;</code></pre>
+<p>而main主函数里 is_ok的值由 highly_optimized_parallel_comparsion函数决定，我们跟进这个函数，看到：</p>
+<pre><code class="c">if (generated_string[i] != just_a_string[i])
+            return 0;</code></pre>
+<p>也就是说 generated_string[] 数组要和 just_a_string 数组相等才不会导致返回值为0.</p>
+<p>写出如下wp：</p>
+<pre><code class="python">differences = [0, 9, -9, -1, 13, -13, -4, -11, -9, -1, -7, 6, -13, 13, 3, 9, -13, -11, 6, -7]
+first_letter = 108   #固定的，在linux下是108，而win上则是112
+flag = &#39;&#39;
+for i in range(len(differences)):
+    for j in range(127):
+        if((differences[i]+first_letter)^(j+1))==0:
+            flag += chr(j+1)
+            break
+print(flag)            </code></pre>
+<h2 id="14-re1-100"><a href="#14-re1-100" class="headerlink" title="14. re1-100"></a>14. re1-100</h2><p>64位，IDA打开，搜索关键字符串，看到“Input Key”，跟入，来到主函数，可以看到很多无用的东西，记录关键的信息：</p>
+<pre><code class="c">while ( 1 )
+    {
+      memset(s, 0, 0xC8uLL);
+      v9 = read(pParentWrite[0], s, 0xC8uLL);
+      if ( v9 == -1 )
+        break;
+      if ( v9 )
+      {
+        if ( (unsigned __int8)childCheckDebugResult() )
+        {
+          responseFalse();
+        }
+        else if ( s[0] == &#39;{&#39; )     // s[0]为&#39;{&#39;
+        {
+          if ( strlen(s) == 42 )      // len(s)=42
+          {
+            if ( !strncmp(v13, &quot;53fc275d81&quot;, 0xAuLL) )   // s[1]~s[10]为&quot;53fc275d81&quot;
+            {
+              if ( s[strlen(s) - 1] == &#39;}&#39; )      // s[41]为&#39;}&#39;
+              {
+                if ( !strncmp(_10F, &quot;4938ae4efd&quot;, 0xAuLL) )  // s[31]~s[40]为&#39;4938ae4efd&#39;
+                {
+                  if ( (unsigned __int8)confuseKey(s, 42) ^ 1 ) // 改变原本flag中字符串的顺序
+                  {
+                    responseFalse();
+                  }
+                  else if ( !strncmp(s, &quot;{daf29f59034938ae4efd53fc275d81053ed5be8c}&quot;, 0x2AuLL) )
+                  {
+                    responseTrue();    //成功
+                  }
+                  else
+                  {
+                    responseFalse();
+                  }
+                }
+                else
+                {
+                  responseFalse();
+                }
+              }
+              else
+              {
+                responseFalse();
+              }
+            }
+            else
+            {
+              responseFalse();
+            }
+          }
+          else
+          {
+            responseFalse();
+          }
+        }
+        else
+        {
+          responseFalse();
+        }
+      }
+    }
+    exit(1);
+  }
+  exit(1);</code></pre>
+<p>可以看到关键语句中要和 {daf29f59034938ae4efd53fc275d81053ed5be8c} 进行比较，而我们发现其中有 s[1]<del>s[10] 和  s[31]</del>s[40] 的影子，所以进行分组，40个字符分为4组。</p>
+<blockquote>
+<p>daf29f5903  4938ae4efd  53fc275d81 053ed5be8c</p>
+</blockquote>
+<p>所以进行重新组合，得到flag</p>
+<p>我们已知，s[1]<del>s[10]是 “53fc275d81”， s[31]</del>s[40]是 “4938ae4efd”，所以首尾两组已经确定好位置，接下来只剩下两种情况了，随便组合一下即可。</p>
+<p>最终flag是：53fc275d81053ed5be8cdaf29f59034938ae4efd</p>
+<h3 id="结语："><a href="#结语：" class="headerlink" title="结语："></a>结语：</h3><p>分篇来写，要不然接着写就显得太冗长了。所以第一篇到此为止，14个题目。</p>
+<p>终于可以看 使徒行者3 咯。</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">💰</a>
+</p>
+
+
+
+
+    <div id="comments"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+<script type="text/javascript">
+    $.getScript('/js/gitalk.js', function () {
+        var gitalk = new Gitalk({
+            clientID: '1ce498b97d2ce45eead3',
+            clientSecret: 'b9ceb4618f0ef4fa4abe92ef21a5c7d2b2fbc9cb',
+            repo: 'ccjacoo.github.io',
+            owner: 'ccjacoo',
+            admin: ['ccjacoo'],
+            id: decodeURI(location.pathname),
+            distractionFreeMode: 'true',
+            language: 'zh-CN',
+            perPage: parseInt('10',10)
+        })
+        gitalk.render('comments')
+    })
+</script>
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2020 sixpar
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close"  onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>Help us with donation</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">alipay</label></span><span><label><input type="radio" name="pay" value="weixin">weixin</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().trim().split('\n').length, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #ECEAEA;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background: url("https://i.loli.net/2020/07/04/kPifeO4vhSjdqE5.jpg");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
