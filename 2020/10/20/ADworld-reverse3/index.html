@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>天问计划week10-day3 | sixpar&#39;s blog</title>
-  <meta name="keywords" content=" 天问计划 ">
-  <meta name="description" content="天问计划week10-day3 | sixpar&#39;s blog">
+  <title>ADworld_reverse3 | sixpar&#39;s blog</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="ADworld_reverse3 | sixpar&#39;s blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="欢迎您的访问 想了解我？ 我只是某不知名的pwn手噢~">
 <meta property="og:type" content="website">
@@ -876,9 +876,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-天问计划week10-day3" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-ADworld-reverse3" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">天问计划week10-day3</h1>
+        <h1 class="article-title">ADworld_reverse3</h1>
     
     <div class="article-meta">
         
@@ -888,27 +888,20 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="系列">系列</a>
+            <a  data-rel="逆向题">逆向题</a>
             
         </span>
         
         
-        <span class="tag">
-            <i class="iconfont icon-tag"></i>
-            
-            <a class="color5">天问计划</a>
-            
-        </span>
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-10-21 22:31:15'>2020-10-20 13:07</time>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-07-29 09:07:37'>2020-07-22 22:12</time>
-        
-    </div>
-    <div class="article-meta">
-        
-        <span>Count:952</span>
+        <span>Count:3k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -938,7 +931,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-课程："><span class="toc-text">C++ 课程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#南大csapp课程："><span class="toc-text">南大csapp课程：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-answer-to-everythin"><span class="toc-text">1. answer_to_everythin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-serial-150"><span class="toc-text">2. serial-150</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-EasyRE"><span class="toc-text">3. EasyRE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-tt3441810"><span class="toc-text">4.tt3441810</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-gametime"><span class="toc-text">5. gametime</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-hackme"><span class="toc-text">6. hackme</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-debug"><span class="toc-text">7. debug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -954,28 +947,339 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="C-课程："><a href="#C-课程：" class="headerlink" title="C++ 课程："></a>C++ 课程：</h2><p>目前跟着学C++的视频是：<a href="https://www.bilibili.com/video/BV1VJ411M7WR?p=1" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1VJ411M7WR?p=1</a>     感觉很不错。<br>打开VS，新建项目，在Visual C++中选择空项目。在左侧解决方案中的“源文件”处右击添加-&gt;新建项，新建C++文件。<br>第一个C++程序：</p>
-<pre><code class="c++">#include &lt;iostream&gt;
-int main() {
-        std::cout &lt;&lt; &quot;Hello World !&quot; &lt;&lt; std::endl;
-        std::cin.get();
+        <blockquote>
+<p>淦，刚才没保存，卡退了，两题题解写完 全都没了</p>
+</blockquote>
+<h2 id="1-answer-to-everythin"><a href="#1-answer-to-everythin" class="headerlink" title="1. answer_to_everythin"></a>1. answer_to_everythin</h2><p>64为ELF文件，运行起来，随便输入，输出“YOUSUCK”，你再骂？</p>
+<p>ida中打开，直接分析main函数，看来好像输入 42 就可以正确输出了，得到 #kdudpeh</p>
+<p>根据题目提示，应该是和sha1有关，对 kdudpeh 进行sha1加密。</p>
+<p>得到：80ee2a3fe31da904c596d993f7f1de4827c1450a</p>
+<p>这是杂项题？？</p>
+<h2 id="2-serial-150"><a href="#2-serial-150" class="headerlink" title="2. serial-150"></a>2. serial-150</h2><p>64位ELF文件，ida静态调试看不出什么信息，开启动态调试，我用的是gdb，当然也可以用ida远程连接linux进行动态调试。</p>
+<p>一步步运行下去，根据多次调试，我们把断点下在 0x400a0b 处，因为在这里需要我们输入东西。</p>
+<blockquote>
+<p>b *0x400a0b</p>
+</blockquote>
+<p>然后一步步运行下去，</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BS2Uc4.jpg" alt=""></p>
+<p>可以看到当前，首先call strlen函数，返回的rax存储长度，然后和 16 (0x10) 比较，长度相同跳转到 0x400a3c</p>
+<p>由于我刚好输入长度为16的字符串，所以认证通过。</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BSRHd1.jpg" alt=""></p>
+<p>0x400a3c语句把 [rbp-0x200]的内容给 eax，然后让al和 0x45 比较，</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BSWFFP.jpg" alt="77"></p>
+<p>可惜我这里是 ’a‘ (0x61)，看来应该是 0x45 ，即 ‘E’， 好吧，前面流程重新来过，输入 16个 ‘E’，然后跳转到 0x400a55</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BSf9cF.jpg" alt=""></p>
+<p>可以看到它从内存中取出东西分别放在edx和eax中，然后</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BShaPx.jpg" alt=""></p>
+<p>然后eax = eax + edx ，与 0x9b 比较，这里edx是之前的0x45，所以这里的eax = 0x9b - 0x45 = 0x56 ，即 ‘ V ‘</p>
+<p>[rbp-1f1]是字符串尾部，所以现在我们知道了flag 的首尾字符分别是 E 和 V。</p>
+<p>然后就这样继续慢慢调试下去，这题的意思是 从头开始取一字符进行比较，比较通过检验后，从后往前取一字符，然后判断这两个数的和是否为正确，两两一组逐渐往里缩。</p>
+<p>肝疼…….我直接看答案了。</p>
+<p>flag: EZ9dmq4c8g9G7bAV</p>
+<p>后续看了其他人的评论，才知道里面插入了很多的0eb的花指令，干扰了IDA的分析，nop掉就行。</p>
+<h2 id="3-EasyRE"><a href="#3-EasyRE" class="headerlink" title="3. EasyRE"></a>3. EasyRE</h2><p>32位exe，ida打开，shift+F12搜索字符串，看到一个flag，应该不是，另外看到 “right\n”，跟进，然后tab反编译，</p>
+<pre><code class="c">int sub_401080()
+{
+  unsigned int v0; // kr00_4
+  signed int v1; // edx
+  char *v2; // esi
+  char v3; // al
+  unsigned int v4; // edx
+  int v5; // eax
+  __int128 v7; // [esp+2h] [ebp-24h]
+  __int64 v8; // [esp+12h] [ebp-14h]
+  int v9; // [esp+1Ah] [ebp-Ch]
+  __int16 v10; // [esp+1Eh] [ebp-8h]
+
+  sub_401020(&amp;unk_402150, v7);
+  v9 = 0;
+  v10 = 0;
+  v7 = 0i64;
+  v8 = 0i64;
+  sub_401050(&amp;unk_402158, &amp;v7);
+  v0 = strlen(&amp;v7);
+  if ( v0 &gt;= 0x10 &amp;&amp; v0 == 24 )     //24位
+  {
+    v1 = 0;
+    v2 = &amp;v8 + 7;
+    do
+    {
+      v3 = *v2--;
+      byte_40336C[v1++] = v3;
+    }
+    while ( v1 &lt; 24 );
+    v4 = 0;
+    do
+    {
+      byte_40336C[v4] = (byte_40336C[v4] + 1) ^ 6;  //数组元素+1，然后异或6
+      ++v4;
+    }
+    while ( v4 &lt; 0x18 );
+    v5 = strcmp(byte_40336C, &amp;unk_402124);  //将变换后的数组元素与 unk_402124 数组比较
+    if ( v5 )
+      v5 = -(v5 &lt; 0) | 1;
+    if ( !v5 )        //strcmp比较 结果相等则返回0
+    {
+      sub_401020(&quot;right\n&quot;, v7);
+      system(&quot;pause&quot;);
+    }
+  }
+  return 0;
 }</code></pre>
-<p>以上代码还可以这样写：<br>在开头声明使用一个命名空间std，然后在后续就可以省略掉std::前缀了：</p>
-<pre><code class="c++">#include &lt;iostream&gt;
-using namespace std;
-int main() {
-        cout &lt;&lt; &quot;Hello World !&quot; &lt;&lt; endl;
-        cin.get();
+<p>跟进 &amp;unk_402124 ，发现是rdata数据，拼起来是字符串 “xIrCj~&lt;r|2tWsv3PtI\x7Fzndka”</p>
+<p>写出解密wp：</p>
+<pre><code class="python">data=[ 0x78, 0x49, 0x72, 0x43, 0x6A, 0x7E, 0x3C, 0x72, 0x7C, 0x32,
+  0x74, 0x57, 0x73, 0x76, 0x33, 0x50, 0x74, 0x49, 0x7F, 0x7A,
+  0x6E, 0x64, 0x6B, 0x61]
+for i in range(24):
+    data[i]=chr((data[i]^6)-1)
+print(&#39;&#39;.join(data)[::-1])</code></pre>
+<p>得到 flag{xNqU4otPq3ys9wkDsN}</p>
+<p>他是逆序的，到最后还要反着过来取。且需要把列表所有元素合并为一串连续的字符串，需要join操作。</p>
+<h2 id="4-tt3441810"><a href="#4-tt3441810" class="headerlink" title="4.tt3441810"></a>4.tt3441810</h2><p>在linux里面 file 一下文件，发现是 ASCLL text文档。</p>
+<p>用winhex打开（010editor也可以），然后复制右边栏的内容到notepad里。</p>
+<p><img src="https://s1.ax1x.com/2020/10/20/BpvOXj.jpg" alt=""></p>
+<p>格式也自动对齐了，可以看出是一堆十六进制数值。</p>
+<p>写一个脚本转换一下：</p>
+<pre><code class="python">text = [0x68,0x66,0x6C,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x61,0x67,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x7B,0x70,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x6F,0x70,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x70,0x6F,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x70,0x72,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x65,0x74,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x68,0x7D,0x0A,0x00,0x00,0x48,0xBF,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x8D,0x34,0x24,0x48,0xBA,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0xB8,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05,0x48,0x31,0xFF,0x48,0xB8,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0F,0x05]
+s=&#39;&#39;
+for i in range(len(text)):
+    if(32 &lt; text[i] &lt;= 127):  #ASCALL
+        s += chr(text[i])
+print(s)</code></pre>
+<p>输出这些内容：</p>
+<blockquote>
+<p>hflHH4$HHhagHH4$HHh{pHH4$HHhopHH4$HHhpoHH4$HHhprHH4$HHhetHH4$HHh}HH4$HHH1H&lt;</p>
+</blockquote>
+<p>在这串的开头里 依稀可以看到flag几个字符字眼，只不过被几个 h 和 H 隔开了而已。</p>
+<p>多余字符有： h、H、4$，先试试看，把这些去除。</p>
+<pre><code class="python">s = &quot;hflHH4$HHhagHH4$HHh{pHH4$HHhopHH4$HHhpoHH4$HHhprHH4$HHhetHH4$HHh}HH4$HHH1H&lt;&quot;
+s=s.replace(&#39;h&#39;, &#39;&#39;)
+s=s.replace(&#39;H&#39;, &#39;&#39;)
+s=s.replace(&#39;4$&#39;, &#39;&#39;)
+print(s)</code></pre>
+<p>输出：flag{poppopret}1&lt;  </p>
+<p>但最后跟着的不知道是什么东西，是没有清理干净吗，反正只提交括号里面的就行了。所以flag是 poppopret</p>
+<h2 id="5-gametime"><a href="#5-gametime" class="headerlink" title="5. gametime"></a>5. gametime</h2><p>32位，运行程序，是个游戏，发现在一定时间内不输入和输错都会引起程序闪退,并打印关键语句： “ UDDER FAILURE! <a href="http://imgur.com/4Ajx21P" target="_blank" rel="noopener">http://imgur.com/4Ajx21P</a> “。而且到后面所给的时间越来越短，来不及输入就闪退。</p>
+<p>ida打开搜索字符串，定位该关键语句，然后跟进，有两处调用，分别是sub_401507和sub_401435</p>
+<p>sub_401507程序如下：</p>
+<pre><code class="c">char __usercall sub_401507@&lt;al&gt;(int a1@&lt;edx&gt;, int a2@&lt;ecx&gt;, DWORD dwMilliseconds, int a4, int a5)
+{
+  int v5; // esi
+  int v6; // ebx
+
+  v5 = a1;
+  v6 = a2;
+  print(&quot;key is %s (%s)&quot;, a5, a4);
+  sub_401423();
+  print(&quot;\r                                 \r&quot;);
+  if ( v5 &gt; 0 )
+  {
+    do
+    {
+      print(&quot;.&quot;);
+      Sleep(dwMilliseconds);
+      --v5;
+    }
+    while ( v5 );
+  }
+  if ( sub_401260(v6, 500 * dwMilliseconds) )
+    return 1;
+  print(&quot;key is %s (%s)\r&quot;, a5, a4);
+  print(&quot;UDDER FAILURE! http://imgur.com/4Ajx21P \n&quot;);
+  return 0;</code></pre>
+<p>程序最终return0 退出了，唯一转折点就在 sub_401260 函数这里，可以return 1.</p>
+<p>另外sub_401435的函数条件判断也归结于 sub_401260</p>
+<p>sub_401260程序如下：</p>
+<pre><code class="c">bool __fastcall sub_401260(int a1, int a2)
+{
+  int v2; // edi
+  int v3; // esi
+  int v4; // eax
+
+  v2 = a1;    //v2=a1
+  v3 = a2;
+  if ( a1 == 32 )   // &#39; &#39;
+    print(&amp;unk_417868);
+  else
+    print(&amp;unk_41786C, a1);
+  if ( v3 )
+  {
+    while ( !_kbhit() )
+    {
+      if ( !--v3 )
+        goto LABEL_7;   //要在规定时间内输入
+    }
+    v4 = _getch();   //输入
+  }
+  else
+  {
+LABEL_7:
+    v4 = -1;
+  }
+  return v4 != -1 &amp;&amp; v4 == v2;   //我们的输入要等于v2的内容
 }</code></pre>
-<p>std::cout 是从属关系，即cout是属于std的。std全称是standard<br>&lt;&lt;是插入运算符，可以将右侧信息插入到输出流中，所以该符号会将字符串发送给cout打印，<br>endl（全称end line） 有换行（即\n）的功能，但是在换行的时候它还干了一件事就是 fflush(stdin)，刷新输入缓冲区，即行缓冲，所有缓冲区内容都会被打印出来，然后清空。</p>
-<p>我们可以在其它文件中自定义一个输出函数（这样可以避免每次都要写冗余的代码），然后再在该主文件里声明这个输出函数即可。例如：在开头声明一个输出函数： void Log(const char* Message) ，然后输出语句就可以写为 Log(“Hello World !”);</p>
-<p>在每一个cpp文件的开头都要添加上 #include<iostream> ，#是预编译指令，可以将该其他文件的内容包含进来。<br>在同一个项目中，如果在某一个cpp文件里引用（声明）了一个函数，而其他cpp文件里并没有这个函数的定义（结构体），虽然可以成功build编译成一个个obj文件（每个cpp会对应产生一个obj，且都是单独编译的），但是在link链接阶段的时候会发生error，因为linker链接器的作用是链接各个函数，从而串成一个整体的exe，它会检查各个函数是否真实定义存在。它会发现该函数并没有被定义过，故产生error。</p>
-<h2 id="南大csapp课程："><a href="#南大csapp课程：" class="headerlink" title="南大csapp课程："></a>南大csapp课程：</h2><p>前面的课程我刷的时候没有做笔记，后来才想起来做笔记。</p>
-<p>int类型（带符号整数）的数据在内存中是以补码的形式存在的。<br>求一个负数的补码的时候，就是把该正数的补码各位取反，然后+1</p>
-<p>掩码，如想取得低1字节数据并且其他字节取0的话，就把这个数&amp;上0xFF，例如0x4682&amp;0xFF 得到 0x0082 </p>
-<p>移位运算：扩大或缩小<br>例如某字长为8的机器中，xyz都是8位带符号整数，已知x=-81，则-81=-1010001B，然后将负号转为1，其他各位取反，并且末尾+1，故最终x的机器数为10101111，所以y=x/2 -&gt; x&gt;&gt;1 = 11010111 ，z=2*x=x&lt;&lt;1=01011110<br>结论：左移为x&lt;&lt;k，右移为x&gt;&gt;k，  无法从运算符区分是逻辑移位还是算术移位，由x的类型决定。<br>高（低）位移出，低（高）位补0，但可能会溢出，当高位移出的是1时，则左移时会发生溢出<br>若x为无符号数则逻辑左右移，<br>若x为带符号整数则算术左右移，溢出判断：若移出的位不等于新的符号位则溢出。</p>
-<p>对于一个n（n&gt;=8）位的变量，<br>若想要x的最高有效字节不变，其余各位全变为0的话可以 (x&gt;&gt;(n-8))&lt;&lt;(n-8)<br>若想要x的最低有效字节不变，其余各位全变为0的话可以 x &amp; 0xFF</p>
-<p>今天是看到了 P27</p>
+<p>sub_401260函数的流程图如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200426104753438.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTA1NTI2OQ==,size_16,color_FFFFFF,t_70" alt="进入sub_401260"></p>
+<p>发现最后两个判断，错误都会跳转 loc_4012AD，那我们 nop 掉这个跳转，然后运行。</p>
+<p>用 OD打开，看起来程序开了ASLR，地址变了， 我们找不到关键程序段了。</p>
+<p>在OD中智能搜索字符串，得知失败信息（”UDDER FAILURE! <a href="http://imgur.com/4Ajx21P" target="_blank" rel="noopener">http://imgur.com/4Ajx21P</a> \n”）的地址是 0x721575，而在ida中它的地址是0x401575</p>
+<p>兄弟们，发现了没有，虽然开启了ASLR，但是RVA还是一样的！所以我们就知道了 loc_4012AD 程序段所在的地址了，RVA是1299，所以地址是0x721299</p>
+<p>所以 ctrl+g 输入 0x721299 前往，并下断点。然后把导向错误结果的地方都nop就行了。效果如下图：</p>
+<p><img src="https://s1.ax1x.com/2020/10/21/BP3rUs.jpg" alt=""></p>
+<p>图中 0x72129C和 0x7212A0所在的位置原先就是 跳转到loc_4012AD，现在被nop掉</p>
+<p>然后直接在OD里面执行起来就ok了。哈哈哈哈哈接下来游戏进程开始自娱自乐起来，逐个打印，我就这样看着它 足足等了有一多分钟，最后才蹦跶出flag</p>
+<p>flag： no5c30416d6cf52638460377995c6a8cf5</p>
+<h2 id="6-hackme"><a href="#6-hackme" class="headerlink" title="6. hackme"></a>6. hackme</h2><p>64位ELF，根据字符串”Give me the password: “跟进 ，来到主函数。</p>
+<pre><code class="c">__int64 sub_400F8E()
+{
+  char v1[136]; // [rsp+10h] [rbp-B0h]
+  int v2; // [rsp+98h] [rbp-28h]
+  char v3; // [rsp+9Fh] [rbp-21h]
+  int v4; // [rsp+A0h] [rbp-20h]
+  unsigned __int8 v5; // [rsp+A6h] [rbp-1Ah]
+  char v6; // [rsp+A7h] [rbp-19h]
+  int v7; // [rsp+A8h] [rbp-18h]
+  int v8; // [rsp+ACh] [rbp-14h]
+  int v9; // [rsp+B0h] [rbp-10h]
+  int v10; // [rsp+B4h] [rbp-Ch]
+  _BOOL4 v11; // [rsp+B8h] [rbp-8h]
+  int i; // [rsp+BCh] [rbp-4h]
+
+  sub_407470(&quot;Give me the password: &quot;);
+  sub_4075A0(&quot;%s&quot;);
+  for ( i = 0; v1[i]; ++i )
+    ;
+  v11 = i == 22;
+  v10 = 10;
+  do
+  {
+    v7 = sub_406D90(&quot;%s&quot;, v1) % 22;    //生成随机数 , v7取值范围是 0~21
+    v9 = 0;
+    v6 = byte_6B4270[v7];
+    v5 = v1[v7];
+    v4 = v7 + 1;
+    v8 = 0;
+    while ( v8 &lt; v4 )
+    {
+      ++v8;
+      v9 = 1828812941 * v9 + 12345;
+    }
+    v3 = v9 ^ v5;
+    if ( v6 != (v9 ^ v5) )
+      v11 = 0;
+    --v10;
+  }
+  while ( v10 );         //循环10次
+  if ( v11 )
+    v2 = sub_407470(&quot;Congras\n&quot;);
+  else
+    v2 = sub_407470(&quot;Oh no!\n&quot;);
+  return 0LL;
+}</code></pre>
+<p>分析：首先v7是经过随机数生成然后mod22得到的，所以取值范围在 0~21，</p>
+<p>v10的值为10，那么while循环的次数也就是10，</p>
+<p>注意到这里：</p>
+<pre><code class="c">if ( v6 != (v9 ^ v5) )
+      v11 = 0;</code></pre>
+<p>要使得这个条件成立才可，不然v11为0就game over 了。</p>
+<p>v6数组是已知的字符串，v9的值从0开始，加12345，然后在循环之中不断乘1828812941然后加12345………</p>
+<p>v5是我们的输入，不过只循环10次，也就是取10个字符。</p>
+<p>破案了，这道题实际就是取10位我们输入的字符，异或后，与byte_6B4270数组比较是否相同。</p>
+<p>写出脚本:</p>
+<pre><code class="python">index = [0x5F,0xF2,0x5E,0x8B,0x4E,0x0E,0xA3,0xAA,0xC7,0x93,0x81,0x3D,0x5F,0x74,0xA3,0x09,
+0x91,0x2B,0x49,0x28,0x93,0x67]
+flag = &#39;&#39;
+for i in range(22):   #爆破
+    v6 = i + 1
+    v10 = 0
+    v11 = 0   #初始值为0
+    while v10 &lt; v6:
+        v10 = v10 + 1
+        v11 = 1828812941 * v11 + 12345
+    flag += chr((index[i]^v11)&amp;0xff)
+print (flag)</code></pre>
+<p>得到flag：flag{d826e6926098ef46}</p>
+<p>至于脚本中为什么还要 &amp;0xff 呢，那是因为源程序中 (show casts展开) 实际显示是</p>
+<blockquote>
+<p>if ( v6 != ((unsigned __int8)v9 ^ v5) )</p>
+</blockquote>
+<p>v9的类型是<code>unsigned_int8，只保留8位</code> （我们这个是64位程序，有16位），所以需要 &amp;0xff</p>
+<p>哇太细节了吧，根本没注意。</p>
+<h2 id="7-debug"><a href="#7-debug" class="headerlink" title="7. debug"></a>7. debug</h2><p><img src="https://s1.ax1x.com/2020/10/21/BPdXs1.jpg" alt=""></p>
+<p>是一个.net编译文件，放到ida\OD里面发现都没法分析，要用到专门的 .net反汇编工具（工具小子登场）。这里用到的工具是dnspy。（第一次用）</p>
+<p><img src="https://s1.ax1x.com/2020/10/21/BP0V1J.jpg" alt=""></p>
+<p>把debug.exe加载进来，显示为 ConsoleApplocation1，然后下面有好多内容，主要关注 @02000003里面的内容。</p>
+<p>06000008函数：</p>
+<pre><code class="c#">// Token: 0x06000008 RID: 8 RVA: 0x000021F0 File Offset: 0x000003F0
+private static void ᜀ(string[] A_0)
+{
+    string b = null;
+    string value = string.Format(&quot;{0}&quot;, DateTime.Now.Hour + 1);
+    string a_ = &quot;CreateByTenshine&quot;;
+    ᜅ.ᜀ(a_, Convert.ToInt32(value), ref b);
+    string a = Console.ReadLine();
+    if (a == b)
+    {
+        Console.WriteLine(&quot;u got it!&quot;);
+        Console.ReadKey(true);
+    }
+    else
+    {
+        Console.Write(&quot;wrong&quot;);
+    }
+    Console.ReadKey(true);
+}</code></pre>
+<p> 经过一个函数（函数名乱码，不可见字符啊）对字符串变量a_ （”CreateByTenshine”）进行变换，并将结果存入b中，最后将输入与b比较。</p>
+<p>06000007函数：</p>
+<pre><code class="c#">// Token: 0x06000007 RID: 7 RVA: 0x0000218C File Offset: 0x0000038C
+private static void ᜀ(string A_0, int A_1, ref string A_2)
+{
+    int num = 0;
+    if (0 &lt; A_0.Length)
+    {
+        do
+        {
+            char c = A_0[num];
+            int num2 = 1;
+            do
+            {
+                c = Convert.ToChar(ᜅ.ᜀ(Convert.ToInt32(c), num2));
+                num2++;
+            }
+            while (num2 &lt; 15);
+            A_2 += c;
+            num++;
+        }
+        while (num &lt; A_0.Length);
+    }
+    A_2 = ᜅ.ᜀ(A_2);
+}</code></pre>
+<p>依次取字符串的每个字符，并通过某函数（06000005函数）进行转换，每个字符循环变换14次。最后对变换后的字符串进行md5加密（涉及06000006函数）。</p>
+<p>06000005函数：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1524059/201910/1524059-20191009190057380-1966513109.png" alt=""></p>
+<p>06000006加密函数：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1524059/201910/1524059-20191009190234775-1956139727.png" alt=""></p>
+<p>解密脚本:</p>
+<pre><code class="python">import hashlib
+
+s = &quot;CreateByTenshine&quot;
+s1 = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+result = &quot;&quot;
+for i in s:
+    x = i
+    for j in range(14):
+        x = chr(int(ord(x)) ^ s1[j])
+    result += x
+a = hashlib.md5()
+a.update(result.encode(encoding=&#39;utf-8&#39;))
+print(&quot;flag{&quot;+a.hexdigest()+&quot;}&quot;)</code></pre>
+<p>还有一种解法，在06000006md5加密函数里，它末尾return回了一个flag，此刻我们就可以截下来查看。也应了题目的名字，debug。</p>
+<p>点击启动调试的时候， “中断于” 选择 “入口点”。调试过程如下：</p>
+<p><img src="https://s1.ax1x.com/2020/10/21/BPrr9O.jpg" alt=""></p>
+<p>flag是 flag{967DDDFBCD32C1F53527C221D9E40A0B}</p>
+<p>不过我还没深入搞清楚它怎么调用其他函数的（只有单步步入的时候才能看见内在调用逻辑）。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>今天也同样是更7个题目。现在是 22:27，我要回寝室了。第一次骑车回去，开心。</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论嗷。 </span>
